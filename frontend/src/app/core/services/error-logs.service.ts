@@ -17,6 +17,7 @@ export interface ErrorLogFilters {
   screen_id?: number;
   assigned_to_id?: string;
   priority?: string;
+  environment?: string;
   search?: string;
   page?: number;
   page_size?: number;

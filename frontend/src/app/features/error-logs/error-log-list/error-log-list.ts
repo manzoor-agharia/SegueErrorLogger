@@ -9,8 +9,10 @@ import { ErrorLogFilters, ErrorLogsService } from '../../../core/services/error-
 import { ScreensService } from '../../../core/services/screens.service';
 import { UsersService } from '../../../core/services/users.service';
 import {
+  ERROR_ENVIRONMENTS,
   ERROR_PRIORITIES,
   ERROR_STATUSES,
+  ErrorEnvironment,
   ErrorLogDetail,
   ErrorLogListItem,
   ErrorPriority,
@@ -32,6 +34,7 @@ import { ErrorLogForm } from '../error-log-form/error-log-form';
 export class ErrorLogList implements OnInit {
   readonly statuses = ERROR_STATUSES;
   readonly priorities = ERROR_PRIORITIES;
+  readonly environments = ERROR_ENVIRONMENTS;
   readonly statusLabels = STATUS_LABELS;
   readonly pageSizeOptions = [10, 20, 50, 100];
 
@@ -53,6 +56,7 @@ export class ErrorLogList implements OnInit {
   screenFilter: number | '' = '';
   assigneeFilter: string | '' = '';
   priorityFilter: ErrorPriority | '' = '';
+  environmentFilter: ErrorEnvironment | '' = '';
   searchTerm = '';
   private searchDebounce?: ReturnType<typeof setTimeout>;
 
@@ -92,6 +96,7 @@ export class ErrorLogList implements OnInit {
     if (this.screenFilter) filters.screen_id = this.screenFilter;
     if (this.assigneeFilter) filters.assigned_to_id = this.assigneeFilter;
     if (this.priorityFilter) filters.priority = this.priorityFilter;
+    if (this.environmentFilter) filters.environment = this.environmentFilter;
     if (this.searchTerm.trim()) filters.search = this.searchTerm.trim();
 
     this.errorLogsService.list(filters).subscribe({

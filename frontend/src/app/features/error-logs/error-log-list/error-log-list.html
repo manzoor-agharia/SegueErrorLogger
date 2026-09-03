@@ -46,6 +46,18 @@
   </div>
 
   <div class="form-field">
+    <label class="form-label" for="filter-environment">Environment</label>
+    <div class="select-wrap">
+      <select id="filter-environment" [(ngModel)]="environmentFilter" (change)="refreshFromFirstPage()">
+        <option [ngValue]="''">All</option>
+        @for (e of environments; track e) {
+          <option [value]="e">{{ e }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <div class="form-field">
     <label class="form-label" for="filter-screen">Screen</label>
     <div class="select-wrap">
       <select id="filter-screen" [(ngModel)]="screenFilter" (change)="refreshFromFirstPage()">
