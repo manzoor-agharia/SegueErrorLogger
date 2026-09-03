@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 
 import { ErrorLogsService } from '../../../core/services/error-logs.service';
-import { Attachment, ErrorLogDetail } from '../../../core/models/error-log.model';
+import { Attachment, ErrorLogDetail, STATUS_LABELS } from '../../../core/models/error-log.model';
 import { StatusBadge } from '../../../shared/status-badge/status-badge';
 
 interface AttachmentPreview {
@@ -32,6 +32,8 @@ interface AttachmentPreview {
 export class ErrorLogDetailDrawer implements OnChanges, OnDestroy {
   @Input() errorLog: ErrorLogDetail | null = null;
   @Output() closed = new EventEmitter<void>();
+
+  readonly statusLabels = STATUS_LABELS;
 
   previews = signal<AttachmentPreview[]>([]);
   viewerIndex = signal<number | null>(null);

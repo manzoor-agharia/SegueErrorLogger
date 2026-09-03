@@ -1,8 +1,10 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { AuthService } from '../../../core/auth/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { ErrorLogFilters, ErrorLogsService } from '../../../core/services/error-logs.service';
 import { ScreensService } from '../../../core/services/screens.service';
 import {
@@ -26,6 +28,7 @@ import { ErrorLogForm } from '../error-log-form/error-log-form';
 export class ErrorLogList implements OnInit {
   readonly statuses = ERROR_STATUSES;
   readonly statusLabels = STATUS_LABELS;
+  readonly pageSizeOptions = [10, 20, 50, 100];
 
   logs = signal<ErrorLogListItem[]>([]);
   screens = signal<Screen[]>([]);
@@ -35,33 +38,79 @@ export class ErrorLogList implements OnInit {
   formOpen = signal(false);
   formEditLog = signal<ErrorLogDetail | null>(null);
 
+  page = signal(1);
+  pageSize = signal(20);
+  total = signal(0);
+  totalPages = signal(0);
+
   statusFilter: ErrorStatus | '' = '';
   screenFilter: number | '' = '';
+  searchTerm = '';
+  private searchDebounce?: ReturnType<typeof setTimeout>;
 
   constructor(
     private readonly errorLogsService: ErrorLogsService,
     private readonly screensService: ScreensService,
+    private readonly toast: ToastService,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
     readonly auth: AuthService,
   ) {}
 
   ngOnInit(): void {
-    this.screensService.list().subscribe((screens) => this.screens.set(screens));
+    this.screensService.list(true).subscribe((screens) => this.screens.set(screens));
     this.refresh();
+
+    const openId = this.route.snapshot.queryParamMap.get('open');
+    if (openId) {
+      this.errorLogsService.get(openId).subscribe((detail) => this.selectedLog.set(detail));
+      this.router.navigate([], { relativeTo: this.route, queryParams: {} });
+    }
   }
 
   refresh(): void {
     this.loading.set(true);
-    const filters: ErrorLogFilters = {};
+    const filters: ErrorLogFilters = {
+      page: this.page(),
+      page_size: this.pageSize(),
+    };
     if (this.statusFilter) filters.status_filter = this.statusFilter;
     if (this.screenFilter) filters.screen_id = this.screenFilter;
+    if (this.searchTerm.trim()) filters.search = this.searchTerm.trim();
 
     this.errorLogsService.list(filters).subscribe({
-      next: (logs) => {
-        this.logs.set(logs);
+      next: (res) => {
+        this.logs.set(res.items);
+        this.total.set(res.total);
+        this.totalPages.set(res.total_pages);
         this.loading.set(false);
       },
       error: () => this.loading.set(false),
     });
+  }
+
+  /** Any filter change invalidates the current page, so jump back to page 1. */
+  refreshFromFirstPage(): void {
+    this.page.set(1);
+    this.refresh();
+  }
+
+  onSearchChange(): void {
+    clearTimeout(this.searchDebounce);
+    this.searchDebounce = setTimeout(() => this.refreshFromFirstPage(), 300);
+  }
+
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages() || page === this.page()) {
+      return;
+    }
+    this.page.set(page);
+    this.refresh();
+  }
+
+  onPageSizeChange(size: number): void {
+    this.pageSize.set(size);
+    this.refreshFromFirstPage();
   }
 
   openCreate(): void {
@@ -101,6 +150,21 @@ export class ErrorLogList implements OnInit {
     this.errorLogsService.updateStatus(log.id, status).subscribe(() => {
       this.refresh();
       if (this.selectedLog()?.id === log.id) this.viewDetail(log);
+    });
+  }
+
+  deleteLog(log: ErrorLogListItem, event: Event): void {
+    event.stopPropagation();
+    if (!confirm(`Delete error log "${log.title}"? This cannot be undone.`)) {
+      return;
+    }
+    this.errorLogsService.delete(log.id).subscribe({
+      next: () => {
+        this.toast.show('Error log deleted', 'success');
+        this.refresh();
+        if (this.selectedLog()?.id === log.id) this.closeDetail();
+      },
+      error: (err) => this.toast.show(err?.error?.detail ?? 'Failed to delete error log', 'error'),
     });
   }
 }

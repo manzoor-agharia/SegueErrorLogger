@@ -3,7 +3,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
-from app.models import ErrorPriority, ErrorStatus, UserRole
+from app.models import ErrorPriority, ErrorStatus, NotificationType, UserRole
 
 
 # ---- Auth / Users ----
@@ -127,3 +127,28 @@ class ErrorLogDetail(ErrorLogListItem):
     description: str
     attachments: list[AttachmentOut]
     status_history: list[StatusHistoryOut]
+
+
+class ErrorLogPage(BaseModel):
+    items: list[ErrorLogListItem]
+    total: int
+    page: int
+    page_size: int
+    total_pages: int
+
+
+# ---- Notifications ----
+
+class NotificationOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: uuid.UUID
+    error_log_id: uuid.UUID
+    type: NotificationType
+    message: str
+    is_read: bool
+    created_at: datetime
+
+
+class UnreadCountOut(BaseModel):
+    count: int

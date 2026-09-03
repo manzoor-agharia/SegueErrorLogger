@@ -20,4 +20,8 @@ export class UsersService {
   update(userId: string, payload: UserUpdate): Observable<User> {
     return this.http.put<User>(`${environment.apiUrl}/users/${userId}`, payload);
   }
+
+  delete(userId: string): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}/users/${userId}`);
+  }
 }

@@ -6,7 +6,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.config import settings
-from app.routers import auth, error_logs, screens, users
+from app.routers import auth, error_logs, notifications, screens, users
 
 app = FastAPI(title="ErrorLogger API")
 
@@ -23,6 +23,7 @@ api.include_router(auth.router)
 api.include_router(users.router)
 api.include_router(screens.router)
 api.include_router(error_logs.router)
+api.include_router(notifications.router)
 app.mount("/api", api)
 
 STATIC_DIR = Path(__file__).parent / "static"

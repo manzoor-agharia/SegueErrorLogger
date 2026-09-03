@@ -53,4 +53,17 @@ export class UserManagement implements OnInit {
   onFormCancelled(): void {
     this.formOpen.set(false);
   }
+
+  deleteUser(user: User): void {
+    if (!confirm(`Delete user "${user.name}"? This cannot be undone.`)) {
+      return;
+    }
+    this.usersService.delete(user.id).subscribe({
+      next: () => {
+        this.toast.show(`${user.name} deleted`, 'success');
+        this.refresh();
+      },
+      error: (err) => this.toast.show(err?.error?.detail ?? 'Failed to delete user', 'error'),
+    });
+  }
 }

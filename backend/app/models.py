@@ -35,6 +35,11 @@ class ErrorPriority(str, enum.Enum):
     CRITICAL = "Critical"
 
 
+class NotificationType(str, enum.Enum):
+    ASSIGNED = "Assigned"
+    CREATED = "Created"
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -128,3 +133,21 @@ class ErrorLogStatusHistory(Base):
 
     error_log: Mapped["ErrorLog"] = relationship(back_populates="status_history")
     changed_by: Mapped["User"] = relationship()
+
+
+class Notification(Base):
+    __tablename__ = "notifications"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    error_log_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("error_logs.id", ondelete="CASCADE"), nullable=False
+    )
+    type: Mapped[NotificationType] = mapped_column(Enum(NotificationType, name="notification_type"), nullable=False)
+    message: Mapped[str] = mapped_column(String(500), nullable=False)
+    is_read: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+    error_log: Mapped["ErrorLog"] = relationship()

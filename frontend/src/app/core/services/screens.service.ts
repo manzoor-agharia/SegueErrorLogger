@@ -9,7 +9,7 @@ import { Screen } from '../models/error-log.model';
 export class ScreensService {
   constructor(private readonly http: HttpClient) {}
 
-  list(): Observable<Screen[]> {
-    return this.http.get<Screen[]>(`${environment.apiUrl}/screens`);
+  list(usedOnly = false): Observable<Screen[]> {
+    return this.http.get<Screen[]>(`${environment.apiUrl}/screens`, { params: { used_only: String(usedOnly) } });
   }
 }

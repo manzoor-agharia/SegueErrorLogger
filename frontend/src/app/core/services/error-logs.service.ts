@@ -7,7 +7,7 @@ import {
   Attachment,
   ErrorLogCreateRequest,
   ErrorLogDetail,
-  ErrorLogListItem,
+  ErrorLogPage,
   ErrorLogUpdateRequest,
   ErrorStatus,
 } from '../models/error-log.model';
@@ -17,6 +17,9 @@ export interface ErrorLogFilters {
   screen_id?: number;
   assigned_to_id?: string;
   priority?: string;
+  search?: string;
+  page?: number;
+  page_size?: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -25,14 +28,14 @@ export class ErrorLogsService {
 
   constructor(private readonly http: HttpClient) {}
 
-  list(filters: ErrorLogFilters = {}): Observable<ErrorLogListItem[]> {
+  list(filters: ErrorLogFilters = {}): Observable<ErrorLogPage> {
     const params: Record<string, string> = {};
     Object.entries(filters).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== '') {
         params[key] = String(value);
       }
     });
-    return this.http.get<ErrorLogListItem[]>(this.base, { params });
+    return this.http.get<ErrorLogPage>(this.base, { params });
   }
 
   get(id: string): Observable<ErrorLogDetail> {

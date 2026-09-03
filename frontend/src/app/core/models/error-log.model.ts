@@ -74,3 +74,11 @@ export interface ErrorLogCreateRequest {
 }
 
 export type ErrorLogUpdateRequest = Partial<ErrorLogCreateRequest>;
+
+export interface ErrorLogPage {
+  items: ErrorLogListItem[];
+  total: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
+}

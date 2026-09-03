@@ -10,6 +10,7 @@
   @if (auth.currentUser(); as user) {
     <span class="user-info">{{ user.name }} · {{ user.role }}</span>
   }
+  <app-notification-bell />
   <button class="btn-icon" (click)="logout()" aria-label="Logout" title="Logout">
     <i class="material-icons">logout</i>
   </button>

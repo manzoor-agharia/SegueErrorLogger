@@ -64,7 +64,9 @@
     <ul class="status-history">
       @for (entry of log.status_history; track entry.id) {
         <li>
-          <span class="history-status">{{ entry.old_status ?? 'Created' }} → {{ entry.new_status }}</span>
+          <span class="history-status">
+            {{ entry.old_status ? statusLabels[entry.old_status] : 'Created' }} → {{ statusLabels[entry.new_status] }}
+          </span>
           <span class="history-meta">{{ entry.changed_by.name }} · {{ entry.changed_at | date: 'short' }}</span>
         </li>
       }

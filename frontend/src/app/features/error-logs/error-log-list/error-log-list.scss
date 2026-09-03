@@ -13,6 +13,36 @@
   .form-field {
     width: 220px;
   }
+
+  .form-field--search {
+    width: 320px;
+  }
+
+  .form-field--page-size {
+    width: 90px;
+  }
+}
+
+.search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  i {
+    position: absolute;
+    left: 8px;
+    font-size: 18px;
+    color: var(--color-muted);
+    pointer-events: none;
+  }
+
+  input {
+    width: 100%;
+    padding: 6px 10px 6px 32px;
+    border: 1px solid var(--color-border-input);
+    border-radius: var(--radius-base);
+    font-size: 13px;
+  }
 }
 
 .data-table {
@@ -21,6 +51,13 @@
   overflow: hidden;
   box-shadow: var(--shadow-xs);
   border: 1px solid var(--color-border);
+
+  .title-cell {
+    max-width: 260px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .status-select select {
@@ -33,6 +70,24 @@
   padding: 24px 0;
   text-align: center;
   color: var(--color-muted);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--color-muted);
+}
+
+.pagination-controls {
+  display: flex;
+  gap: 8px;
+
+  .btn i {
+    font-size: 18px;
+  }
 }
 
 .drawer-backdrop {

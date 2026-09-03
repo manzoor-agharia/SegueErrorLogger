@@ -7,10 +7,24 @@
 </div>
 
 <div class="filters">
+  <div class="form-field form-field--search">
+    <label class="form-label" for="filter-search">Search</label>
+    <div class="search-wrap">
+      <i class="material-icons">search</i>
+      <input
+        id="filter-search"
+        type="text"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchChange()"
+        placeholder="Search title, description, screen, people, status..."
+      />
+    </div>
+  </div>
+
   <div class="form-field">
     <label class="form-label" for="filter-status">Status</label>
     <div class="select-wrap">
-      <select id="filter-status" [(ngModel)]="statusFilter" (change)="refresh()">
+      <select id="filter-status" [(ngModel)]="statusFilter" (change)="refreshFromFirstPage()">
         <option value="">All</option>
         @for (status of statuses; track status) {
           <option [value]="status">{{ statusLabels[status] }}</option>
@@ -22,10 +36,21 @@
   <div class="form-field">
     <label class="form-label" for="filter-screen">Screen</label>
     <div class="select-wrap">
-      <select id="filter-screen" [(ngModel)]="screenFilter" (change)="refresh()">
+      <select id="filter-screen" [(ngModel)]="screenFilter" (change)="refreshFromFirstPage()">
         <option [ngValue]="''">All</option>
         @for (screen of screens(); track screen.id) {
           <option [ngValue]="screen.id">{{ screen.name }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <div class="form-field form-field--page-size">
+    <label class="form-label" for="filter-page-size">Per page</label>
+    <div class="select-wrap">
+      <select id="filter-page-size" [ngModel]="pageSize()" (ngModelChange)="onPageSizeChange($event)">
+        @for (size of pageSizeOptions; track size) {
+          <option [ngValue]="size">{{ size }}</option>
         }
       </select>
     </div>
@@ -47,7 +72,7 @@
   <tbody>
     @for (log of logs(); track log.id) {
       <tr class="data-table__row" (click)="viewDetail(log)">
-        <td>{{ log.title }}</td>
+        <td class="title-cell" [title]="log.title">{{ log.title }}</td>
         <td>{{ log.screen?.name ?? log.screen_name_freetext ?? '—' }}</td>
         <td (click)="$event.stopPropagation()">
           <div class="select-wrap status-select">
@@ -65,6 +90,11 @@
           <button class="btn-icon" (click)="openEdit(log, $event)" title="Edit">
             <i class="material-icons">edit</i>
           </button>
+          @if (auth.isSuperAdmin()) {
+            <button class="btn-icon" (click)="deleteLog(log, $event)" title="Delete">
+              <i class="material-icons">delete</i>
+            </button>
+          }
         </td>
       </tr>
     }
@@ -73,6 +103,24 @@
 
 @if (!loading() && logs().length === 0) {
   <p class="empty">No error logs found.</p>
+}
+
+@if (totalPages() > 1) {
+  <div class="pagination">
+    <span class="pagination-summary">
+      Page {{ page() }} of {{ totalPages() }} ({{ total() }} total)
+    </span>
+    <div class="pagination-controls">
+      <button class="btn btn-sm btn-ghost" [disabled]="page() === 1" (click)="goToPage(page() - 1)">
+        <i class="material-icons">chevron_left</i>
+        Prev
+      </button>
+      <button class="btn btn-sm btn-ghost" [disabled]="page() === totalPages()" (click)="goToPage(page() + 1)">
+        Next
+        <i class="material-icons">chevron_right</i>
+      </button>
+    </div>
+  </div>
 }
 
 @if (selectedLog(); as log) {
