@@ -1,0 +1,44 @@
+frontend/src/app/core/models/error-log.model.ts
+  s_43aba915d89d29::t_996942ccc0e01a 52-58
+  s_43aba915d89d29::t_9c19b0bb88e856 77
+frontend/src/app/features/error-logs/error-log-detail-drawer/error-log-detail-drawer.scss
+  s_43aba915d89d29::t_f36f2947124f38 219-271
+backend/alembic/versions/b3f7c1d9e4a6_add_error_log_edit_history.py
+  s_43aba915d89d29::t_b95cec6f9002e7 1-36
+frontend/src/app/features/error-logs/error-log-detail-drawer/error-log-detail-drawer.html
+  s_43aba915d89d29::t_35ac4745a6a39a 64-68,70-97
+backend/app/routers/error_logs.py
+  s_43aba915d89d29::t_26bae4aa42e76f 17,44
+  s_43aba915d89d29::t_7b95b889f17cac 69-111
+  s_43aba915d89d29::t_342aab26469877 273-274,278-285
+  s_43aba915d89d29::t_6f18c4d6dcb7cc 286
+frontend/src/app/features/error-logs/error-log-detail-drawer/error-log-detail-drawer.ts
+  s_43aba915d89d29::t_64667a4efdd3df 47,55-74
+  s_43aba915d89d29::t_142f6020c6e49d 128-135
+  s_43aba915d89d29::t_b67dd411cb12ba 161-169
+  s_43aba915d89d29::t_ed7ff74aad3c0a 25-31
+  s_43aba915d89d29::t_641a036644a5b7 84
+  s_43aba915d89d29::t_5e288ca6c12ffe 75-76
+backend/app/models.py
+  s_43aba915d89d29::t_ac9e0d7517e7f4 155-169
+  s_43aba915d89d29::t_a2442d177f11d6 118-120
+backend/app/schemas.py
+  s_43aba915d89d29::t_333a0f618e6803 113-121
+  s_43aba915d89d29::t_f334aa9da1d499 142
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "fa9076f94f40efdf7b2e467fab00bd05b17bf2e8",
+  "prompts": {},
+  "sessions": {
+    "s_43aba915d89d29": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7b76c753-aaee-4747-a7ab-af9b2b96a1ab",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Manzoor Ahmed Agharia <manzoor.ahmed.agharia@growthzone.com>"
+    }
+  }
+}
