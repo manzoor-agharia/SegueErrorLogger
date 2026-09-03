@@ -1,0 +1,89 @@
+frontend/src/app/core/services/users.service.ts
+  s_43aba915d89d29::t_804b3f5f5b64b7 6,16-21
+backend/app/deps.py
+  s_43aba915d89d29::t_38a9d5721799e2 29-30
+backend/app/routers/auth.py
+  s_43aba915d89d29::t_20f1e60e60ad40 36-37
+frontend/src/app/core/models/user.model.ts
+  s_43aba915d89d29::t_ec201cde9dd4d8 8,17-30
+frontend/src/app/features/users/user-form/user-form.html
+  s_43aba915d89d29::t_3b788a8e16840f 1-62
+frontend/src/app/features/users/user-form/user-form.scss
+  s_43aba915d89d29::t_ccd7d1c6b5f8bd 1-89
+frontend/src/index.html
+  s_43aba915d89d29::t_fb2cced8bd2416 8-9
+frontend/src/app/features/users/user-form/user-form.ts
+  s_43aba915d89d29::t_6b91239a9a86cb 1-93
+frontend/src/app/features/error-logs/error-log-list/error-log-list.scss
+  s_fe9ff7ed0ed358::t_73ad84e04d3be1 11,13,18-23,26-30,32-35,38-43,45-54,57-63
+frontend/src/app/features/error-logs/error-log-detail-drawer/error-log-detail-drawer.ts
+  s_43aba915d89d29::t_6a8cee5bde37d6 95-125
+  s_43aba915d89d29::t_7277f39189673e 37-43
+  s_fe9ff7ed0ed358::t_36ef6776786436 28
+  s_43aba915d89d29::t_4d08971b677f12 3-13
+frontend/src/app/features/error-logs/error-log-list/error-log-list.ts
+  s_fe9ff7ed0ed358::t_6c887d726bb458 22
+  s_fe9ff7ed0ed358::t_b0b1e5876b0a05 35-37,68-69,75-76,80-90
+  s_fe9ff7ed0ed358::t_e47cbe002d713d 91
+backend/app/models.py
+  s_43aba915d89d29::t_6196ee3b3c6db3 46
+  s_43aba915d89d29::t_bc2aa81f036beb 5
+frontend/src/app/features/error-logs/error-log-detail-drawer/error-log-detail-drawer.scss
+  s_43aba915d89d29::t_4858f55fc58657 122-197
+backend/app/routers/users.py
+  s_43aba915d89d29::t_1270e9f407f70d 10-11,25-49,51,59-70
+  s_43aba915d89d29::t_4bd7b6bf2b8740 71
+frontend/src/app/features/error-logs/error-log-form/error-log-form.html
+  s_fe9ff7ed0ed358::t_eebb0098e2cc96 1-6,8-13,15-18,20-31,33-42,44-49,51-61,63-82,86,88,90-95,98
+frontend/src/app/features/error-logs/error-log-detail-drawer/error-log-detail-drawer.html
+  s_43aba915d89d29::t_d6fafbcd875434 74-103
+  s_43aba915d89d29::t_de13bc021db344 52-57
+  s_fe9ff7ed0ed358::t_e8241922854b1c 4-5
+  s_fe9ff7ed0ed358::t_c7c6ab7c744037 46
+backend/alembic/versions/5f3a1b8c2d4e_add_user_is_active.py
+  s_43aba915d89d29::t_38841f337b328b 1-29
+frontend/src/app/features/error-logs/error-log-form/error-log-form.scss
+  s_fe9ff7ed0ed358::t_3801334fb3a5a8 1,4,7-26,29-38,40-60,67-70,77-79,82-86
+frontend/src/app/features/error-logs/error-log-list/error-log-list.html
+  s_fe9ff7ed0ed358::t_ee2a1747e890aa 1-7,9-18,20,22-33,35-54,56,58-59,61-66,69-72,74-76,78-83,85-91
+backend/app/schemas.py
+  s_43aba915d89d29::t_d52de956213a57 29,39-50
+  s_43aba915d89d29::t_57fdada3d474c1 51-52
+frontend/src/app/features/users/user-management/user-management.scss
+  s_fe9ff7ed0ed358::t_c95a027d957d42 10-14
+  s_43aba915d89d29::t_cfcd5df0e99418 1-5,17-32
+frontend/src/app/features/users/user-management/user-management.ts
+  s_fe9ff7ed0ed358::t_06c8cc74a92f03 5,25
+  s_43aba915d89d29::t_b4879ac954b38b 7-8,13,20-22,36-54
+frontend/src/app/features/users/user-management/user-management.html
+  s_43aba915d89d29::t_b0d94e6aa193d1 1-7,15,17,25,27-29,32-36,41-48
+  s_fe9ff7ed0ed358::t_a825a33e2e4bcf 9-14,16,18-24,26,30-31,37-39
+frontend/package-lock.json
+  s_fe9ff7ed0ed358::t_a2948d666ecff5 327-328,7434,7488
+frontend/public/favicon.svg
+  s_43aba915d89d29::t_b75463b696f67e 1-14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "9a12fc48efad3a360d8b8c5c4800937bbaf6a35e",
+  "prompts": {},
+  "sessions": {
+    "s_43aba915d89d29": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7b76c753-aaee-4747-a7ab-af9b2b96a1ab",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Manzoor Ahmed Agharia <manzoor.ahmed.agharia@growthzone.com>"
+    },
+    "s_fe9ff7ed0ed358": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8507d217-c1fd-4b5a-804a-b7e54408cd75",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Manzoor Ahmed Agharia <manzoor.ahmed.agharia@growthzone.com>"
+    }
+  }
+}
