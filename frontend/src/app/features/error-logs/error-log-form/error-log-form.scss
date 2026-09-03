@@ -117,14 +117,41 @@
 }
 
 :host ::ng-deep {
+  /* ngx-quill's host is `display: inline-block` with no explicit height, so Quill's own
+     `.ql-container { height: 100% }` doesn't resolve against it correctly and the container
+     overflows past its own host's box -- bleeding into whatever sits below it in the form.
+     Forcing auto height makes .ql-container size itself from its content (.ql-editor's
+     min-height) like a normal block, matching what actually gets rendered on screen. */
+  .ql-container.ql-snow {
+    height: auto;
+  }
+
   .ql-editor {
     min-height: 120px;
     font-size: 14px;
+    outline: none;
+  }
+
+  /* The app's global `::focus-visible` rule paints a spreading box-shadow ring on any
+     focused element, including this contenteditable div -- which bleeds into the fields
+     below it since .ql-editor has no margin of its own to contain the ring. Suppress it
+     here and apply an equivalent, properly-contained focus style to the outer .ql-container
+     instead. */
+  .ql-editor:focus,
+  .ql-editor:focus-visible {
+    box-shadow: none !important;
+    border-color: transparent !important;
+    outline: none;
   }
 
   .ql-toolbar.ql-snow,
   .ql-container.ql-snow {
     border-color: var(--color-border-input);
+  }
+
+  .ql-container.ql-snow:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(0, 168, 157, 0.12);
   }
 
   .ql-container.ql-snow {
