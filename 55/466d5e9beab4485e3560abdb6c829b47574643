@@ -1,0 +1,23 @@
+deploy/windows/Deploy-ErrorLogger.ps1
+  s_94a522eb52c06f::t_6d0ca3f3035f0e 1-115
+.github/workflows/deploy.yml
+  s_94a522eb52c06f::t_9b7ee37d879a83 1-78
+deploy/windows/README.md
+  s_94a522eb52c06f::t_9c2117fd77981d 1-86
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "55466d5e9beab4485e3560abdb6c829b47574643",
+  "prompts": {},
+  "sessions": {
+    "s_94a522eb52c06f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0e804b93-06ff-4b6f-8c68-608960a6ad90",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Manzoor Ahmed Agharia <manzoor.ahmed.agharia@growthzone.com>"
+    }
+  }
+}
