@@ -1,0 +1,24 @@
+deploy/windows/README.md
+  s_43aba915d89d29::t_17a50b04979f5d 129-131
+  s_43aba915d89d29::t_b2d7f98e6c7115 73
+  s_43aba915d89d29::t_4c6ff13a5590c9 75-123
+deploy/windows/Deploy-ErrorLogger.ps1
+  s_43aba915d89d29::t_1438892f3bae7b 98,104,111,116,126,129
+  s_43aba915d89d29::t_fa5d400b5ea155 4,12-16,28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "ceeed536fab591ddc4e01d93eaba3adfb28124f4",
+  "prompts": {},
+  "sessions": {
+    "s_43aba915d89d29": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7b76c753-aaee-4747-a7ab-af9b2b96a1ab",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Manzoor Ahmed Agharia <manzoor.ahmed.agharia@growthzone.com>"
+    }
+  }
+}
