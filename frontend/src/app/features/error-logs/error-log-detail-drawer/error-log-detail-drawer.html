@@ -61,17 +61,40 @@
       </div>
     }
 
-    <h3>Status History</h3>
-    <ul class="status-history">
-      @for (entry of log.status_history; track entry.id) {
-        <li>
-          <span class="history-status">
-            {{ entry.old_status ? statusLabels[entry.old_status] : 'Created' }} → {{ statusLabels[entry.new_status] }}
-          </span>
-          <span class="history-meta">{{ entry.changed_by.name }} · {{ entry.changed_at | date: 'short' }}</span>
-        </li>
+    <button class="btn btn-sm btn-ghost history-btn" (click)="openHistory()">
+      <i class="material-icons">history</i>
+      View History
+      @if (combinedHistory().length > 0) {
+        <span class="history-count">{{ combinedHistory().length }}</span>
       }
-    </ul>
+    </button>
+  </div>
+}
+
+@if (historyOpen()) {
+  <div class="modal-backdrop" (click)="closeHistory()">
+    <div class="modal-panel history-panel" (click)="$event.stopPropagation()">
+      <div class="modal-topbar">
+        <span class="modal-title">History</span>
+        <button class="btn-icon" type="button" (click)="closeHistory()" aria-label="Close">
+          <i class="material-icons">close</i>
+        </button>
+      </div>
+      <div class="modal-body">
+        @if (combinedHistory().length === 0) {
+          <p class="empty">No changes recorded yet.</p>
+        } @else {
+          <ul class="status-history">
+            @for (entry of combinedHistory(); track entry.id) {
+              <li>
+                <span class="history-status">{{ entry.summary }}</span>
+                <span class="history-meta">{{ entry.changedByName }} · {{ entry.changedAt | date: 'medium' }}</span>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    </div>
   </div>
 }
 

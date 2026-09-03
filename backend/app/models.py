@@ -115,6 +115,9 @@ class ErrorLog(Base):
     status_history: Mapped[list["ErrorLogStatusHistory"]] = relationship(
         back_populates="error_log", cascade="all, delete-orphan", order_by="ErrorLogStatusHistory.changed_at"
     )
+    edit_history: Mapped[list["ErrorLogEditHistory"]] = relationship(
+        back_populates="error_log", cascade="all, delete-orphan", order_by="ErrorLogEditHistory.changed_at"
+    )
 
 
 class ErrorLogAttachment(Base):
@@ -146,6 +149,21 @@ class ErrorLogStatusHistory(Base):
     changed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
 
     error_log: Mapped["ErrorLog"] = relationship(back_populates="status_history")
+    changed_by: Mapped["User"] = relationship()
+
+
+class ErrorLogEditHistory(Base):
+    __tablename__ = "error_log_edit_history"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    error_log_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("error_logs.id", ondelete="CASCADE"), nullable=False
+    )
+    summary: Mapped[str] = mapped_column(Text, nullable=False)
+    changed_by_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    changed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+    error_log: Mapped["ErrorLog"] = relationship(back_populates="edit_history")
     changed_by: Mapped["User"] = relationship()
 
 

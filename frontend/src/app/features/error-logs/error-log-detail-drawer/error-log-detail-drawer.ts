@@ -22,6 +22,13 @@ interface AttachmentPreview {
   isImage: boolean;
 }
 
+interface HistoryEntry {
+  id: string;
+  summary: string;
+  changedByName: string;
+  changedAt: string;
+}
+
 @Component({
   selector: 'app-error-log-detail-drawer',
   standalone: true,
@@ -37,11 +44,34 @@ export class ErrorLogDetailDrawer implements OnChanges, OnDestroy {
 
   previews = signal<AttachmentPreview[]>([]);
   viewerIndex = signal<number | null>(null);
+  historyOpen = signal(false);
 
   images = computed(() => this.previews().filter((p) => p.isImage));
   viewerImage = computed(() => {
     const index = this.viewerIndex();
     return index === null ? null : this.images()[index];
+  });
+
+  combinedHistory = computed<HistoryEntry[]>(() => {
+    const log = this.errorLog;
+    if (!log) return [];
+
+    const statusEntries: HistoryEntry[] = log.status_history.map((entry) => ({
+      id: `status-${entry.id}`,
+      summary: `${entry.old_status ? this.statusLabels[entry.old_status] : 'Created'} → ${this.statusLabels[entry.new_status]}`,
+      changedByName: entry.changed_by.name,
+      changedAt: entry.changed_at,
+    }));
+    const editEntries: HistoryEntry[] = log.edit_history.map((entry) => ({
+      id: `edit-${entry.id}`,
+      summary: entry.summary,
+      changedByName: entry.changed_by.name,
+      changedAt: entry.changed_at,
+    }));
+
+    return [...statusEntries, ...editEntries].sort(
+      (a, b) => new Date(b.changedAt).getTime() - new Date(a.changedAt).getTime(),
+    );
   });
 
   constructor(
@@ -51,6 +81,7 @@ export class ErrorLogDetailDrawer implements OnChanges, OnDestroy {
 
   ngOnChanges(): void {
     this.revokeUrls();
+    this.historyOpen.set(false);
     if (!this.errorLog) {
       this.previews.set([]);
       return;
@@ -94,6 +125,14 @@ export class ErrorLogDetailDrawer implements OnChanges, OnDestroy {
     this.closed.emit();
   }
 
+  openHistory(): void {
+    this.historyOpen.set(true);
+  }
+
+  closeHistory(): void {
+    this.historyOpen.set(false);
+  }
+
   openViewer(preview: AttachmentPreview): void {
     const index = this.images().indexOf(preview);
     if (index !== -1) {
@@ -119,10 +158,15 @@ export class ErrorLogDetailDrawer implements OnChanges, OnDestroy {
 
   @HostListener('document:keydown', ['$event'])
   handleKeydown(event: KeyboardEvent): void {
-    if (this.viewerIndex() === null) return;
-    if (event.key === 'Escape') this.closeViewer();
-    if (event.key === 'ArrowLeft') this.showPrevImage();
-    if (event.key === 'ArrowRight') this.showNextImage();
+    if (this.viewerIndex() !== null) {
+      if (event.key === 'Escape') this.closeViewer();
+      if (event.key === 'ArrowLeft') this.showPrevImage();
+      if (event.key === 'ArrowRight') this.showNextImage();
+      return;
+    }
+    if (this.historyOpen() && event.key === 'Escape') {
+      this.closeHistory();
+    }
   }
 
   private revokeUrls(): void {

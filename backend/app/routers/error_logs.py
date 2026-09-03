@@ -14,6 +14,7 @@ from app.deps import get_current_user, require_role
 from app.models import (
     ErrorLog,
     ErrorLogAttachment,
+    ErrorLogEditHistory,
     ErrorLogStatusHistory,
     ErrorStatus,
     Notification,
@@ -40,6 +41,7 @@ _DETAIL_OPTIONS = (
     selectinload(ErrorLog.assigned_to),
     selectinload(ErrorLog.attachments),
     selectinload(ErrorLog.status_history).selectinload(ErrorLogStatusHistory.changed_by),
+    selectinload(ErrorLog.edit_history).selectinload(ErrorLogEditHistory.changed_by),
 )
 
 
@@ -62,6 +64,49 @@ async def _notify_assignment(db: AsyncSession, error_log: ErrorLog, actor: User)
             message=f'{actor.name} assigned "{error_log.title}" to you',
         )
     )
+
+
+async def _describe_edit(db: AsyncSession, error_log: ErrorLog, updates: dict) -> list[str]:
+    """Build human-readable change descriptions by comparing `updates` against `error_log`'s
+    current (pre-mutation) values. Call this before applying the updates."""
+    changes: list[str] = []
+
+    if "title" in updates and updates["title"] != error_log.title:
+        changes.append(f'Title: "{error_log.title}" → "{updates["title"]}"')
+
+    if "description" in updates and updates["description"] != error_log.description:
+        changes.append("Description updated")
+
+    if "priority" in updates and updates["priority"] != error_log.priority:
+        changes.append(f"Priority: {error_log.priority.value} → {updates['priority'].value}")
+
+    if "environment" in updates and updates["environment"] != error_log.environment:
+        changes.append(f"Environment: {error_log.environment.value} → {updates['environment'].value}")
+
+    screen_touched = "screen_id" in updates or "screen_name_freetext" in updates
+    if screen_touched:
+        old_label = error_log.screen.name if error_log.screen else (error_log.screen_name_freetext or "None")
+        new_screen_id = updates.get("screen_id", error_log.screen_id)
+        new_freetext = updates.get("screen_name_freetext", error_log.screen_name_freetext)
+        if new_screen_id is not None:
+            new_screen = (await db.execute(select(Screen).where(Screen.id == new_screen_id))).scalar_one_or_none()
+            new_label = new_screen.name if new_screen else "None"
+        else:
+            new_label = new_freetext or "None"
+        if old_label != new_label:
+            changes.append(f"Screen: {old_label} → {new_label}")
+
+    if "assigned_to_id" in updates and updates["assigned_to_id"] != error_log.assigned_to_id:
+        old_label = error_log.assigned_to.name if error_log.assigned_to else "Unassigned"
+        new_id = updates["assigned_to_id"]
+        if new_id is not None:
+            new_user = (await db.execute(select(User).where(User.id == new_id))).scalar_one_or_none()
+            new_label = new_user.name if new_user else "Unassigned"
+        else:
+            new_label = "Unassigned"
+        changes.append(f"Assigned to: {old_label} → {new_label}")
+
+    return changes
 
 
 async def _notify_new_error_log(db: AsyncSession, error_log: ErrorLog, actor: User) -> None:
@@ -225,8 +270,19 @@ async def update_error_log(
     old_assigned_to_id = error_log.assigned_to_id
 
     updates = payload.model_dump(exclude_unset=True)
+    changes = await _describe_edit(db, error_log, updates)
+
     for field, value in updates.items():
         setattr(error_log, field, value)
+
+    if changes:
+        db.add(
+            ErrorLogEditHistory(
+                error_log_id=error_log.id,
+                summary="; ".join(changes),
+                changed_by_id=current_user.id,
+            )
+        )
 
     if "assigned_to_id" in updates and error_log.assigned_to_id != old_assigned_to_id:
         await _notify_assignment(db, error_log, current_user)

@@ -110,6 +110,15 @@ class StatusHistoryOut(BaseModel):
     changed_at: datetime
 
 
+class EditHistoryOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: uuid.UUID
+    summary: str
+    changed_by: UserOut
+    changed_at: datetime
+
+
 class ErrorLogListItem(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -130,6 +139,7 @@ class ErrorLogDetail(ErrorLogListItem):
     description: str
     attachments: list[AttachmentOut]
     status_history: list[StatusHistoryOut]
+    edit_history: list[EditHistoryOut]
 
 
 class ErrorLogPage(BaseModel):

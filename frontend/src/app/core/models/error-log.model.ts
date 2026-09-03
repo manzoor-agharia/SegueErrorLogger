@@ -49,6 +49,13 @@ export interface StatusHistoryEntry {
   changed_at: string;
 }
 
+export interface EditHistoryEntry {
+  id: string;
+  summary: string;
+  changed_by: User;
+  changed_at: string;
+}
+
 export interface ErrorLogListItem {
   id: string;
   title: string;
@@ -67,6 +74,7 @@ export interface ErrorLogDetail extends ErrorLogListItem {
   description: string;
   attachments: Attachment[];
   status_history: StatusHistoryEntry[];
+  edit_history: EditHistoryEntry[];
 }
 
 export interface ErrorLogCreateRequest {
