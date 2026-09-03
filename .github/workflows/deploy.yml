@@ -1,0 +1,78 @@
+name: Deploy
+
+# Triggers:
+#   1. Push to `main` -- builds and deploys automatically.
+#   2. Manual: Actions tab -> Deploy -> Run workflow.
+#
+# Deploys to segue.pegasusone.com:3012 via a self-hosted GitHub Actions runner installed on the
+# target Windows VM (the VM is not reachable from GitHub-hosted runners). See
+# deploy/windows/README.md for one-time VM setup (runner registration, NSSM, firewall, Postgres).
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: build-publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Build frontend
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run build -- --configuration production
+
+      - name: Stage deploy artifact
+        run: |
+          mkdir -p publish/backend publish/frontend-static
+          rsync -a --exclude 'venv' --exclude '.venv' --exclude '__pycache__' --exclude '.env' \
+            --exclude 'attachments/*' --exclude 'app/static/*' \
+            backend/ publish/backend/
+          cp -r frontend/dist/frontend/browser/. publish/frontend-static/
+
+      - name: Package deploy artifact
+        run: |
+          cd publish
+          zip -r ../errorlogger-deploy.zip backend frontend-static
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: errorlogger-deploy
+          path: errorlogger-deploy.zip
+          retention-days: 14
+
+  deploy:
+    name: deploy-to-vm
+    needs: build
+    runs-on: [self-hosted, Windows, segueerrorlogger-vm]
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: errorlogger-deploy
+
+      - name: Expand artifact
+        shell: powershell
+        run: Expand-Archive -Path errorlogger-deploy.zip -DestinationPath extracted -Force
+
+      - name: Run deploy script
+        shell: powershell
+        run: |
+          $artifactPath = (Resolve-Path extracted).Path
+          ./deploy/windows/Deploy-ErrorLogger.ps1 -ArtifactPath $artifactPath
