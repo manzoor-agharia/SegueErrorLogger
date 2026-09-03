@@ -1,0 +1,76 @@
+import { User } from './user.model';
+
+export type ErrorStatus = 'YetToStart' | 'InProgress' | 'Fixed' | 'TestedByQA' | 'Reopened' | 'Closed';
+export type ErrorPriority = 'Low' | 'Medium' | 'High' | 'Critical';
+
+export const ERROR_STATUSES: ErrorStatus[] = [
+  'YetToStart',
+  'InProgress',
+  'Fixed',
+  'TestedByQA',
+  'Reopened',
+  'Closed',
+];
+
+export const ERROR_PRIORITIES: ErrorPriority[] = ['Low', 'Medium', 'High', 'Critical'];
+
+export const STATUS_LABELS: Record<ErrorStatus, string> = {
+  YetToStart: 'Yet to Start',
+  InProgress: 'In Progress',
+  Fixed: 'Fixed',
+  TestedByQA: 'Tested by QA',
+  Reopened: 'Reopened',
+  Closed: 'Closed',
+};
+
+export interface Screen {
+  id: number;
+  name: string;
+  category: string;
+}
+
+export interface Attachment {
+  id: string;
+  original_filename: string;
+  content_type: string;
+  size_bytes: number;
+  uploaded_at: string;
+}
+
+export interface StatusHistoryEntry {
+  id: string;
+  old_status: ErrorStatus | null;
+  new_status: ErrorStatus;
+  changed_by: User;
+  changed_at: string;
+}
+
+export interface ErrorLogListItem {
+  id: string;
+  title: string;
+  status: ErrorStatus;
+  priority: ErrorPriority;
+  screen: Screen | null;
+  screen_name_freetext: string | null;
+  reported_by: User;
+  assigned_to: User | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ErrorLogDetail extends ErrorLogListItem {
+  description: string;
+  attachments: Attachment[];
+  status_history: StatusHistoryEntry[];
+}
+
+export interface ErrorLogCreateRequest {
+  title: string;
+  description: string;
+  screen_id?: number | null;
+  screen_name_freetext?: string | null;
+  priority: ErrorPriority;
+  assigned_to_id?: string | null;
+}
+
+export type ErrorLogUpdateRequest = Partial<ErrorLogCreateRequest>;

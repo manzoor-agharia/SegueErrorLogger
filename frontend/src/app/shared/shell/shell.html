@@ -1,0 +1,20 @@
+<header class="toolbar">
+  <span class="brand">ErrorLogger</span>
+  <nav class="nav-links">
+    <a routerLink="/error-logs" routerLinkActive="active">Error Logs</a>
+    @if (auth.isSuperAdmin()) {
+      <a routerLink="/users" routerLinkActive="active">Users</a>
+    }
+  </nav>
+  <span class="spacer"></span>
+  @if (auth.currentUser(); as user) {
+    <span class="user-info">{{ user.name }} · {{ user.role }}</span>
+  }
+  <button class="btn-icon" (click)="logout()" aria-label="Logout" title="Logout">
+    <i class="material-icons">logout</i>
+  </button>
+</header>
+
+<main class="content">
+  <router-outlet />
+</main>

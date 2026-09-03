@@ -1,0 +1,93 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav-content>
+    <div class="page-header">
+      <h1>Error Logs</h1>
+      <button mat-flat-button color="primary" (click)="openCreate()">
+        <mat-icon>add</mat-icon>
+        Log Error
+      </button>
+    </div>
+
+    <div class="filters">
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Status</mat-label>
+        <mat-select [(ngModel)]="statusFilter" (selectionChange)="refresh()">
+          <mat-option value="">All</mat-option>
+          @for (status of statuses; track status) {
+            <mat-option [value]="status">{{ statusLabels[status] }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Screen</mat-label>
+        <mat-select [(ngModel)]="screenFilter" (selectionChange)="refresh()">
+          <mat-option value="">All</mat-option>
+          @for (screen of screens(); track screen.id) {
+            <mat-option [value]="screen.id">{{ screen.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <table mat-table [dataSource]="logs()" class="logs-table">
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef>Title</th>
+        <td mat-cell *matCellDef="let log">{{ log.title }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="screen">
+        <th mat-header-cell *matHeaderCellDef>Screen</th>
+        <td mat-cell *matCellDef="let log">{{ log.screen?.name ?? log.screen_name_freetext ?? '—' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let log">
+          <mat-form-field appearance="outline" class="status-select" (click)="$event.stopPropagation()">
+            <mat-select [ngModel]="log.status" (selectionChange)="changeStatus(log, $event.value)">
+              @for (status of statuses; track status) {
+                <mat-option [value]="status">{{ statusLabels[status] }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="priority">
+        <th mat-header-cell *matHeaderCellDef>Priority</th>
+        <td mat-cell *matCellDef="let log">{{ log.priority }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="assignedTo">
+        <th mat-header-cell *matHeaderCellDef>Assigned To</th>
+        <td mat-cell *matCellDef="let log">{{ log.assigned_to?.name ?? 'Unassigned' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="updatedAt">
+        <th mat-header-cell *matHeaderCellDef>Updated</th>
+        <td mat-cell *matCellDef="let log">{{ log.updated_at | date: 'short' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let log">
+          <button mat-icon-button (click)="openEdit(log, $event)" matTooltip="Edit">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="viewDetail(row)" class="clickable-row"></tr>
+    </table>
+
+    @if (!loading() && logs().length === 0) {
+      <p class="empty">No error logs found.</p>
+    }
+  </mat-sidenav-content>
+
+  <mat-sidenav mode="over" position="end" [opened]="selectedLog() !== null" (closedStart)="closeDetail()">
+    <app-error-log-detail-drawer [errorLog]="selectedLog()" (closed)="closeDetail()" />
+  </mat-sidenav>
+</mat-sidenav-container>

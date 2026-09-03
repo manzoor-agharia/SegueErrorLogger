@@ -1,0 +1,54 @@
+<div class="auth-page">
+  <div class="auth-card card">
+    <h1 class="text-page-title">Create account</h1>
+    <p class="subtitle text-body-sm">The first registered user becomes SuperAdmin</p>
+
+    <form (ngSubmit)="submit()" #form="ngForm">
+      <div class="form-field">
+        <label class="form-label" for="name">Name</label>
+        <input id="name" type="text" name="name" [(ngModel)]="name" required autocomplete="name" placeholder="Jane Doe" />
+      </div>
+
+      <div class="form-field">
+        <label class="form-label" for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          name="email"
+          [(ngModel)]="email"
+          required
+          autocomplete="email"
+          placeholder="you@example.com"
+        />
+      </div>
+
+      <div class="form-field">
+        <label class="form-label" for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          name="password"
+          [(ngModel)]="password"
+          required
+          minlength="8"
+          autocomplete="new-password"
+          placeholder="At least 8 characters"
+        />
+      </div>
+
+      @if (error()) {
+        <p class="form-error-msg">{{ error() }}</p>
+      }
+
+      <button class="btn btn-primary full-width" type="submit" [disabled]="form.invalid || loading()">
+        @if (loading()) {
+          <span class="spinner"></span>
+        } @else {
+          Create account
+        }
+      </button>
+    </form>
+
+    <p class="switch text-body-sm">Already have an account? <a routerLink="/login">Log in</a></p>
+  </div>
+</div>

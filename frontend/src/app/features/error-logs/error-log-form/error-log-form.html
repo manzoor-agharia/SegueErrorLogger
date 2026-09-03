@@ -1,0 +1,77 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Edit Error Log' : 'Log a New Error' }}</h2>
+
+<mat-dialog-content class="form-content">
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Title</mat-label>
+    <input matInput name="title" [(ngModel)]="title" required maxlength="300" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Description</mat-label>
+    <textarea matInput name="description" rows="4" [(ngModel)]="description" required></textarea>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Screen</mat-label>
+    <mat-select name="screen" [(ngModel)]="screenId">
+      @for (screen of screens(); track screen.id) {
+        <mat-option [value]="screen.id">{{ screen.name }} ({{ screen.category }})</mat-option>
+      }
+      <mat-option [value]="otherScreenValue">Other (specify)</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  @if (screenId === otherScreenValue) {
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Screen name (free text)</mat-label>
+      <input matInput name="screenFreeText" [(ngModel)]="screenFreeText" maxlength="300" />
+    </mat-form-field>
+  }
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Priority</mat-label>
+    <mat-select name="priority" [(ngModel)]="priority">
+      @for (p of priorities; track p) {
+        <mat-option [value]="p">{{ p }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Assigned to</mat-label>
+    <mat-select name="assignedTo" [(ngModel)]="assignedToId">
+      <mat-option [value]="null">Unassigned</mat-option>
+      @for (user of users(); track user.id) {
+        <mat-option [value]="user.id">{{ user.name }} ({{ user.role }})</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <div class="attachments-field">
+    <label class="attachments-label">Attachments</label>
+    <input type="file" multiple (change)="onFilesSelected($event)" />
+    @if (selectedFiles.length > 0) {
+      <ul class="file-list">
+        @for (file of selectedFiles; track file.name; let i = $index) {
+          <li>
+            {{ file.name }}
+            <button mat-icon-button type="button" (click)="removeFile(i)" aria-label="Remove file">
+              <mat-icon>close</mat-icon>
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="cancel()">Cancel</button>
+  <button mat-flat-button color="primary" type="button" [disabled]="saving() || !title || !description" (click)="submit()">
+    {{ isEdit ? 'Save Changes' : 'Create' }}
+  </button>
+</mat-dialog-actions>

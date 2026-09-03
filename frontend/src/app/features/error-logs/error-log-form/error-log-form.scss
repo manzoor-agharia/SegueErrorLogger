@@ -1,0 +1,40 @@
+.form-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 420px;
+  max-width: 560px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.attachments-field {
+  margin: 8px 0 16px;
+
+  .attachments-label {
+    display: block;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.6);
+    margin-bottom: 6px;
+  }
+}
+
+.file-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+
+  li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 2px 0;
+  }
+}
+
+.error {
+  color: #b3261e;
+  font-size: 13px;
+}

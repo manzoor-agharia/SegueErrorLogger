@@ -1,0 +1,48 @@
+<div class="auth-page">
+  <div class="auth-card card">
+    <h1 class="text-page-title">ErrorLogger</h1>
+    <p class="subtitle text-body-sm">Sign in to continue</p>
+
+    <form (ngSubmit)="submit()" #form="ngForm">
+      <div class="form-field">
+        <label class="form-label" for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          name="email"
+          [(ngModel)]="email"
+          required
+          autocomplete="email"
+          placeholder="you@example.com"
+        />
+      </div>
+
+      <div class="form-field">
+        <label class="form-label" for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          name="password"
+          [(ngModel)]="password"
+          required
+          autocomplete="current-password"
+          placeholder="••••••••"
+        />
+      </div>
+
+      @if (error()) {
+        <p class="form-error-msg">{{ error() }}</p>
+      }
+
+      <button class="btn btn-primary full-width" type="submit" [disabled]="form.invalid || loading()">
+        @if (loading()) {
+          <span class="spinner"></span>
+        } @else {
+          Log in
+        }
+      </button>
+    </form>
+
+    <p class="switch text-body-sm">Don't have an account? <a routerLink="/register">Create one</a></p>
+  </div>
+</div>
