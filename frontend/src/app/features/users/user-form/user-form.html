@@ -1,0 +1,62 @@
+<div class="modal-topbar">
+  <span class="modal-title">{{ isEdit ? 'Edit User' : 'Create User' }}</span>
+  <button class="btn-icon" type="button" (click)="cancel()" aria-label="Close" title="Close">
+    <i class="material-icons">close</i>
+  </button>
+</div>
+
+<div class="modal-body">
+  <div class="form-grid">
+    <div class="form-field form-field--full">
+      <label class="form-label" for="user-name">Name <span class="form-req">*</span></label>
+      <input id="user-name" type="text" [(ngModel)]="name" maxlength="200" placeholder="Full name" />
+    </div>
+
+    <div class="form-field form-field--full">
+      <label class="form-label" for="user-email">Email <span class="form-req">*</span></label>
+      <input id="user-email" type="email" [(ngModel)]="email" maxlength="255" placeholder="name@example.com" />
+    </div>
+
+    @if (!isEdit) {
+      <div class="form-field form-field--full">
+        <label class="form-label" for="user-password">Password <span class="form-req">*</span></label>
+        <input id="user-password" type="password" [(ngModel)]="password" maxlength="128" placeholder="At least 8 characters" />
+      </div>
+    }
+
+    <div class="form-field">
+      <label class="form-label" for="user-role">Role</label>
+      <div class="select-wrap">
+        <select id="user-role" [(ngModel)]="role">
+          @for (r of roles; track r) {
+            <option [value]="r">{{ r }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    @if (isEdit) {
+      <div class="form-field form-field--checkbox">
+        <label class="form-label">Active</label>
+        <label class="switch">
+          <input type="checkbox" [(ngModel)]="isActive" />
+          <span class="switch-track"></span>
+        </label>
+      </div>
+    }
+  </div>
+
+  @if (error()) {
+    <p class="form-error-msg">{{ error() }}</p>
+  }
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-ghost" type="button" (click)="cancel()">Cancel</button>
+  <button class="btn btn-primary" type="button" [disabled]="saving() || !isValid" (click)="submit()">
+    @if (saving()) {
+      <span class="spinner"></span>
+    }
+    {{ isEdit ? 'Save Changes' : 'Create' }}
+  </button>
+</div>

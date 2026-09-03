@@ -1,93 +1,91 @@
-<mat-sidenav-container class="sidenav-container">
-  <mat-sidenav-content>
-    <div class="page-header">
-      <h1>Error Logs</h1>
-      <button mat-flat-button color="primary" (click)="openCreate()">
-        <mat-icon>add</mat-icon>
-        Log Error
-      </button>
+<div class="page-header">
+  <h1 class="text-page-title">Error Logs</h1>
+  <button class="btn btn-primary" (click)="openCreate()">
+    <i class="material-icons">add</i>
+    Log Error
+  </button>
+</div>
+
+<div class="filters">
+  <div class="form-field">
+    <label class="form-label" for="filter-status">Status</label>
+    <div class="select-wrap">
+      <select id="filter-status" [(ngModel)]="statusFilter" (change)="refresh()">
+        <option value="">All</option>
+        @for (status of statuses; track status) {
+          <option [value]="status">{{ statusLabels[status] }}</option>
+        }
+      </select>
     </div>
+  </div>
 
-    <div class="filters">
-      <mat-form-field appearance="outline" class="filter-field">
-        <mat-label>Status</mat-label>
-        <mat-select [(ngModel)]="statusFilter" (selectionChange)="refresh()">
-          <mat-option value="">All</mat-option>
-          @for (status of statuses; track status) {
-            <mat-option [value]="status">{{ statusLabels[status] }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="filter-field">
-        <mat-label>Screen</mat-label>
-        <mat-select [(ngModel)]="screenFilter" (selectionChange)="refresh()">
-          <mat-option value="">All</mat-option>
-          @for (screen of screens(); track screen.id) {
-            <mat-option [value]="screen.id">{{ screen.name }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
+  <div class="form-field">
+    <label class="form-label" for="filter-screen">Screen</label>
+    <div class="select-wrap">
+      <select id="filter-screen" [(ngModel)]="screenFilter" (change)="refresh()">
+        <option [ngValue]="''">All</option>
+        @for (screen of screens(); track screen.id) {
+          <option [ngValue]="screen.id">{{ screen.name }}</option>
+        }
+      </select>
     </div>
+  </div>
+</div>
 
-    <table mat-table [dataSource]="logs()" class="logs-table">
-      <ng-container matColumnDef="title">
-        <th mat-header-cell *matHeaderCellDef>Title</th>
-        <td mat-cell *matCellDef="let log">{{ log.title }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="screen">
-        <th mat-header-cell *matHeaderCellDef>Screen</th>
-        <td mat-cell *matCellDef="let log">{{ log.screen?.name ?? log.screen_name_freetext ?? '—' }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>Status</th>
-        <td mat-cell *matCellDef="let log">
-          <mat-form-field appearance="outline" class="status-select" (click)="$event.stopPropagation()">
-            <mat-select [ngModel]="log.status" (selectionChange)="changeStatus(log, $event.value)">
+<table class="data-table">
+  <thead class="data-table__header">
+    <tr>
+      <th>Title</th>
+      <th>Screen</th>
+      <th>Status</th>
+      <th>Priority</th>
+      <th>Assigned To</th>
+      <th>Updated</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (log of logs(); track log.id) {
+      <tr class="data-table__row" (click)="viewDetail(log)">
+        <td>{{ log.title }}</td>
+        <td>{{ log.screen?.name ?? log.screen_name_freetext ?? '—' }}</td>
+        <td (click)="$event.stopPropagation()">
+          <div class="select-wrap status-select">
+            <select [ngModel]="log.status" (change)="changeStatus(log, $any($event.target).value)">
               @for (status of statuses; track status) {
-                <mat-option [value]="status">{{ statusLabels[status] }}</mat-option>
+                <option [value]="status">{{ statusLabels[status] }}</option>
               }
-            </mat-select>
-          </mat-form-field>
+            </select>
+          </div>
         </td>
-      </ng-container>
-
-      <ng-container matColumnDef="priority">
-        <th mat-header-cell *matHeaderCellDef>Priority</th>
-        <td mat-cell *matCellDef="let log">{{ log.priority }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="assignedTo">
-        <th mat-header-cell *matHeaderCellDef>Assigned To</th>
-        <td mat-cell *matCellDef="let log">{{ log.assigned_to?.name ?? 'Unassigned' }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="updatedAt">
-        <th mat-header-cell *matHeaderCellDef>Updated</th>
-        <td mat-cell *matCellDef="let log">{{ log.updated_at | date: 'short' }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let log">
-          <button mat-icon-button (click)="openEdit(log, $event)" matTooltip="Edit">
-            <mat-icon>edit</mat-icon>
+        <td>{{ log.priority }}</td>
+        <td>{{ log.assigned_to?.name ?? 'Unassigned' }}</td>
+        <td>{{ log.updated_at | date: 'short' }}</td>
+        <td (click)="$event.stopPropagation()">
+          <button class="btn-icon" (click)="openEdit(log, $event)" title="Edit">
+            <i class="material-icons">edit</i>
           </button>
         </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="viewDetail(row)" class="clickable-row"></tr>
-    </table>
-
-    @if (!loading() && logs().length === 0) {
-      <p class="empty">No error logs found.</p>
+      </tr>
     }
-  </mat-sidenav-content>
+  </tbody>
+</table>
 
-  <mat-sidenav mode="over" position="end" [opened]="selectedLog() !== null" (closedStart)="closeDetail()">
-    <app-error-log-detail-drawer [errorLog]="selectedLog()" (closed)="closeDetail()" />
-  </mat-sidenav>
-</mat-sidenav-container>
+@if (!loading() && logs().length === 0) {
+  <p class="empty">No error logs found.</p>
+}
+
+@if (selectedLog(); as log) {
+  <div class="drawer-backdrop" (click)="closeDetail()"></div>
+  <div class="drawer-panel">
+    <app-error-log-detail-drawer [errorLog]="log" (closed)="closeDetail()" />
+  </div>
+}
+
+@if (formOpen()) {
+  <div class="modal-backdrop" (click)="onFormCancelled()">
+    <div class="modal-panel" (click)="$event.stopPropagation()">
+      <app-error-log-form [errorLog]="formEditLog()" (saved)="onFormSaved($event)" (cancelled)="onFormCancelled()" />
+    </div>
+  </div>
+}

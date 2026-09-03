@@ -33,6 +33,8 @@ async def login(payload: UserLogin, db: AsyncSession = Depends(get_db)) -> Token
     user = (await db.execute(select(User).where(User.email == payload.email))).scalar_one_or_none()
     if user is None or not verify_password(payload.password, user.password_hash):
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid email or password")
+    if not user.is_active:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Account is deactivated")
 
     token = create_access_token(user.id)
     return TokenOut(access_token=token, user=user)

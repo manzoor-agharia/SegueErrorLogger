@@ -1,77 +1,98 @@
-<h2 mat-dialog-title>{{ isEdit ? 'Edit Error Log' : 'Log a New Error' }}</h2>
+<div class="modal-topbar">
+  <span class="modal-title">{{ isEdit ? 'Edit Error Log' : 'Log a New Error' }}</span>
+  <button class="btn-icon" type="button" (click)="cancel()" aria-label="Close" title="Close">
+    <i class="material-icons">close</i>
+  </button>
+</div>
 
-<mat-dialog-content class="form-content">
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Title</mat-label>
-    <input matInput name="title" [(ngModel)]="title" required maxlength="300" />
-  </mat-form-field>
+<div class="modal-body">
+  <div class="form-grid">
+    <div class="form-field form-field--full">
+      <label class="form-label" for="log-title">Title <span class="form-req">*</span></label>
+      <input id="log-title" type="text" [(ngModel)]="title" maxlength="300" placeholder="Short summary of the error" />
+    </div>
 
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Description</mat-label>
-    <textarea matInput name="description" rows="4" [(ngModel)]="description" required></textarea>
-  </mat-form-field>
+    <div class="form-field form-field--full">
+      <label class="form-label" for="log-description">Description <span class="form-req">*</span></label>
+      <textarea id="log-description" rows="4" [(ngModel)]="description" placeholder="Steps to reproduce, expected vs actual behavior..."></textarea>
+    </div>
 
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Screen</mat-label>
-    <mat-select name="screen" [(ngModel)]="screenId">
-      @for (screen of screens(); track screen.id) {
-        <mat-option [value]="screen.id">{{ screen.name }} ({{ screen.category }})</mat-option>
-      }
-      <mat-option [value]="otherScreenValue">Other (specify)</mat-option>
-    </mat-select>
-  </mat-form-field>
+    <div class="form-field">
+      <label class="form-label" for="log-screen">Screen</label>
+      <div class="select-wrap">
+        <select id="log-screen" [(ngModel)]="screenId">
+          <option [ngValue]="null">Select a screen…</option>
+          @for (screen of screens(); track screen.id) {
+            <option [ngValue]="screen.id">{{ screen.name }} ({{ screen.category }})</option>
+          }
+          <option [ngValue]="otherScreenValue">Other (specify)</option>
+        </select>
+      </div>
+    </div>
 
-  @if (screenId === otherScreenValue) {
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Screen name (free text)</mat-label>
-      <input matInput name="screenFreeText" [(ngModel)]="screenFreeText" maxlength="300" />
-    </mat-form-field>
-  }
+    <div class="form-field">
+      <label class="form-label" for="log-priority">Priority</label>
+      <div class="select-wrap">
+        <select id="log-priority" [(ngModel)]="priority">
+          @for (p of priorities; track p) {
+            <option [value]="p">{{ p }}</option>
+          }
+        </select>
+      </div>
+    </div>
 
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Priority</mat-label>
-    <mat-select name="priority" [(ngModel)]="priority">
-      @for (p of priorities; track p) {
-        <mat-option [value]="p">{{ p }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
-
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Assigned to</mat-label>
-    <mat-select name="assignedTo" [(ngModel)]="assignedToId">
-      <mat-option [value]="null">Unassigned</mat-option>
-      @for (user of users(); track user.id) {
-        <mat-option [value]="user.id">{{ user.name }} ({{ user.role }})</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
-
-  <div class="attachments-field">
-    <label class="attachments-label">Attachments</label>
-    <input type="file" multiple (change)="onFilesSelected($event)" />
-    @if (selectedFiles.length > 0) {
-      <ul class="file-list">
-        @for (file of selectedFiles; track file.name; let i = $index) {
-          <li>
-            {{ file.name }}
-            <button mat-icon-button type="button" (click)="removeFile(i)" aria-label="Remove file">
-              <mat-icon>close</mat-icon>
-            </button>
-          </li>
-        }
-      </ul>
+    @if (screenId === otherScreenValue) {
+      <div class="form-field form-field--full">
+        <label class="form-label" for="log-screen-freetext">Screen name (free text)</label>
+        <input id="log-screen-freetext" type="text" [(ngModel)]="screenFreeText" maxlength="300" placeholder="Where in the app did this happen?" />
+      </div>
     }
+
+    <div class="form-field form-field--full">
+      <label class="form-label" for="log-assigned">Assigned to</label>
+      <div class="select-wrap">
+        <select id="log-assigned" [(ngModel)]="assignedToId">
+          <option [ngValue]="null">Unassigned</option>
+          @for (user of users(); track user.id) {
+            <option [ngValue]="user.id">{{ user.name }} ({{ user.role }})</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <div class="form-field form-field--full">
+      <label class="form-label">Attachments</label>
+      <div class="paste-zone" tabindex="0">
+        <i class="material-icons">content_paste</i>
+        <span>Click here and press <strong>Ctrl+V</strong> to paste a screenshot, or choose files below</span>
+      </div>
+      <input type="file" multiple (change)="onFilesSelected($event)" />
+      @if (selectedFiles.length > 0) {
+        <ul class="file-list">
+          @for (file of selectedFiles; track file.name; let i = $index) {
+            <li>
+              <span class="file-name">{{ file.name }}</span>
+              <button class="btn-icon" type="button" (click)="removeFile(i)" aria-label="Remove file">
+                <i class="material-icons">close</i>
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </div>
   </div>
 
   @if (error()) {
-    <p class="error">{{ error() }}</p>
+    <p class="form-error-msg">{{ error() }}</p>
   }
-</mat-dialog-content>
+</div>
 
-<mat-dialog-actions align="end">
-  <button mat-button type="button" (click)="cancel()">Cancel</button>
-  <button mat-flat-button color="primary" type="button" [disabled]="saving() || !title || !description" (click)="submit()">
+<div class="modal-footer">
+  <button class="btn btn-ghost" type="button" (click)="cancel()">Cancel</button>
+  <button class="btn btn-primary" type="button" [disabled]="saving() || !title || !description" (click)="submit()">
+    @if (saving()) {
+      <span class="spinner"></span>
+    }
     {{ isEdit ? 'Save Changes' : 'Create' }}
   </button>
-</mat-dialog-actions>
+</div>

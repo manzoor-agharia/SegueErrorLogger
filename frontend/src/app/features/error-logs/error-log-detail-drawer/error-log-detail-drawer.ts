@@ -1,8 +1,16 @@
 import { DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnChanges, OnDestroy, Output, EventEmitter, signal } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  Output,
+  EventEmitter,
+  signal,
+  computed,
+  HostListener,
+} from '@angular/core';
 
 import { ErrorLogsService } from '../../../core/services/error-logs.service';
 import { Attachment, ErrorLogDetail } from '../../../core/models/error-log.model';
@@ -17,7 +25,7 @@ interface AttachmentPreview {
 @Component({
   selector: 'app-error-log-detail-drawer',
   standalone: true,
-  imports: [DatePipe, MatButtonModule, MatIconModule, StatusBadge],
+  imports: [DatePipe, StatusBadge],
   templateUrl: './error-log-detail-drawer.html',
   styleUrl: './error-log-detail-drawer.scss',
 })
@@ -26,6 +34,13 @@ export class ErrorLogDetailDrawer implements OnChanges, OnDestroy {
   @Output() closed = new EventEmitter<void>();
 
   previews = signal<AttachmentPreview[]>([]);
+  viewerIndex = signal<number | null>(null);
+
+  images = computed(() => this.previews().filter((p) => p.isImage));
+  viewerImage = computed(() => {
+    const index = this.viewerIndex();
+    return index === null ? null : this.images()[index];
+  });
 
   constructor(
     private readonly http: HttpClient,
@@ -75,6 +90,37 @@ export class ErrorLogDetailDrawer implements OnChanges, OnDestroy {
 
   close(): void {
     this.closed.emit();
+  }
+
+  openViewer(preview: AttachmentPreview): void {
+    const index = this.images().indexOf(preview);
+    if (index !== -1) {
+      this.viewerIndex.set(index);
+    }
+  }
+
+  closeViewer(): void {
+    this.viewerIndex.set(null);
+  }
+
+  showPrevImage(): void {
+    const total = this.images().length;
+    if (total === 0) return;
+    this.viewerIndex.update((i) => ((i ?? 0) - 1 + total) % total);
+  }
+
+  showNextImage(): void {
+    const total = this.images().length;
+    if (total === 0) return;
+    this.viewerIndex.update((i) => ((i ?? 0) + 1) % total);
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeydown(event: KeyboardEvent): void {
+    if (this.viewerIndex() === null) return;
+    if (event.key === 'Escape') this.closeViewer();
+    if (event.key === 'ArrowLeft') this.showPrevImage();
+    if (event.key === 'ArrowRight') this.showNextImage();
   }
 
   private revokeUrls(): void {

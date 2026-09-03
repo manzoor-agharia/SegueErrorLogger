@@ -1,8 +1,8 @@
 @if (errorLog; as log) {
   <div class="drawer-header">
     <h2>{{ log.title }}</h2>
-    <button mat-icon-button (click)="close()" aria-label="Close">
-      <mat-icon>close</mat-icon>
+    <button class="btn-icon" (click)="close()" aria-label="Close">
+      <i class="material-icons">close</i>
     </button>
   </div>
 
@@ -43,13 +43,18 @@
               <img [src]="preview.objectUrl" [alt]="preview.attachment.original_filename" />
             } @else {
               <div class="file-icon">
-                <mat-icon>description</mat-icon>
+                <i class="material-icons">description</i>
               </div>
             }
             <div class="attachment-name" [title]="preview.attachment.original_filename">
               {{ preview.attachment.original_filename }}
             </div>
-            <button mat-button (click)="download(preview.attachment)">Download</button>
+            <div class="attachment-actions">
+              @if (preview.isImage && preview.objectUrl) {
+                <button class="btn btn-sm btn-ghost" (click)="openViewer(preview)">View</button>
+              }
+              <button class="btn btn-sm btn-ghost" (click)="download(preview.attachment)">Download</button>
+            </div>
           </div>
         }
       </div>
@@ -64,5 +69,35 @@
         </li>
       }
     </ul>
+  </div>
+}
+
+@if (viewerImage(); as current) {
+  <div class="image-viewer-backdrop" (click)="closeViewer()">
+    <button class="btn-icon viewer-close" (click)="closeViewer()" aria-label="Close viewer">
+      <i class="material-icons">close</i>
+    </button>
+
+    @if (images().length > 1) {
+      <button class="btn-icon viewer-nav viewer-prev" (click)="showPrevImage(); $event.stopPropagation()" aria-label="Previous image">
+        <i class="material-icons">chevron_left</i>
+      </button>
+    }
+
+    <div class="viewer-content" (click)="$event.stopPropagation()">
+      <img [src]="current.objectUrl" [alt]="current.attachment.original_filename" />
+      <div class="viewer-caption">
+        <span class="viewer-filename">{{ current.attachment.original_filename }}</span>
+        @if (images().length > 1) {
+          <span class="viewer-counter">{{ (viewerIndex() ?? 0) + 1 }} / {{ images().length }}</span>
+        }
+      </div>
+    </div>
+
+    @if (images().length > 1) {
+      <button class="btn-icon viewer-nav viewer-next" (click)="showNextImage(); $event.stopPropagation()" aria-label="Next image">
+        <i class="material-icons">chevron_right</i>
+      </button>
+    }
   </div>
 }

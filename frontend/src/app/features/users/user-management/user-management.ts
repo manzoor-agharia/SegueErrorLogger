@@ -1,32 +1,28 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTableModule } from '@angular/material/table';
 
+import { ToastService } from '../../../core/services/toast.service';
 import { UsersService } from '../../../core/services/users.service';
-import { User, UserRole } from '../../../core/models/user.model';
-
-const ROLES: UserRole[] = ['Dev', 'QA', 'SuperAdmin'];
+import { User } from '../../../core/models/user.model';
+import { UserForm } from '../user-form/user-form';
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [DatePipe, FormsModule, MatTableModule, MatFormFieldModule, MatSelectModule],
+  imports: [DatePipe, FormsModule, UserForm],
   templateUrl: './user-management.html',
   styleUrl: './user-management.scss',
 })
 export class UserManagement implements OnInit {
-  readonly roles = ROLES;
-  readonly displayedColumns = ['name', 'email', 'role', 'createdAt'];
-
   users = signal<User[]>([]);
+
+  formOpen = signal(false);
+  formEditUser = signal<User | null>(null);
 
   constructor(
     private readonly usersService: UsersService,
-    private readonly snackBar: MatSnackBar,
+    private readonly toast: ToastService,
   ) {}
 
   ngOnInit(): void {
@@ -37,13 +33,24 @@ export class UserManagement implements OnInit {
     this.usersService.list().subscribe((users) => this.users.set(users));
   }
 
-  changeRole(user: User, role: UserRole): void {
-    this.usersService.updateRole(user.id, role).subscribe({
-      next: () => {
-        this.snackBar.open(`${user.name} is now ${role}`, 'Dismiss', { duration: 3000 });
-        this.refresh();
-      },
-      error: () => this.snackBar.open('Failed to update role', 'Dismiss', { duration: 3000 }),
-    });
+  openCreate(): void {
+    this.formEditUser.set(null);
+    this.formOpen.set(true);
+  }
+
+  openEdit(user: User): void {
+    this.formEditUser.set(user);
+    this.formOpen.set(true);
+  }
+
+  onFormSaved(user: User): void {
+    const wasEdit = !!this.formEditUser();
+    this.formOpen.set(false);
+    this.toast.show(wasEdit ? `${user.name} updated` : `${user.name} created`, 'success');
+    this.refresh();
+  }
+
+  onFormCancelled(): void {
+    this.formOpen.set(false);
   }
 }

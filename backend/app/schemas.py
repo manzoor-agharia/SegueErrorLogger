@@ -26,6 +26,7 @@ class UserOut(BaseModel):
     name: str
     email: EmailStr
     role: UserRole
+    is_active: bool
     created_at: datetime
 
 
@@ -33,6 +34,20 @@ class TokenOut(BaseModel):
     access_token: str
     token_type: str = "bearer"
     user: UserOut
+
+
+class UserCreate(BaseModel):
+    name: str = Field(min_length=1, max_length=200)
+    email: EmailStr
+    password: str = Field(min_length=8, max_length=128)
+    role: UserRole = UserRole.DEV
+
+
+class UserUpdate(BaseModel):
+    name: str | None = Field(default=None, min_length=1, max_length=200)
+    email: EmailStr | None = None
+    role: UserRole | None = None
+    is_active: bool | None = None
 
 
 class UserRoleUpdate(BaseModel):
