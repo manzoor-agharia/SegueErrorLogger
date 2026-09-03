@@ -1,0 +1,103 @@
+frontend/src/app/shared/notification-bell/notification-bell.html
+  s_43aba915d89d29::t_7aee354ecb54c3 1-37
+frontend/src/app/features/error-logs/error-log-detail-drawer/error-log-detail-drawer.ts
+  s_43aba915d89d29::t_114d346ce45b42 16
+  s_43aba915d89d29::t_67fb97bd3819ed 36-37
+frontend/src/app/shared/notification-bell/notification-bell.ts
+  s_43aba915d89d29::t_2d7e589afd039c 1-74
+backend/app/models.py
+  s_43aba915d89d29::t_ef2e2d9ada8bcd 38-42
+  s_43aba915d89d29::t_31a07dd1d43a1b 136-153
+frontend/src/app/features/error-logs/error-log-list/error-log-list.html
+  s_43aba915d89d29::t_be2b85446f69ec 93-97
+  s_43aba915d89d29::t_29e7154959dddb 108-125
+  s_43aba915d89d29::t_0d8a8b0028cd95 75
+  s_43aba915d89d29::t_51626445d432ac 47-57
+  s_43aba915d89d29::t_8ee0430d4bc136 27,39
+  s_43aba915d89d29::t_b35cc3fc1a809b 10-23
+frontend/src/app/shared/shell/shell.ts
+  s_43aba915d89d29::t_09e42fd46c082e 5,10
+frontend/src/app/core/models/error-log.model.ts
+  s_43aba915d89d29::t_0de25aca9368fa 77-84
+backend/app/routers/error_logs.py
+  s_43aba915d89d29::t_57351baf2f6f8e 88-95,127-159,162-165
+  s_43aba915d89d29::t_7f0db98eed8d81 194
+  s_43aba915d89d29::t_481d932f58b188 54-63,65-87
+  s_43aba915d89d29::t_17d9edbb6bc10a 4,6,9,30
+  s_43aba915d89d29::t_5c6e310e179258 8
+  s_43aba915d89d29::t_b8303bb8fe5eb0 213,216,218-219,222-223
+  s_43aba915d89d29::t_bd7613aeff2c26 104-126
+  s_43aba915d89d29::t_25db15bc28c7fe 14-24
+  s_43aba915d89d29::t_814ce0cf1fa7ae 224
+frontend/src/app/features/users/user-management/user-management.ts
+  s_43aba915d89d29::t_21c577154ce808 56-68
+backend/alembic/versions/7a2c9e6f1b3d_add_notifications.py
+  s_43aba915d89d29::t_fac48d7b7c5296 1-42
+frontend/src/app/features/users/user-management/user-management.html
+  s_43aba915d89d29::t_4683426dee431d 36-38
+frontend/src/app/core/services/error-logs.service.ts
+  s_43aba915d89d29::t_65b8dae387d19e 20
+  s_43aba915d89d29::t_e4489bf858507e 31,38
+  s_43aba915d89d29::t_bcf68361ffdb65 10,21-22
+frontend/src/app/core/services/notifications.service.ts
+  s_43aba915d89d29::t_213e0f9edadc2e 1-29
+frontend/src/app/shared/notification-bell/notification-bell.scss
+  s_43aba915d89d29::t_575691cf4afa94 1-7,14-135
+  s_43aba915d89d29::t_37c39e9aca085d 8-13
+frontend/src/app/shared/shell/shell.html
+  s_43aba915d89d29::t_7ba49c68128b53 13
+frontend/src/app/core/services/users.service.ts
+  s_43aba915d89d29::t_54e2aff24234df 23-26
+backend/app/routers/screens.py
+  s_43aba915d89d29::t_0ab1353924bb48 7,15,19-24
+frontend/src/app/core/services/screens.service.ts
+  s_43aba915d89d29::t_aea55313c9d5d6 12-13
+backend/app/main.py
+  s_43aba915d89d29::t_d5a721f0eed516 9,26
+frontend/src/app/features/error-logs/error-log-list/error-log-list.ts
+  s_43aba915d89d29::t_f71e79de013a6b 79,98-99
+  s_43aba915d89d29::t_be2a350e39af3f 4
+  s_43aba915d89d29::t_41e0024bbf63a8 31
+  s_43aba915d89d29::t_cfda0c26c98e17 48-49,54
+  s_43aba915d89d29::t_0128f8c5b275f4 61
+  s_43aba915d89d29::t_981df661407d0f 73-76,82-85,92-97,100-108
+  s_43aba915d89d29::t_73d671b9df6ee8 41-45
+  s_43aba915d89d29::t_d70c03ae8fd1c0 111-115
+  s_43aba915d89d29::t_eb85a1ec963bff 55-56,63-68
+  s_43aba915d89d29::t_a646f17bb34860 109,155-169
+  s_43aba915d89d29::t_515e0764d59551 7
+  s_43aba915d89d29::t_2d54dbf7a58265 110
+frontend/src/app/features/error-logs/error-log-detail-drawer/error-log-detail-drawer.html
+  s_43aba915d89d29::t_acf26f6dc23677 67-69
+backend/app/schemas.py
+  s_43aba915d89d29::t_11fdd99884ceba 6
+  s_43aba915d89d29::t_4b52d10490a149 130-137
+  s_43aba915d89d29::t_a404f78de0a3ec 138-154
+frontend/src/app/features/error-logs/error-log-list/error-log-list.scss
+  s_43aba915d89d29::t_6b3860e8a356bb 16-19,24-45,54-60
+  s_43aba915d89d29::t_13be7bd60dce53 20-23
+  s_43aba915d89d29::t_9783b31de104a2 75-92
+backend/app/routers/users.py
+  s_43aba915d89d29::t_d6de863d1cd5e0 75-111
+  s_43aba915d89d29::t_e62aa9bdbf63f5 4,9
+backend/app/routers/notifications.py
+  s_43aba915d89d29::t_23e064b9ba162e 1-77
+frontend/src/app/core/models/notification.model.ts
+  s_43aba915d89d29::t_22dbefe15146e0 1-10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "6b819c3f3bd8886a54fe3bccdbba4d5233a4d8e3",
+  "prompts": {},
+  "sessions": {
+    "s_43aba915d89d29": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7b76c753-aaee-4747-a7ab-af9b2b96a1ab",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Manzoor Ahmed Agharia <manzoor.ahmed.agharia@growthzone.com>"
+    }
+  }
+}
