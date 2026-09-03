@@ -1,0 +1,66 @@
+backend/app/models.py
+  s_43aba915d89d29::t_2282fc17826066 43-50
+  s_43aba915d89d29::t_ccd7eacba9f260 94-97,99
+  s_43aba915d89d29::t_c73adce6fe1cbd 98
+frontend/src/app/features/error-logs/error-log-form/error-log-form.html
+  s_43aba915d89d29::t_b2bdb86a4b4758 17-23,26,28-40,42-47,61-67
+  s_43aba915d89d29::t_cc22138bd90a19 120
+  s_43aba915d89d29::t_9308a496691b7a 68-70
+  s_43aba915d89d29::t_eecd18d121dec5 71
+frontend/src/app/core/models/error-log.model.ts
+  s_43aba915d89d29::t_ec9a9e1e76820c 57
+  s_43aba915d89d29::t_85f4bf4736144f 78
+  s_43aba915d89d29::t_2d5c884244df7f 17-20
+deploy/windows/Deploy-ErrorLogger.ps1
+  s_43aba915d89d29::t_55ffd7fe39cec4 78-85
+backend/app/schemas.py
+  s_43aba915d89d29::t_fa43ea9c3f4a8a 75,85
+  s_43aba915d89d29::t_942ffed7702270 120
+  s_43aba915d89d29::t_bc79e0b95fe629 6
+frontend/src/app/features/error-logs/error-log-form/error-log-form.scss
+  s_43aba915d89d29::t_8bc12a3eeeae67 64-140
+frontend/package.json
+  s_43aba915d89d29::t_ba73a644ea9ad2 31-32
+backend/app/routers/error_logs.py
+  s_43aba915d89d29::t_fbb68a2168834c 147-149,162
+  s_43aba915d89d29::t_18c37c755a2e5e 94,105-106,127,140
+  s_43aba915d89d29::t_2763b2f58eaf13 188
+frontend/src/app/features/error-logs/error-log-detail-drawer/error-log-detail-drawer.html
+  s_43aba915d89d29::t_0b77a74c899659 13
+  s_43aba915d89d29::t_5f6c3636806848 34
+backend/alembic/versions/9d4e5f8a2c1b_add_error_log_environment.py
+  s_43aba915d89d29::t_a9134dcbbc5647 12,20-22,24,26,31,41
+  s_43aba915d89d29::t_17452f1fdf77c4 33
+  s_43aba915d89d29::t_ca34a1b3c28775 1-11,13-19,23,25,27-30,32,34-40
+frontend/src/app/features/error-logs/error-log-form/error-log-form.ts
+  s_43aba915d89d29::t_60ba8dc2c3d7ee 104-107
+  s_43aba915d89d29::t_69623f0ea2d557 192
+  s_43aba915d89d29::t_97a97940c39a69 72
+  s_43aba915d89d29::t_71102499d0a030 3,8-15,19-29,34,44,46-47,57,63-64,85,89,94,98,108-147,202
+  s_43aba915d89d29::t_14c84043dc1df9 1
+  s_43aba915d89d29::t_5804e6f4d7ac87 65
+  s_43aba915d89d29::t_29130e11194f21 148
+frontend/angular.json
+  s_43aba915d89d29::t_feb6f1877e319e 36
+frontend/src/app/features/error-logs/error-log-detail-drawer/error-log-detail-drawer.scss
+  s_43aba915d89d29::t_b457a704a21a82 88-98
+  s_43aba915d89d29::t_c49f022def438b 55-63
+frontend/package-lock.json
+  s_43aba915d89d29::t_c0413cdfb2176b 17-18,4961-4966,6475-6493,7052-7068,7474-7479,7759-7793
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "b95a36d5ba604cc582442c0c64ca177b52f54d9a",
+  "prompts": {},
+  "sessions": {
+    "s_43aba915d89d29": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7b76c753-aaee-4747-a7ab-af9b2b96a1ab",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Manzoor Ahmed Agharia <manzoor.ahmed.agharia@growthzone.com>"
+    }
+  }
+}
