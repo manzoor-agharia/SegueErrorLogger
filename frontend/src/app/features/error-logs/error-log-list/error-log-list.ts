@@ -7,6 +7,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { ErrorLogFilters, ErrorLogsService } from '../../../core/services/error-logs.service';
 import { ScreensService } from '../../../core/services/screens.service';
+import { UsersService } from '../../../core/services/users.service';
 import {
   ERROR_STATUSES,
   ErrorLogDetail,
@@ -15,6 +16,7 @@ import {
   Screen,
   STATUS_LABELS,
 } from '../../../core/models/error-log.model';
+import { User } from '../../../core/models/user.model';
 import { ErrorLogDetailDrawer } from '../error-log-detail-drawer/error-log-detail-drawer';
 import { ErrorLogForm } from '../error-log-form/error-log-form';
 
@@ -32,6 +34,7 @@ export class ErrorLogList implements OnInit {
 
   logs = signal<ErrorLogListItem[]>([]);
   screens = signal<Screen[]>([]);
+  users = signal<User[]>([]);
   loading = signal(false);
   selectedLog = signal<ErrorLogDetail | null>(null);
 
@@ -45,12 +48,14 @@ export class ErrorLogList implements OnInit {
 
   statusFilter: ErrorStatus | '' = '';
   screenFilter: number | '' = '';
+  assigneeFilter: string | '' = '';
   searchTerm = '';
   private searchDebounce?: ReturnType<typeof setTimeout>;
 
   constructor(
     private readonly errorLogsService: ErrorLogsService,
     private readonly screensService: ScreensService,
+    private readonly usersService: UsersService,
     private readonly toast: ToastService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
@@ -59,6 +64,7 @@ export class ErrorLogList implements OnInit {
 
   ngOnInit(): void {
     this.screensService.list(true).subscribe((screens) => this.screens.set(screens));
+    this.usersService.list().subscribe((users) => this.users.set(users));
     this.refresh();
 
     const openId = this.route.snapshot.queryParamMap.get('open');
@@ -76,6 +82,7 @@ export class ErrorLogList implements OnInit {
     };
     if (this.statusFilter) filters.status_filter = this.statusFilter;
     if (this.screenFilter) filters.screen_id = this.screenFilter;
+    if (this.assigneeFilter) filters.assigned_to_id = this.assigneeFilter;
     if (this.searchTerm.trim()) filters.search = this.searchTerm.trim();
 
     this.errorLogsService.list(filters).subscribe({

@@ -45,6 +45,18 @@
     </div>
   </div>
 
+  <div class="form-field">
+    <label class="form-label" for="filter-assignee">Assignee</label>
+    <div class="select-wrap">
+      <select id="filter-assignee" [(ngModel)]="assigneeFilter" (change)="refreshFromFirstPage()">
+        <option [ngValue]="''">All</option>
+        @for (user of users(); track user.id) {
+          <option [ngValue]="user.id">{{ user.name }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
   <div class="form-field form-field--page-size">
     <label class="form-label" for="filter-page-size">Per page</label>
     <div class="select-wrap">
