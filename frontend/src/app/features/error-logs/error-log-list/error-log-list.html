@@ -34,6 +34,18 @@
   </div>
 
   <div class="form-field">
+    <label class="form-label" for="filter-priority">Priority</label>
+    <div class="select-wrap">
+      <select id="filter-priority" [(ngModel)]="priorityFilter" (change)="refreshFromFirstPage()">
+        <option [ngValue]="''">All</option>
+        @for (p of priorities; track p) {
+          <option [value]="p">{{ p }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <div class="form-field">
     <label class="form-label" for="filter-screen">Screen</label>
     <div class="select-wrap">
       <select id="filter-screen" [(ngModel)]="screenFilter" (change)="refreshFromFirstPage()">

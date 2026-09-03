@@ -9,9 +9,11 @@ import { ErrorLogFilters, ErrorLogsService } from '../../../core/services/error-
 import { ScreensService } from '../../../core/services/screens.service';
 import { UsersService } from '../../../core/services/users.service';
 import {
+  ERROR_PRIORITIES,
   ERROR_STATUSES,
   ErrorLogDetail,
   ErrorLogListItem,
+  ErrorPriority,
   ErrorStatus,
   Screen,
   STATUS_LABELS,
@@ -29,6 +31,7 @@ import { ErrorLogForm } from '../error-log-form/error-log-form';
 })
 export class ErrorLogList implements OnInit {
   readonly statuses = ERROR_STATUSES;
+  readonly priorities = ERROR_PRIORITIES;
   readonly statusLabels = STATUS_LABELS;
   readonly pageSizeOptions = [10, 20, 50, 100];
 
@@ -49,6 +52,7 @@ export class ErrorLogList implements OnInit {
   statusFilter: ErrorStatus | '' = '';
   screenFilter: number | '' = '';
   assigneeFilter: string | '' = '';
+  priorityFilter: ErrorPriority | '' = '';
   searchTerm = '';
   private searchDebounce?: ReturnType<typeof setTimeout>;
 
@@ -67,11 +71,15 @@ export class ErrorLogList implements OnInit {
     this.usersService.list().subscribe((users) => this.users.set(users));
     this.refresh();
 
-    const openId = this.route.snapshot.queryParamMap.get('open');
-    if (openId) {
-      this.errorLogsService.get(openId).subscribe((detail) => this.selectedLog.set(detail));
-      this.router.navigate([], { relativeTo: this.route, queryParams: {} });
-    }
+    // Subscribed (not just read once) so clicking a notification while already on this page
+    // -- which only changes query params, not the route -- still opens the detail drawer.
+    this.route.queryParamMap.subscribe((params) => {
+      const openId = params.get('open');
+      if (openId) {
+        this.errorLogsService.get(openId).subscribe((detail) => this.selectedLog.set(detail));
+        this.router.navigate([], { relativeTo: this.route, queryParams: {} });
+      }
+    });
   }
 
   refresh(): void {
@@ -83,6 +91,7 @@ export class ErrorLogList implements OnInit {
     if (this.statusFilter) filters.status_filter = this.statusFilter;
     if (this.screenFilter) filters.screen_id = this.screenFilter;
     if (this.assigneeFilter) filters.assigned_to_id = this.assigneeFilter;
+    if (this.priorityFilter) filters.priority = this.priorityFilter;
     if (this.searchTerm.trim()) filters.search = this.searchTerm.trim();
 
     this.errorLogsService.list(filters).subscribe({
