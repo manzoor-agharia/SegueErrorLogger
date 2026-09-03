@@ -1,13 +1,18 @@
 <#
 .SYNOPSIS
     Deploys the ErrorLogger backend (FastAPI) + frontend (Angular, served as static files by the
-    backend) to this Windows VM as the "ErrorLogger" Windows Service, bound to port 3012.
+    backend) to this Windows VM as the "ErrorLogger" Windows Service.
 
 .DESCRIPTION
     Mirrors backend/ code into the deploy root (never touching venv/, .env, or attachments/ --
     those persist across deploys), copies the built frontend into backend/app/static, ensures the
     venv exists and has current dependencies, runs Alembic migrations, then (re)installs the NSSM
     service and health-checks it.
+
+    uvicorn binds to 127.0.0.1:$InternalPort only -- it is NOT reachable directly from outside this
+    machine. Public HTTPS traffic on $Port (segue.pegasusone.com:3012) is terminated by IIS/ARR,
+    which reverse-proxies to this internal port. See deploy/windows/README.md for the one-time IIS
+    site + ARR setup.
 
 .PARAMETER ArtifactPath
     Path to the extracted publish artifact. Must contain backend/ and frontend-static/ subfolders.
@@ -20,6 +25,7 @@ param(
     [string]$DeployRoot = "C:\Deploy\ErrorLogger",
 
     [int]$Port = 3012,
+    [int]$InternalPort = 13012,
 
     [string]$ServiceName = "ErrorLogger",
 
@@ -89,25 +95,25 @@ if (-not $nssm) { throw "nssm not found on PATH -- install NSSM on this VM first
 
 $serviceExists = Get-Service -Name $ServiceName -ErrorAction SilentlyContinue
 if (-not $serviceExists) {
-    & $nssm install $ServiceName $pythonExe "-m uvicorn app.main:app --host 0.0.0.0 --port $Port"
+    & $nssm install $ServiceName $pythonExe "-m uvicorn app.main:app --host 127.0.0.1 --port $InternalPort"
     & $nssm set $ServiceName AppDirectory $backendDir
     & $nssm set $ServiceName DisplayName "ErrorLogger API"
     & $nssm set $ServiceName Start SERVICE_AUTO_START
 } else {
     & $nssm set $ServiceName Application $pythonExe
-    & $nssm set $ServiceName AppParameters "-m uvicorn app.main:app --host 0.0.0.0 --port $Port"
+    & $nssm set $ServiceName AppParameters "-m uvicorn app.main:app --host 127.0.0.1 --port $InternalPort"
     & $nssm set $ServiceName AppDirectory $backendDir
 }
 
 Write-Host "== Starting service =="
 Start-Service -Name $ServiceName
 
-Write-Host "== Health check (http://127.0.0.1:$Port/) =="
+Write-Host "== Health check (http://127.0.0.1:$InternalPort/) =="
 $healthy = $false
 for ($i = 1; $i -le $HealthCheckRetries; $i++) {
     Start-Sleep -Seconds $HealthCheckDelaySeconds
     try {
-        $resp = Invoke-WebRequest -Uri "http://127.0.0.1:$Port/" -UseBasicParsing -TimeoutSec 5
+        $resp = Invoke-WebRequest -Uri "http://127.0.0.1:$InternalPort/" -UseBasicParsing -TimeoutSec 5
         if ($resp.StatusCode -eq 200) { $healthy = $true; break }
     } catch {
         Write-Host "  attempt $i/$HealthCheckRetries -- not up yet ($($_.Exception.Message))"
@@ -117,7 +123,7 @@ for ($i = 1; $i -le $HealthCheckRetries; $i++) {
 if (-not $healthy) {
     Write-Host "== Service did not become healthy -- recent state: =="
     Get-Service -Name $ServiceName | Format-Table | Out-String | Write-Host
-    throw "Deploy failed: $ServiceName did not respond on port $Port after $HealthCheckRetries retries."
+    throw "Deploy failed: $ServiceName did not respond on internal port $InternalPort after $HealthCheckRetries retries."
 }
 
-Write-Host "== Deploy succeeded: $ServiceName is healthy on port $Port =="
+Write-Host "== Deploy succeeded: $ServiceName is healthy on internal port $InternalPort (public: https://segue.pegasusone.com:$Port via IIS/ARR) =="

@@ -70,17 +70,62 @@ The deploy script (`Deploy-ErrorLogger.ps1`) refuses to run if this file is miss
 New-NetFirewallRule -DisplayName "ErrorLogger API" -Direction Inbound -LocalPort 3012 -Protocol TCP -Action Allow
 ```
 
-## 7. TLS
+## 7. TLS — IIS + Application Request Routing (ARR) reverse proxy
 
-`CORS_ORIGINS` above assumes `https://segue.pegasusone.com:3012`. If TLS isn't already terminated
-for this port (the FHIRBridge Gateway/DemoApi certs are per-port), either extend the existing
-cert/reverse-proxy setup to cover 3012, or have uvicorn terminate TLS directly
-(`--ssl-keyfile`/`--ssl-certfile` — would need adding to the NSSM `AppParameters` in
-`Deploy-ErrorLogger.ps1` if you go this route).
+`uvicorn` only ever binds to `127.0.0.1:13012` (plain HTTP, not reachable from outside this
+machine -- see `Deploy-ErrorLogger.ps1`'s `-InternalPort`). Public HTTPS on
+`https://segue.pegasusone.com:3012` is terminated by IIS, reusing the certificate already bound to
+this hostname for the `ECW_POC` site (port 9003), and reverse-proxied to the internal port via ARR.
+This avoids ever exporting the certificate's private key.
+
+**One-time setup** (this VM already has IIS/W3SVC and the URL Rewrite module; ARR is the only
+missing piece):
+
+```powershell
+# 1. Install ARR (URL Rewrite must already be present -- it is on this box)
+Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/?LinkID=615136" -OutFile C:\Windows\Temp\ARRv3.msi
+Start-Process msiexec.exe -ArgumentList "/i C:\Windows\Temp\ARRv3.msi /qn /norestart" -Wait
+
+# 2. Enable ARR's proxy feature (off by default -- installing ARR alone does not proxy anything)
+Import-Module WebAdministration
+Set-WebConfigurationProperty -pspath 'MACHINE/WEBROOT/APPHOST' -filter "system.webServer/proxy" -name "enabled" -value "True"
+
+# 3. Create a dedicated site for the reverse-proxy binding
+New-Item -ItemType Directory -Force -Path "C:\inetpub\wwwroot\ErrorLoggerProxy" | Out-Null
+New-Website -Name "ErrorLoggerProxy" -PhysicalPath "C:\inetpub\wwwroot\ErrorLoggerProxy" -Port 3012 -HostHeader "segue.pegasusone.com" -Ssl
+
+# 4. Attach the existing segue.pegasusone.com certificate via SNI (find the thumbprint with
+#    Get-ChildItem -Path Cert:\LocalMachine -Recurse | Where-Object DnsNameList -match 'segue' --
+#    on this VM it lives in the WebHosting store, not the usual My store)
+$binding = Get-WebBinding -Name "ErrorLoggerProxy" -Protocol https
+$binding.AddSslCertificate("<THUMBPRINT>", "WebHosting")
+
+# 5. Add the reverse-proxy rule (URL Rewrite "Rewrite" action to a full URL is what triggers ARR)
+@'
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <system.webServer>
+    <rewrite>
+      <rules>
+        <rule name="ReverseProxyToErrorLogger" stopProcessing="true">
+          <match url="(.*)" />
+          <action type="Rewrite" url="http://127.0.0.1:13012/{R:1}" />
+        </rule>
+      </rules>
+    </rewrite>
+  </system.webServer>
+</configuration>
+'@ | Set-Content -Encoding utf8 "C:\inetpub\wwwroot\ErrorLoggerProxy\web.config"
+```
+
+Installing ARR modifies IIS's central config, which can briefly recycle app pools for other
+IIS-hosted sites on this box (there's only one running today: `ECW_POC`). It has no effect on
+anything not hosted in IIS (which is everything else on this VM, including ErrorLogger itself).
 
 ---
 
 Once all of the above is done, `git push origin main` (or Actions tab → Deploy → Run workflow)
 builds the Angular frontend + stages the backend, ships it to the runner, and
-`Deploy-ErrorLogger.ps1` installs/updates the `ErrorLogger` Windows Service and health-checks it
-on `http://127.0.0.1:3012/`.
+`Deploy-ErrorLogger.ps1` installs/updates the `ErrorLogger` Windows Service (bound to
+`127.0.0.1:13012`) and health-checks it there. The public site is
+`https://segue.pegasusone.com:3012`, fronted by IIS/ARR.
