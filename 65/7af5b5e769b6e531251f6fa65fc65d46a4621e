@@ -1,0 +1,21 @@
+frontend/src/app/features/error-logs/error-log-form/error-log-form.scss
+  s_43aba915d89d29::t_37fa75aeded4f0 120-128,155
+  s_43aba915d89d29::t_25f839ef6b5f74 132-144,152-154
+  s_43aba915d89d29::t_5e39fc3c7feca2 156
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "657af5b5e769b6e531251f6fa65fc65d46a4621e",
+  "prompts": {},
+  "sessions": {
+    "s_43aba915d89d29": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7b76c753-aaee-4747-a7ab-af9b2b96a1ab",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Manzoor Ahmed Agharia <manzoor.ahmed.agharia@growthzone.com>"
+    }
+  }
+}
