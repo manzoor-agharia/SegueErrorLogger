@@ -3,7 +3,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
-from app.models import ErrorPriority, ErrorStatus, NotificationType, UserRole
+from app.models import ErrorEnvironment, ErrorPriority, ErrorStatus, NotificationType, UserRole
 
 
 # ---- Auth / Users ----
@@ -72,6 +72,7 @@ class ErrorLogCreate(BaseModel):
     screen_id: int | None = None
     screen_name_freetext: str | None = Field(default=None, max_length=300)
     priority: ErrorPriority = ErrorPriority.MEDIUM
+    environment: ErrorEnvironment = ErrorEnvironment.DEV
     assigned_to_id: uuid.UUID | None = None
 
 
@@ -81,6 +82,7 @@ class ErrorLogUpdate(BaseModel):
     screen_id: int | None = None
     screen_name_freetext: str | None = Field(default=None, max_length=300)
     priority: ErrorPriority | None = None
+    environment: ErrorEnvironment | None = None
     assigned_to_id: uuid.UUID | None = None
 
 
@@ -115,6 +117,7 @@ class ErrorLogListItem(BaseModel):
     title: str
     status: ErrorStatus
     priority: ErrorPriority
+    environment: ErrorEnvironment
     screen: ScreenOut | None
     screen_name_freetext: str | None
     reported_by: UserOut

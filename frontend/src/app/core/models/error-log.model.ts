@@ -14,6 +14,10 @@ export const ERROR_STATUSES: ErrorStatus[] = [
 
 export const ERROR_PRIORITIES: ErrorPriority[] = ['Low', 'Medium', 'High', 'Critical'];
 
+export type ErrorEnvironment = 'Dev' | 'Staging' | 'Master' | 'QA' | 'Production';
+
+export const ERROR_ENVIRONMENTS: ErrorEnvironment[] = ['Dev', 'Staging', 'Master', 'QA', 'Production'];
+
 export const STATUS_LABELS: Record<ErrorStatus, string> = {
   YetToStart: 'Yet to Start',
   InProgress: 'In Progress',
@@ -50,6 +54,7 @@ export interface ErrorLogListItem {
   title: string;
   status: ErrorStatus;
   priority: ErrorPriority;
+  environment: ErrorEnvironment;
   screen: Screen | null;
   screen_name_freetext: string | null;
   reported_by: User;
@@ -70,6 +75,7 @@ export interface ErrorLogCreateRequest {
   screen_id?: number | null;
   screen_name_freetext?: string | null;
   priority: ErrorPriority;
+  environment: ErrorEnvironment;
   assigned_to_id?: string | null;
 }
 

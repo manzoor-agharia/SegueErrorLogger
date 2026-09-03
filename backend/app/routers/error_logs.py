@@ -91,6 +91,7 @@ def _filtered_query(
     screen_id: int | None,
     assigned_to_id: uuid.UUID | None,
     priority: str | None,
+    environment: str | None,
     search: str | None,
 ) -> Select:
     if status_filter is not None:
@@ -101,6 +102,8 @@ def _filtered_query(
         query = query.where(ErrorLog.assigned_to_id == assigned_to_id)
     if priority is not None:
         query = query.where(ErrorLog.priority == priority)
+    if environment is not None:
+        query = query.where(ErrorLog.environment == environment)
     if search:
         term = f"%{search}%"
         reported_by = aliased(User)
@@ -121,6 +124,7 @@ def _filtered_query(
                     assigned_to.email.ilike(term),
                     cast(ErrorLog.status, String).ilike(term),
                     cast(ErrorLog.priority, String).ilike(term),
+                    cast(ErrorLog.environment, String).ilike(term),
                 )
             )
         )
@@ -133,13 +137,16 @@ async def list_error_logs(
     screen_id: int | None = None,
     assigned_to_id: uuid.UUID | None = None,
     priority: str | None = None,
+    environment: str | None = None,
     search: str | None = None,
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     db: AsyncSession = Depends(get_db),
     _: User = Depends(get_current_user),
 ) -> ErrorLogPage:
-    count_query = _filtered_query(select(func.count(ErrorLog.id)), status_filter, screen_id, assigned_to_id, priority, search)
+    count_query = _filtered_query(
+        select(func.count(ErrorLog.id)), status_filter, screen_id, assigned_to_id, priority, environment, search
+    )
     total = (await db.execute(count_query)).scalar_one()
 
     query = _filtered_query(
@@ -152,6 +159,7 @@ async def list_error_logs(
         screen_id,
         assigned_to_id,
         priority,
+        environment,
         search,
     )
     # Priority is declared LOW < MEDIUM < HIGH < CRITICAL, so descending puts the highest-severity items on top.
@@ -177,6 +185,7 @@ async def create_error_log(
         screen_id=payload.screen_id,
         screen_name_freetext=payload.screen_name_freetext,
         priority=payload.priority,
+        environment=payload.environment,
         assigned_to_id=payload.assigned_to_id,
         reported_by_id=current_user.id,
     )

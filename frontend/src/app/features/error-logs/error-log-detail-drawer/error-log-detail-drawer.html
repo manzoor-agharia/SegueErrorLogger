@@ -10,6 +10,7 @@
     <div class="meta-row">
       <app-status-badge [status]="log.status" />
       <span class="priority priority-{{ log.priority }}">{{ log.priority }} priority</span>
+      <span class="environment-badge">{{ log.environment }}</span>
     </div>
 
     <dl class="meta-grid">
@@ -30,7 +31,7 @@
     </dl>
 
     <h3>Description</h3>
-    <p class="description">{{ log.description }}</p>
+    <div class="description" [innerHTML]="log.description"></div>
 
     <h3>Attachments</h3>
     @if (previews().length === 0) {

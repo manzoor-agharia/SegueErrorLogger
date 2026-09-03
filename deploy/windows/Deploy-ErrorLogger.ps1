@@ -75,6 +75,14 @@ try {
     Pop-Location
 }
 
+Write-Host "== Seeding lookup data (screens) =="
+Push-Location $backendDir
+try {
+    & $pythonExe -m app.seed_screens
+} finally {
+    Pop-Location
+}
+
 Write-Host "== Installing/updating Windows Service via NSSM =="
 $nssm = (Get-Command nssm -ErrorAction SilentlyContinue).Source
 if (-not $nssm) { throw "nssm not found on PATH -- install NSSM on this VM first (see deploy/windows/README.md)." }

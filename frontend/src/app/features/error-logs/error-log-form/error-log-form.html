@@ -14,20 +14,37 @@
 
     <div class="form-field form-field--full">
       <label class="form-label" for="log-description">Description <span class="form-req">*</span></label>
-      <textarea id="log-description" rows="4" [(ngModel)]="description" placeholder="Steps to reproduce, expected vs actual behavior..."></textarea>
+      <quill-editor
+        id="log-description"
+        [(ngModel)]="description"
+        [format]="'html'"
+        [modules]="descriptionModules"
+        placeholder="Steps to reproduce, expected vs actual behavior..."
+      />
     </div>
 
-    <div class="form-field">
+    <div class="form-field autocomplete-field">
       <label class="form-label" for="log-screen">Screen</label>
-      <div class="select-wrap">
-        <select id="log-screen" [(ngModel)]="screenId">
-          <option [ngValue]="null">Select a screen…</option>
-          @for (screen of screens(); track screen.id) {
-            <option [ngValue]="screen.id">{{ screen.name }} ({{ screen.category }})</option>
+      <input
+        id="log-screen"
+        type="text"
+        autocomplete="off"
+        [(ngModel)]="screenQuery"
+        (ngModelChange)="onScreenQueryChange()"
+        (focus)="openScreenDropdown()"
+        placeholder="Search screens…"
+      />
+      @if (screenDropdownOpen) {
+        <ul class="autocomplete-list">
+          @for (screen of filteredScreens; track screen.id) {
+            <li (click)="selectScreen(screen)">{{ screen.name }} <span class="option-meta">({{ screen.category }})</span></li>
           }
-          <option [ngValue]="otherScreenValue">Other (specify)</option>
-        </select>
-      </div>
+          <li class="option-other" (click)="selectOtherScreen()">{{ otherScreenLabel }}</li>
+          @if (filteredScreens.length === 0) {
+            <li class="option-empty">No matching screens</li>
+          }
+        </ul>
+      }
     </div>
 
     <div class="form-field">
@@ -36,6 +53,17 @@
         <select id="log-priority" [(ngModel)]="priority">
           @for (p of priorities; track p) {
             <option [value]="p">{{ p }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <div class="form-field">
+      <label class="form-label" for="log-environment">Environment</label>
+      <div class="select-wrap">
+        <select id="log-environment" [(ngModel)]="environment">
+          @for (e of environments; track e) {
+            <option [value]="e">{{ e }}</option>
           }
         </select>
       </div>
@@ -89,7 +117,7 @@
 
 <div class="modal-footer">
   <button class="btn btn-ghost" type="button" (click)="cancel()">Cancel</button>
-  <button class="btn btn-primary" type="button" [disabled]="saving() || !title || !description" (click)="submit()">
+  <button class="btn btn-primary" type="button" [disabled]="saving() || !title || !hasDescription" (click)="submit()">
     @if (saving()) {
       <span class="spinner"></span>
     }

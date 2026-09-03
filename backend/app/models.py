@@ -40,6 +40,14 @@ class NotificationType(str, enum.Enum):
     CREATED = "Created"
 
 
+class ErrorEnvironment(str, enum.Enum):
+    DEV = "Dev"
+    STAGING = "Staging"
+    MASTER = "Master"
+    QA = "QA"
+    PRODUCTION = "Production"
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -82,6 +90,12 @@ class ErrorLog(Base):
     )
     priority: Mapped[ErrorPriority] = mapped_column(
         Enum(ErrorPriority, name="error_priority"), nullable=False, default=ErrorPriority.MEDIUM
+    )
+    environment: Mapped[ErrorEnvironment] = mapped_column(
+        Enum(ErrorEnvironment, name="error_environment"),
+        nullable=False,
+        default=ErrorEnvironment.DEV,
+        server_default=ErrorEnvironment.DEV.name,
     )
 
     reported_by_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)

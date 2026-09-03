@@ -61,6 +61,83 @@
   }
 }
 
+.autocomplete-field {
+  position: relative;
+
+  input {
+    width: 100%;
+  }
+}
+
+.autocomplete-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  box-shadow: var(--shadow-lg);
+  z-index: 5;
+
+  li {
+    padding: 7px 12px;
+    font-size: 13px;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--color-side);
+    }
+  }
+
+  .option-meta {
+    color: var(--color-muted);
+    font-size: 11.5px;
+  }
+
+  .option-other {
+    border-top: 1px solid var(--color-border);
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+
+  .option-empty {
+    color: var(--color-muted);
+    cursor: default;
+
+    &:hover {
+      background: none;
+    }
+  }
+}
+
+:host ::ng-deep {
+  .ql-editor {
+    min-height: 120px;
+    font-size: 14px;
+  }
+
+  .ql-toolbar.ql-snow,
+  .ql-container.ql-snow {
+    border-color: var(--color-border-input);
+  }
+
+  .ql-container.ql-snow {
+    border-bottom-left-radius: var(--radius-base);
+    border-bottom-right-radius: var(--radius-base);
+  }
+
+  .ql-toolbar.ql-snow {
+    border-top-left-radius: var(--radius-base);
+    border-top-right-radius: var(--radius-base);
+  }
+}
+
 .file-list {
   list-style: none;
   padding: 0;
