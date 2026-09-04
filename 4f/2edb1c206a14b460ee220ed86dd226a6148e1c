@@ -1,0 +1,24 @@
+backend/alembic/versions/c7d2e4f6a8b0_revert_ready_for_qa_back_to_fixed.py
+  s_43aba915d89d29::t_13d5d2ca79128f 1-30
+frontend/src/app/core/models/error-log.model.ts
+  s_43aba915d89d29::t_3034719b659c13 3,9
+  s_43aba915d89d29::t_78a730eeee1f79 25
+frontend/src/app/shared/status-badge/status-badge.ts
+  s_43aba915d89d29::t_6a4d95b714d30d 19-22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "4f2edb1c206a14b460ee220ed86dd226a6148e1c",
+  "prompts": {},
+  "sessions": {
+    "s_43aba915d89d29": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7b76c753-aaee-4747-a7ab-af9b2b96a1ab",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Manzoor Ahmed Agharia <manzoor.ahmed.agharia@growthzone.com>"
+    }
+  }
+}
