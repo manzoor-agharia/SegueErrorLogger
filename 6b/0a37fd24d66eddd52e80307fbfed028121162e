@@ -1,0 +1,45 @@
+frontend/src/app/shared/multi-select-dropdown/multi-select-dropdown.ts
+  s_43aba915d89d29::t_de6789e7e2036b 1-56
+frontend/src/app/shared/multi-select-dropdown/multi-select-dropdown.html
+  s_43aba915d89d29::t_4b60e6cf931897 1-25
+frontend/src/app/features/error-logs/error-log-list/error-log-list.html
+  s_43aba915d89d29::t_3a010168240fbb 26-31,36-41
+frontend/src/app/features/error-logs/error-log-list/error-log-list.ts
+  s_43aba915d89d29::t_f90f451edbbcd8 105,108
+  s_43aba915d89d29::t_0281bd3d88cdf5 27,32,44-45
+  s_43aba915d89d29::t_9eb9613b073fef 65,68
+  s_43aba915d89d29::t_17e9fa5236f4c5 134-143
+  s_569e47a9591572::t_42959baf094fad 46
+backend/app/routers/error_logs.py
+  s_43aba915d89d29::t_17de2218f675a8 252
+  s_43aba915d89d29::t_66d74442849f63 22
+  s_43aba915d89d29::t_3a1f4716bfe684 192-199,202,209-211,218-220
+frontend/src/app/core/services/error-logs.service.ts
+  s_43aba915d89d29::t_349087d9184948 20-21,24
+frontend/src/app/shared/multi-select-dropdown/multi-select-dropdown.scss
+  s_43aba915d89d29::t_1f2315d87483ef 1-102
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "6b0a37fd24d66eddd52e80307fbfed028121162e",
+  "prompts": {},
+  "sessions": {
+    "s_43aba915d89d29": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7b76c753-aaee-4747-a7ab-af9b2b96a1ab",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Manzoor Ahmed Agharia <manzoor.ahmed.agharia@growthzone.com>"
+    },
+    "s_569e47a9591572": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2e4bfd2b-5859-48de-9457-82c786ac4e83",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Manzoor Ahmed Agharia <manzoor.ahmed.agharia@growthzone.com>"
+    }
+  }
+}
