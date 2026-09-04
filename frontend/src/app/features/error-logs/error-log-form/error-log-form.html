@@ -1,5 +1,5 @@
 <div class="modal-topbar">
-  <span class="modal-title">{{ isEdit ? 'Edit Error Log' : 'Log a New Error' }}</span>
+  <span class="modal-title">{{ isEdit ? 'Edit Item' : 'Log a New Feature/Bug' }}</span>
   <button class="btn-icon" type="button" (click)="cancel()" aria-label="Close" title="Close">
     <i class="material-icons">close</i>
   </button>
@@ -45,6 +45,17 @@
           }
         </ul>
       }
+    </div>
+
+    <div class="form-field">
+      <label class="form-label" for="log-type">Type</label>
+      <div class="select-wrap">
+        <select id="log-type" [(ngModel)]="logType">
+          @for (t of logTypes; track t) {
+            <option [value]="t">{{ t }}</option>
+          }
+        </select>
+      </div>
     </div>
 
     <div class="form-field">

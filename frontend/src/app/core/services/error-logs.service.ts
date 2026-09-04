@@ -24,6 +24,8 @@ export interface ErrorLogFilters {
   /** Comma-separated list of ErrorPriority values for multi-select filtering. */
   priority?: string;
   environment?: string;
+  /** Comma-separated list of LogType values for multi-select filtering. */
+  log_type?: string;
   search?: string;
   page?: number;
   page_size?: number;

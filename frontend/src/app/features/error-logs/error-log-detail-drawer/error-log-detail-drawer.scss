@@ -61,6 +61,20 @@
   color: #3730a3;
 }
 
+.type-badge {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 12px;
+  background: var(--color-error-soft);
+  color: var(--color-error-strong);
+
+  &--feature {
+    background: var(--color-primary-soft, #e0f2f1);
+    color: var(--color-primary);
+  }
+}
+
 .meta-grid {
   display: grid;
   grid-template-columns: 100px 1fr;

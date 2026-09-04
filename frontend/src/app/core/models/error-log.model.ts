@@ -19,6 +19,10 @@ export type ErrorEnvironment = 'Dev' | 'Staging' | 'Master' | 'QA' | 'Production
 
 export const ERROR_ENVIRONMENTS: ErrorEnvironment[] = ['Dev', 'Staging', 'Master', 'QA', 'Production'];
 
+export type LogType = 'Error' | 'Feature';
+
+export const LOG_TYPES: LogType[] = ['Error', 'Feature'];
+
 export const STATUS_LABELS: Record<ErrorStatus, string> = {
   YetToStart: 'Yet to Start',
   InProgress: 'In Progress',
@@ -72,6 +76,7 @@ export interface ErrorLogListItem {
   status: ErrorStatus;
   priority: ErrorPriority;
   environment: ErrorEnvironment;
+  log_type: LogType;
   screen: Screen | null;
   screen_name_freetext: string | null;
   reported_by: User;
@@ -97,6 +102,7 @@ export interface ErrorLogCreateRequest {
   screen_name_freetext?: string | null;
   priority: ErrorPriority;
   environment: ErrorEnvironment;
+  log_type: LogType;
   assigned_to_id?: string | null;
 }
 

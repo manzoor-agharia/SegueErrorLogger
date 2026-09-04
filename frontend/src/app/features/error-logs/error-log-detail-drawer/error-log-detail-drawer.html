@@ -8,6 +8,7 @@
 
   <div class="drawer-body">
     <div class="meta-row">
+      <span class="type-badge" [class.type-badge--feature]="log.log_type === 'Feature'">{{ log.log_type }}</span>
       <app-status-badge [status]="log.status" />
       <span class="priority priority-{{ log.priority }}">{{ log.priority }} priority</span>
       <span class="environment-badge">{{ log.environment }}</span>

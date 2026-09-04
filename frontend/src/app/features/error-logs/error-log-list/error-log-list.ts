@@ -17,6 +17,8 @@ import {
   ErrorLogListItem,
   ErrorPriority,
   ErrorStatus,
+  LOG_TYPES,
+  LogType,
   Screen,
   STATUS_LABELS,
 } from '../../../core/models/error-log.model';
@@ -43,6 +45,7 @@ export class ErrorLogList implements OnInit {
 
   readonly statusOptions: MultiSelectOption[] = ERROR_STATUSES.map((s) => ({ value: s, label: STATUS_LABELS[s] }));
   readonly priorityOptions: MultiSelectOption[] = ERROR_PRIORITIES.map((p) => ({ value: p, label: p }));
+  readonly logTypeOptions: MultiSelectOption[] = LOG_TYPES.map((t) => ({ value: t, label: t }));
 
   logs = signal<ErrorLogListItem[]>([]);
   screens = signal<Screen[]>([]);
@@ -67,6 +70,7 @@ export class ErrorLogList implements OnInit {
   assigneeFilter: string | '' = '';
   priorityFilter: ErrorPriority[] = [];
   environmentFilter: ErrorEnvironment | '' = '';
+  logTypeFilter: LogType[] = [];
   searchTerm = '';
   private searchDebounce?: ReturnType<typeof setTimeout>;
 
@@ -107,6 +111,7 @@ export class ErrorLogList implements OnInit {
     if (this.assigneeFilter) filters.assigned_to_id = this.assigneeFilter;
     if (this.priorityFilter.length > 0) filters.priority = this.priorityFilter.join(',');
     if (this.environmentFilter) filters.environment = this.environmentFilter;
+    if (this.logTypeFilter.length > 0) filters.log_type = this.logTypeFilter.join(',');
     if (this.searchTerm.trim()) filters.search = this.searchTerm.trim();
 
     this.errorLogsService.list(filters).subscribe({
@@ -138,6 +143,11 @@ export class ErrorLogList implements OnInit {
 
   onPriorityFilterChange(values: string[]): void {
     this.priorityFilter = values as ErrorPriority[];
+    this.refreshFromFirstPage();
+  }
+
+  onLogTypeFilterChange(values: string[]): void {
+    this.logTypeFilter = values as LogType[];
     this.refreshFromFirstPage();
   }
 

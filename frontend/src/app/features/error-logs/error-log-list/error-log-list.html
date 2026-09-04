@@ -1,8 +1,8 @@
 <div class="page-header">
-  <h1 class="text-page-title">Error Logs</h1>
+  <h1 class="text-page-title">Feature/Bugs Tracking</h1>
   <button class="btn btn-primary" (click)="openCreate()">
     <i class="material-icons">add</i>
-    Log Error
+    Log Item
   </button>
 </div>
 
@@ -38,6 +38,16 @@
       [options]="priorityOptions"
       [selected]="priorityFilter"
       (selectedChange)="onPriorityFilterChange($event)"
+    />
+  </div>
+
+  <div class="form-field">
+    <label class="form-label" for="filter-log-type">Type</label>
+    <app-multi-select-dropdown
+      id="filter-log-type"
+      [options]="logTypeOptions"
+      [selected]="logTypeFilter"
+      (selectedChange)="onLogTypeFilterChange($event)"
     />
   </div>
 
@@ -95,6 +105,7 @@
     <tr>
       <th></th>
       <th>Title</th>
+      <th>Type</th>
       <th>Screen</th>
       <th>Status</th>
       <th>Priority</th>
@@ -130,6 +141,9 @@
           </div>
         </td>
         <td class="title-cell" [title]="log.title">{{ log.title }}</td>
+        <td>
+          <span class="type-badge" [class.type-badge--feature]="log.log_type === 'Feature'">{{ log.log_type }}</span>
+        </td>
         <td>{{ log.screen?.name ?? log.screen_name_freetext ?? '—' }}</td>
         <td (click)="$event.stopPropagation()">
           <div class="select-wrap status-select">

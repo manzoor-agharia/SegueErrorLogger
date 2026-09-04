@@ -50,6 +50,11 @@ class ErrorEnvironment(str, enum.Enum):
     PRODUCTION = "Production"
 
 
+class LogType(str, enum.Enum):
+    ERROR = "Error"
+    FEATURE = "Feature"
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -98,6 +103,12 @@ class ErrorLog(Base):
         nullable=False,
         default=ErrorEnvironment.DEV,
         server_default=ErrorEnvironment.DEV.name,
+    )
+    log_type: Mapped[LogType] = mapped_column(
+        Enum(LogType, name="log_type"),
+        nullable=False,
+        default=LogType.ERROR,
+        server_default=LogType.ERROR.name,
     )
 
     reported_by_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)

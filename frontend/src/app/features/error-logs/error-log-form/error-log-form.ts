@@ -11,6 +11,8 @@ import {
   ErrorEnvironment,
   ErrorLogDetail,
   ErrorPriority,
+  LOG_TYPES,
+  LogType,
   Screen,
 } from '../../../core/models/error-log.model';
 import { User } from '../../../core/models/user.model';
@@ -42,6 +44,7 @@ export class ErrorLogForm implements OnChanges {
 
   readonly priorities = ERROR_PRIORITIES;
   readonly environments = ERROR_ENVIRONMENTS;
+  readonly logTypes = LOG_TYPES;
   readonly otherScreenValue = OTHER_SCREEN_VALUE;
   readonly otherScreenLabel = OTHER_SCREEN_LABEL;
   readonly descriptionModules = DESCRIPTION_EDITOR_MODULES;
@@ -55,6 +58,7 @@ export class ErrorLogForm implements OnChanges {
   description = '';
   priority: ErrorPriority = 'Medium';
   environment: ErrorEnvironment = 'Dev';
+  logType: LogType = 'Error';
   screenId: number | null = null;
   screenFreeText = '';
   assignedToId: string | null = null;
@@ -83,6 +87,7 @@ export class ErrorLogForm implements OnChanges {
       this.description = log.description;
       this.priority = log.priority;
       this.environment = log.environment;
+      this.logType = log.log_type;
       this.screenId = log.screen?.id ?? (log.screen_name_freetext ? OTHER_SCREEN_VALUE : null);
       this.screenFreeText = log.screen_name_freetext ?? '';
       this.assignedToId = log.assigned_to?.id ?? null;
@@ -92,6 +97,7 @@ export class ErrorLogForm implements OnChanges {
       this.description = '';
       this.priority = 'Medium';
       this.environment = 'Dev';
+      this.logType = 'Error';
       this.screenId = null;
       this.screenFreeText = '';
       this.assignedToId = null;
@@ -200,6 +206,7 @@ export class ErrorLogForm implements OnChanges {
       description: this.description,
       priority: this.priority,
       environment: this.environment,
+      log_type: this.logType,
       screen_id: this.screenId !== null && this.screenId !== OTHER_SCREEN_VALUE ? this.screenId : null,
       screen_name_freetext: this.screenId === OTHER_SCREEN_VALUE ? this.screenFreeText : null,
       assigned_to_id: this.assignedToId,

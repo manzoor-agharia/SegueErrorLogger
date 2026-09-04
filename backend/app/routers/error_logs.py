@@ -21,6 +21,7 @@ from app.models import (
     ErrorLogStatusHistory,
     ErrorPriority,
     ErrorStatus,
+    LogType,
     Notification,
     NotificationType,
     Screen,
@@ -122,6 +123,9 @@ async def _describe_edit(db: AsyncSession, error_log: ErrorLog, updates: dict) -
     if "environment" in updates and updates["environment"] != error_log.environment:
         changes.append(f"Environment: {error_log.environment.value} → {updates['environment'].value}")
 
+    if "log_type" in updates and updates["log_type"] != error_log.log_type:
+        changes.append(f"Type: {error_log.log_type.value} → {updates['log_type'].value}")
+
     screen_touched = "screen_id" in updates or "screen_name_freetext" in updates
     if screen_touched:
         old_label = error_log.screen.name if error_log.screen else (error_log.screen_name_freetext or "None")
@@ -204,6 +208,7 @@ def _filtered_query(
     assigned_to_id: str | None,
     priority: str | None,
     environment: str | None,
+    log_type: str | None,
     search: str | None,
 ) -> Select:
     statuses = _split_values(status_filter, {s.value for s in ErrorStatus})
@@ -220,6 +225,9 @@ def _filtered_query(
         query = query.where(ErrorLog.priority.in_(priorities))
     if environment is not None:
         query = query.where(ErrorLog.environment == environment)
+    log_types = _split_values(log_type, {t.value for t in LogType})
+    if log_types:
+        query = query.where(ErrorLog.log_type.in_(log_types))
     if search:
         term = f"%{search}%"
         reported_by = aliased(User)
@@ -241,6 +249,7 @@ def _filtered_query(
                     cast(ErrorLog.status, String).ilike(term),
                     cast(ErrorLog.priority, String).ilike(term),
                     cast(ErrorLog.environment, String).ilike(term),
+                    cast(ErrorLog.log_type, String).ilike(term),
                 )
             )
         )
@@ -254,6 +263,7 @@ async def list_error_logs(
     assigned_to_id: str | None = None,
     priority: str | None = None,
     environment: str | None = None,
+    log_type: str | None = None,
     search: str | None = None,
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
@@ -261,7 +271,14 @@ async def list_error_logs(
     _: User = Depends(get_current_user),
 ) -> ErrorLogPage:
     count_query = _filtered_query(
-        select(func.count(ErrorLog.id)), status_filter, screen_id, assigned_to_id, priority, environment, search
+        select(func.count(ErrorLog.id)),
+        status_filter,
+        screen_id,
+        assigned_to_id,
+        priority,
+        environment,
+        log_type,
+        search,
     )
     total = (await db.execute(count_query)).scalar_one()
 
@@ -276,6 +293,7 @@ async def list_error_logs(
         assigned_to_id,
         priority,
         environment,
+        log_type,
         search,
     )
     # Priority is declared LOW < MEDIUM < HIGH < CRITICAL, so descending puts the highest-severity items on top.
@@ -302,6 +320,7 @@ async def create_error_log(
         screen_name_freetext=payload.screen_name_freetext,
         priority=payload.priority,
         environment=payload.environment,
+        log_type=payload.log_type,
         assigned_to_id=payload.assigned_to_id,
         reported_by_id=current_user.id,
     )
