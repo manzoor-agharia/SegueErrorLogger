@@ -5,12 +5,16 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
   Attachment,
+  Comment,
   ErrorLogCreateRequest,
   ErrorLogDetail,
   ErrorLogPage,
   ErrorLogUpdateRequest,
   ErrorStatus,
 } from '../models/error-log.model';
+
+/** Sentinel passed as the `assigned_to_id` filter value to mean "no assignee set". */
+export const UNASSIGNED_FILTER_VALUE = 'unassigned';
 
 export interface ErrorLogFilters {
   status_filter?: ErrorStatus;
@@ -67,5 +71,17 @@ export class ErrorLogsService {
 
   downloadUrl(attachmentId: string): string {
     return `${this.base}/attachments/${attachmentId}/download`;
+  }
+
+  addComment(id: string, body: string): Observable<Comment> {
+    return this.http.post<Comment>(`${this.base}/${id}/comments`, { body });
+  }
+
+  updateComment(id: string, commentId: string, body: string): Observable<Comment> {
+    return this.http.put<Comment>(`${this.base}/${id}/comments/${commentId}`, { body });
+  }
+
+  deleteComment(id: string, commentId: string): Observable<void> {
+    return this.http.delete<void>(`${this.base}/${id}/comments/${commentId}`);
   }
 }

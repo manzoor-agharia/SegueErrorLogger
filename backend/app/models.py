@@ -118,6 +118,12 @@ class ErrorLog(Base):
     edit_history: Mapped[list["ErrorLogEditHistory"]] = relationship(
         back_populates="error_log", cascade="all, delete-orphan", order_by="ErrorLogEditHistory.changed_at"
     )
+    comments: Mapped[list["ErrorLogComment"]] = relationship(
+        back_populates="error_log", cascade="all, delete-orphan", order_by="ErrorLogComment.created_at"
+    )
+    assignment_history: Mapped[list["ErrorLogAssignmentHistory"]] = relationship(
+        back_populates="error_log", cascade="all, delete-orphan", order_by="ErrorLogAssignmentHistory.changed_at"
+    )
 
 
 class ErrorLogAttachment(Base):
@@ -165,6 +171,45 @@ class ErrorLogEditHistory(Base):
 
     error_log: Mapped["ErrorLog"] = relationship(back_populates="edit_history")
     changed_by: Mapped["User"] = relationship()
+
+
+class ErrorLogAssignmentHistory(Base):
+    """Records every assignee change so a user who was later unassigned still retains
+    comment access on the ticket they used to own."""
+
+    __tablename__ = "error_log_assignment_history"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    error_log_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("error_logs.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    old_assigned_to_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id"), nullable=True
+    )
+    new_assigned_to_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id"), nullable=True
+    )
+    changed_by_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    changed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+    error_log: Mapped["ErrorLog"] = relationship(back_populates="assignment_history")
+
+
+class ErrorLogComment(Base):
+    __tablename__ = "error_log_comments"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    error_log_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("error_logs.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    body: Mapped[str] = mapped_column(Text, nullable=False)
+    author_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    # Stays NULL until the author revises the comment, so the UI can mark it "(edited)".
+    edited_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    error_log: Mapped["ErrorLog"] = relationship(back_populates="comments")
+    author: Mapped["User"] = relationship()
 
 
 class Notification(Base):

@@ -56,6 +56,14 @@ export interface EditHistoryEntry {
   changed_at: string;
 }
 
+export interface Comment {
+  id: string;
+  body: string;
+  author: User;
+  created_at: string;
+  edited_at: string | null;
+}
+
 export interface ErrorLogListItem {
   id: string;
   title: string;
@@ -75,6 +83,9 @@ export interface ErrorLogDetail extends ErrorLogListItem {
   attachments: Attachment[];
   status_history: StatusHistoryEntry[];
   edit_history: EditHistoryEntry[];
+  comments: Comment[];
+  /** Server-computed: true if the current user is the reporter, a current/past assignee, or a SuperAdmin. */
+  can_comment: boolean;
 }
 
 export interface ErrorLogCreateRequest {

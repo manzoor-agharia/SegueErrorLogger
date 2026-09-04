@@ -74,6 +74,7 @@
     <div class="select-wrap">
       <select id="filter-assignee" [(ngModel)]="assigneeFilter" (change)="refreshFromFirstPage()">
         <option [ngValue]="''">All</option>
+        <option [ngValue]="unassignedFilterValue">Unassigned</option>
         @for (user of users(); track user.id) {
           <option [ngValue]="user.id">{{ user.name }}</option>
         }
@@ -96,18 +97,42 @@
 <table class="data-table">
   <thead class="data-table__header">
     <tr>
+      <th></th>
       <th>Title</th>
       <th>Screen</th>
       <th>Status</th>
       <th>Priority</th>
       <th>Assigned To</th>
       <th>Updated</th>
-      <th></th>
     </tr>
   </thead>
   <tbody>
     @for (log of logs(); track log.id) {
       <tr class="data-table__row" (click)="viewDetail(log)">
+        <td class="col-menu" (click)="$event.stopPropagation()">
+          <div class="kebab-wrap">
+            <button class="btn-icon btn-more" (click)="toggleMenu(log, $event)" title="More actions">
+              <i class="material-icons">more_vert</i>
+            </button>
+
+            @if (openMenuLogId() === log.id) {
+              <div class="kebab-menu" (click)="$event.stopPropagation()">
+                <button class="kebab-menu-item" type="button" (click)="openEdit(log, $event)">
+                  <i class="material-icons">edit</i> Edit
+                </button>
+                <button class="kebab-menu-item" type="button" (click)="viewHistory(log, $event)">
+                  <i class="material-icons">history</i> View History
+                </button>
+                @if (auth.isSuperAdmin()) {
+                  <div class="kebab-menu-divider"></div>
+                  <button class="kebab-menu-item kebab-menu-item--danger" type="button" (click)="deleteLog(log, $event)">
+                    <i class="material-icons">delete</i> Delete
+                  </button>
+                }
+              </div>
+            }
+          </div>
+        </td>
         <td class="title-cell" [title]="log.title">{{ log.title }}</td>
         <td>{{ log.screen?.name ?? log.screen_name_freetext ?? '—' }}</td>
         <td (click)="$event.stopPropagation()">
@@ -122,16 +147,6 @@
         <td>{{ log.priority }}</td>
         <td>{{ log.assigned_to?.name ?? 'Unassigned' }}</td>
         <td>{{ log.updated_at | date: 'short' }}</td>
-        <td (click)="$event.stopPropagation()">
-          <button class="btn-icon" (click)="openEdit(log, $event)" title="Edit">
-            <i class="material-icons">edit</i>
-          </button>
-          @if (auth.isSuperAdmin()) {
-            <button class="btn-icon" (click)="deleteLog(log, $event)" title="Delete">
-              <i class="material-icons">delete</i>
-            </button>
-          }
-        </td>
       </tr>
     }
   </tbody>
@@ -172,4 +187,8 @@
       <app-error-log-form [errorLog]="formEditLog()" (saved)="onFormSaved($event)" (cancelled)="onFormCancelled()" />
     </div>
   </div>
+}
+
+@if (historyLog(); as log) {
+  <app-error-log-history-modal [errorLog]="log" (closed)="closeHistory()" />
 }

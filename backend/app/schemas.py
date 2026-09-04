@@ -119,6 +119,26 @@ class EditHistoryOut(BaseModel):
     changed_at: datetime
 
 
+# ---- Comments ----
+
+class CommentCreate(BaseModel):
+    body: str = Field(min_length=1, max_length=4000)
+
+
+class CommentUpdate(BaseModel):
+    body: str = Field(min_length=1, max_length=4000)
+
+
+class CommentOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: uuid.UUID
+    body: str
+    author: UserOut
+    created_at: datetime
+    edited_at: datetime | None
+
+
 class ErrorLogListItem(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -140,6 +160,10 @@ class ErrorLogDetail(ErrorLogListItem):
     attachments: list[AttachmentOut]
     status_history: list[StatusHistoryOut]
     edit_history: list[EditHistoryOut]
+    comments: list[CommentOut]
+    # Computed per-request from the caller's identity (reporter / current or past assignee / SuperAdmin),
+    # not read off the ORM object -- always overridden after model_validate(), so the default here is inert.
+    can_comment: bool = False
 
 
 class ErrorLogPage(BaseModel):

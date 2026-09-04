@@ -1,0 +1,162 @@
+.comments-panel {
+  width: min(520px, 92vw);
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-side);
+  flex-shrink: 0;
+}
+
+.modal-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.chat-body {
+  padding: 16px 20px;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--color-bg);
+}
+
+.empty {
+  padding: 24px 0;
+  text-align: center;
+  color: var(--color-muted);
+}
+
+.chat-row {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.chat-row--own {
+  justify-content: flex-end;
+}
+
+// Others' messages: greyed bubble, left-aligned.
+.chat-bubble {
+  max-width: 78%;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  border-bottom-left-radius: 4px;
+  background: var(--color-side);
+  border: 1px solid var(--color-border);
+}
+
+// Own messages: plain white bubble, right-aligned.
+.chat-bubble--own {
+  background: var(--color-surface);
+  border-color: var(--color-primary-mid);
+  border-bottom-left-radius: var(--radius-md);
+  border-bottom-right-radius: 4px;
+}
+
+.chat-author {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  margin-bottom: 2px;
+}
+
+.chat-text {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--color-ink-2);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.chat-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.chat-meta {
+  font-size: 11px;
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+
+.chat-edited {
+  font-style: italic;
+}
+
+.chat-actions {
+  display: flex;
+  gap: 2px;
+
+  .btn-icon {
+    width: 22px;
+    height: 22px;
+
+    i {
+      font-size: 14px;
+    }
+  }
+}
+
+.chat-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  textarea {
+    font-size: 13px;
+  }
+}
+
+.chat-edit-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.chat-composer {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+  flex-shrink: 0;
+
+  textarea {
+    flex: 1;
+    font-size: 13.5px;
+  }
+
+  .btn {
+    height: 34px;
+    padding: 0 12px;
+
+    i {
+      font-size: 18px;
+    }
+  }
+}
+
+.chat-permission-hint {
+  padding: 12px 20px;
+  margin: 0;
+  font-size: 12px;
+  color: var(--color-muted);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+  flex-shrink: 0;
+}

@@ -1,11 +1,11 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, HostListener, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { AuthService } from '../../../core/auth/auth.service';
 import { ToastService } from '../../../core/services/toast.service';
-import { ErrorLogFilters, ErrorLogsService } from '../../../core/services/error-logs.service';
+import { ErrorLogFilters, ErrorLogsService, UNASSIGNED_FILTER_VALUE } from '../../../core/services/error-logs.service';
 import { ScreensService } from '../../../core/services/screens.service';
 import { UsersService } from '../../../core/services/users.service';
 import {
@@ -23,11 +23,12 @@ import {
 import { User } from '../../../core/models/user.model';
 import { ErrorLogDetailDrawer } from '../error-log-detail-drawer/error-log-detail-drawer';
 import { ErrorLogForm } from '../error-log-form/error-log-form';
+import { ErrorLogHistoryModal } from '../../../shared/error-log-history-modal/error-log-history-modal';
 
 @Component({
   selector: 'app-error-log-list',
   standalone: true,
-  imports: [DatePipe, FormsModule, ErrorLogDetailDrawer, ErrorLogForm],
+  imports: [DatePipe, FormsModule, ErrorLogDetailDrawer, ErrorLogForm, ErrorLogHistoryModal],
   templateUrl: './error-log-list.html',
   styleUrl: './error-log-list.scss',
 })
@@ -37,6 +38,7 @@ export class ErrorLogList implements OnInit {
   readonly environments = ERROR_ENVIRONMENTS;
   readonly statusLabels = STATUS_LABELS;
   readonly pageSizeOptions = [10, 20, 50, 100];
+  readonly unassignedFilterValue = UNASSIGNED_FILTER_VALUE;
 
   logs = signal<ErrorLogListItem[]>([]);
   screens = signal<Screen[]>([]);
@@ -46,6 +48,9 @@ export class ErrorLogList implements OnInit {
 
   formOpen = signal(false);
   formEditLog = signal<ErrorLogDetail | null>(null);
+
+  historyLog = signal<ErrorLogDetail | null>(null);
+  openMenuLogId = signal<string | null>(null);
 
   page = signal(1);
   pageSize = signal(20);
@@ -141,6 +146,7 @@ export class ErrorLogList implements OnInit {
 
   openEdit(log: ErrorLogListItem, event: Event): void {
     event.stopPropagation();
+    this.closeMenu();
     this.errorLogsService.get(log.id).subscribe((detail) => {
       this.formEditLog.set(detail);
       this.formOpen.set(true);
@@ -176,6 +182,7 @@ export class ErrorLogList implements OnInit {
 
   deleteLog(log: ErrorLogListItem, event: Event): void {
     event.stopPropagation();
+    this.closeMenu();
     if (!confirm(`Delete error log "${log.title}"? This cannot be undone.`)) {
       return;
     }
@@ -187,5 +194,32 @@ export class ErrorLogList implements OnInit {
       },
       error: (err) => this.toast.show(err?.error?.detail ?? 'Failed to delete error log', 'error'),
     });
+  }
+
+  // ---- Row "more actions" menu ----
+
+  toggleMenu(log: ErrorLogListItem, event: Event): void {
+    event.stopPropagation();
+    this.openMenuLogId.set(this.openMenuLogId() === log.id ? null : log.id);
+  }
+
+  closeMenu(): void {
+    this.openMenuLogId.set(null);
+  }
+
+  viewHistory(log: ErrorLogListItem, event: Event): void {
+    event.stopPropagation();
+    this.closeMenu();
+    this.errorLogsService.get(log.id).subscribe((detail) => this.historyLog.set(detail));
+  }
+
+  closeHistory(): void {
+    this.historyLog.set(null);
+  }
+
+  /** Any click outside an open row menu closes it -- the menu itself stops propagation. */
+  @HostListener('document:click')
+  onDocumentClick(): void {
+    this.closeMenu();
   }
 }

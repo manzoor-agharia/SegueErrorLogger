@@ -1,0 +1,24 @@
+<div class="modal-backdrop" (click)="close()">
+  <div class="modal-panel history-panel" (click)="$event.stopPropagation()">
+    <div class="modal-topbar">
+      <span class="modal-title">History</span>
+      <button class="btn-icon" type="button" (click)="close()" aria-label="Close">
+        <i class="material-icons">close</i>
+      </button>
+    </div>
+    <div class="modal-body">
+      @if (combinedHistory().length === 0) {
+        <p class="empty">No changes recorded yet.</p>
+      } @else {
+        <ul class="status-history">
+          @for (entry of combinedHistory(); track entry.id) {
+            <li>
+              <span class="history-status">{{ entry.summary }}</span>
+              <span class="history-meta">{{ entry.changedByName }} · {{ entry.changedAt | date: 'medium' }}</span>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  </div>
+</div>

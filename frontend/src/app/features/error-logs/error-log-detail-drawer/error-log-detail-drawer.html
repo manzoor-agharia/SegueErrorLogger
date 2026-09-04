@@ -61,41 +61,22 @@
       </div>
     }
 
-    <button class="btn btn-sm btn-ghost history-btn" (click)="openHistory()">
-      <i class="material-icons">history</i>
-      View History
-      @if (combinedHistory().length > 0) {
-        <span class="history-count">{{ combinedHistory().length }}</span>
+    <button class="btn btn-sm btn-ghost comments-btn" (click)="openComments()">
+      <i class="material-icons">chat_bubble_outline</i>
+      Comments
+      @if (log.comments.length > 0) {
+        <span class="comments-count">{{ log.comments.length }}</span>
       }
     </button>
   </div>
 }
 
-@if (historyOpen()) {
-  <div class="modal-backdrop" (click)="closeHistory()">
-    <div class="modal-panel history-panel" (click)="$event.stopPropagation()">
-      <div class="modal-topbar">
-        <span class="modal-title">History</span>
-        <button class="btn-icon" type="button" (click)="closeHistory()" aria-label="Close">
-          <i class="material-icons">close</i>
-        </button>
-      </div>
-      <div class="modal-body">
-        @if (combinedHistory().length === 0) {
-          <p class="empty">No changes recorded yet.</p>
-        } @else {
-          <ul class="status-history">
-            @for (entry of combinedHistory(); track entry.id) {
-              <li>
-                <span class="history-status">{{ entry.summary }}</span>
-                <span class="history-meta">{{ entry.changedByName }} · {{ entry.changedAt | date: 'medium' }}</span>
-              </li>
-            }
-          </ul>
-        }
-      </div>
-    </div>
-  </div>
+@if (commentsOpen()) {
+  <app-error-log-comments-modal
+    [errorLog]="errorLog"
+    (closed)="closeComments()"
+    (commentsChanged)="onCommentsChanged($event)"
+  />
 }
 
 @if (viewerImage(); as current) {

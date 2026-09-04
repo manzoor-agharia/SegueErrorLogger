@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, status
@@ -13,7 +14,9 @@ from app.db import get_db
 from app.deps import get_current_user, require_role
 from app.models import (
     ErrorLog,
+    ErrorLogAssignmentHistory,
     ErrorLogAttachment,
+    ErrorLogComment,
     ErrorLogEditHistory,
     ErrorLogStatusHistory,
     ErrorStatus,
@@ -25,6 +28,9 @@ from app.models import (
 )
 from app.schemas import (
     AttachmentOut,
+    CommentCreate,
+    CommentOut,
+    CommentUpdate,
     ErrorLogCreate,
     ErrorLogDetail,
     ErrorLogListItem,
@@ -35,6 +41,10 @@ from app.schemas import (
 
 router = APIRouter(prefix="/error-logs", tags=["error-logs"])
 
+# Sentinel accepted by the `assigned_to_id` filter to mean "no assignee set", since the
+# query param otherwise only ever carries a real user UUID.
+UNASSIGNED_SENTINEL = "unassigned"
+
 _DETAIL_OPTIONS = (
     selectinload(ErrorLog.screen),
     selectinload(ErrorLog.reported_by),
@@ -42,7 +52,24 @@ _DETAIL_OPTIONS = (
     selectinload(ErrorLog.attachments),
     selectinload(ErrorLog.status_history).selectinload(ErrorLogStatusHistory.changed_by),
     selectinload(ErrorLog.edit_history).selectinload(ErrorLogEditHistory.changed_by),
+    selectinload(ErrorLog.comments).selectinload(ErrorLogComment.author),
+    selectinload(ErrorLog.assignment_history),
 )
+
+
+def _can_comment(error_log: ErrorLog, user: User) -> bool:
+    """Comments may be added by the log's creator, its current or any past assignee, or a SuperAdmin --
+    once you've owned a ticket you keep a voice on it even after being unassigned."""
+    if user.role == UserRole.SUPER_ADMIN:
+        return True
+    if error_log.reported_by_id == user.id:
+        return True
+    if error_log.assigned_to_id is not None and error_log.assigned_to_id == user.id:
+        return True
+    for entry in error_log.assignment_history:
+        if entry.old_assigned_to_id == user.id or entry.new_assigned_to_id == user.id:
+            return True
+    return False
 
 
 async def _get_or_404(db: AsyncSession, error_log_id: uuid.UUID) -> ErrorLog:
@@ -51,6 +78,17 @@ async def _get_or_404(db: AsyncSession, error_log_id: uuid.UUID) -> ErrorLog:
     if error_log is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Error log not found")
     return error_log
+
+
+def _to_detail(error_log: ErrorLog, current_user: User) -> ErrorLogDetail:
+    detail = ErrorLogDetail.model_validate(error_log)
+    detail.can_comment = _can_comment(error_log, current_user)
+    return detail
+
+
+async def _get_detail(db: AsyncSession, error_log_id: uuid.UUID, current_user: User) -> ErrorLogDetail:
+    error_log = await _get_or_404(db, error_log_id)
+    return _to_detail(error_log, current_user)
 
 
 async def _notify_assignment(db: AsyncSession, error_log: ErrorLog, actor: User) -> None:
@@ -134,7 +172,7 @@ def _filtered_query(
     query: Select,
     status_filter: ErrorStatus | None,
     screen_id: int | None,
-    assigned_to_id: uuid.UUID | None,
+    assigned_to_id: str | None,
     priority: str | None,
     environment: str | None,
     search: str | None,
@@ -143,8 +181,10 @@ def _filtered_query(
         query = query.where(ErrorLog.status == status_filter)
     if screen_id is not None:
         query = query.where(ErrorLog.screen_id == screen_id)
-    if assigned_to_id is not None:
-        query = query.where(ErrorLog.assigned_to_id == assigned_to_id)
+    if assigned_to_id == UNASSIGNED_SENTINEL:
+        query = query.where(ErrorLog.assigned_to_id.is_(None))
+    elif assigned_to_id is not None:
+        query = query.where(ErrorLog.assigned_to_id == uuid.UUID(assigned_to_id))
     if priority is not None:
         query = query.where(ErrorLog.priority == priority)
     if environment is not None:
@@ -180,7 +220,7 @@ def _filtered_query(
 async def list_error_logs(
     status_filter: ErrorStatus | None = None,
     screen_id: int | None = None,
-    assigned_to_id: uuid.UUID | None = None,
+    assigned_to_id: str | None = None,
     priority: str | None = None,
     environment: str | None = None,
     search: str | None = None,
@@ -223,7 +263,7 @@ async def create_error_log(
     payload: ErrorLogCreate,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
-) -> ErrorLog:
+) -> ErrorLogDetail:
     error_log = ErrorLog(
         title=payload.title,
         description=payload.description,
@@ -245,18 +285,27 @@ async def create_error_log(
             changed_by_id=current_user.id,
         )
     )
+    if payload.assigned_to_id is not None:
+        db.add(
+            ErrorLogAssignmentHistory(
+                error_log_id=error_log.id,
+                old_assigned_to_id=None,
+                new_assigned_to_id=payload.assigned_to_id,
+                changed_by_id=current_user.id,
+            )
+        )
     await _notify_new_error_log(db, error_log, current_user)
     await db.commit()
-    return await _get_or_404(db, error_log.id)
+    return await _get_detail(db, error_log.id, current_user)
 
 
 @router.get("/{error_log_id}", response_model=ErrorLogDetail)
 async def get_error_log(
     error_log_id: uuid.UUID,
     db: AsyncSession = Depends(get_db),
-    _: User = Depends(get_current_user),
-) -> ErrorLog:
-    return await _get_or_404(db, error_log_id)
+    current_user: User = Depends(get_current_user),
+) -> ErrorLogDetail:
+    return await _get_detail(db, error_log_id, current_user)
 
 
 @router.put("/{error_log_id}", response_model=ErrorLogDetail)
@@ -265,7 +314,7 @@ async def update_error_log(
     payload: ErrorLogUpdate,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
-) -> ErrorLog:
+) -> ErrorLogDetail:
     error_log = await _get_or_404(db, error_log_id)
     old_assigned_to_id = error_log.assigned_to_id
 
@@ -285,10 +334,18 @@ async def update_error_log(
         )
 
     if "assigned_to_id" in updates and error_log.assigned_to_id != old_assigned_to_id:
+        db.add(
+            ErrorLogAssignmentHistory(
+                error_log_id=error_log.id,
+                old_assigned_to_id=old_assigned_to_id,
+                new_assigned_to_id=error_log.assigned_to_id,
+                changed_by_id=current_user.id,
+            )
+        )
         await _notify_assignment(db, error_log, current_user)
 
     await db.commit()
-    return await _get_or_404(db, error_log_id)
+    return await _get_detail(db, error_log_id, current_user)
 
 
 @router.patch("/{error_log_id}/status", response_model=ErrorLogDetail)
@@ -297,7 +354,7 @@ async def update_status(
     payload: StatusUpdate,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
-) -> ErrorLog:
+) -> ErrorLogDetail:
     error_log = await _get_or_404(db, error_log_id)
     old_status = error_log.status
     error_log.status = payload.status
@@ -311,7 +368,7 @@ async def update_status(
         )
     )
     await db.commit()
-    return await _get_or_404(db, error_log_id)
+    return await _get_detail(db, error_log_id, current_user)
 
 
 @router.delete("/{error_log_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -379,3 +436,75 @@ async def download_attachment(
         filename=attachment.original_filename,
         media_type=attachment.content_type,
     )
+
+
+# ---- Comments ----
+
+@router.post("/{error_log_id}/comments", response_model=CommentOut, status_code=status.HTTP_201_CREATED)
+async def create_comment(
+    error_log_id: uuid.UUID,
+    payload: CommentCreate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> ErrorLogComment:
+    error_log = await _get_or_404(db, error_log_id)
+    if not _can_comment(error_log, current_user):
+        raise HTTPException(
+            status.HTTP_403_FORBIDDEN, "Only the reporter, the assignee, or a SuperAdmin can comment"
+        )
+
+    comment = ErrorLogComment(error_log_id=error_log.id, body=payload.body, author_id=current_user.id)
+    db.add(comment)
+    await db.commit()
+    await db.refresh(comment, attribute_names=["author"])
+    return comment
+
+
+@router.put("/{error_log_id}/comments/{comment_id}", response_model=CommentOut)
+async def update_comment(
+    error_log_id: uuid.UUID,
+    comment_id: uuid.UUID,
+    payload: CommentUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> ErrorLogComment:
+    comment = (
+        await db.execute(
+            select(ErrorLogComment).where(
+                ErrorLogComment.id == comment_id, ErrorLogComment.error_log_id == error_log_id
+            )
+        )
+    ).scalar_one_or_none()
+    if comment is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Comment not found")
+    if comment.author_id != current_user.id and current_user.role != UserRole.SUPER_ADMIN:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "You can only edit your own comments")
+
+    comment.body = payload.body
+    comment.edited_at = datetime.now(timezone.utc)
+    await db.commit()
+    await db.refresh(comment, attribute_names=["author"])
+    return comment
+
+
+@router.delete("/{error_log_id}/comments/{comment_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_comment(
+    error_log_id: uuid.UUID,
+    comment_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> None:
+    comment = (
+        await db.execute(
+            select(ErrorLogComment).where(
+                ErrorLogComment.id == comment_id, ErrorLogComment.error_log_id == error_log_id
+            )
+        )
+    ).scalar_one_or_none()
+    if comment is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Comment not found")
+    if comment.author_id != current_user.id and current_user.role != UserRole.SUPER_ADMIN:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "You can only delete your own comments")
+
+    await db.delete(comment)
+    await db.commit()

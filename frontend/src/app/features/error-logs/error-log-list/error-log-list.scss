@@ -117,3 +117,79 @@
     transform: translateX(0);
   }
 }
+
+// ── Row "more actions" kebab menu ───────────────────────────────────────────
+.col-menu {
+  width: 44px;
+  text-align: center;
+}
+
+.kebab-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.btn-more {
+  color: var(--color-muted);
+}
+
+.kebab-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: var(--z-dropdown);
+  min-width: 190px;
+  padding: 6px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kebab-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-ink-2);
+  text-align: left;
+  cursor: pointer;
+
+  i {
+    font-size: 18px;
+    color: var(--color-muted);
+  }
+
+  &:hover {
+    background: var(--color-side);
+    color: var(--color-ink);
+  }
+}
+
+.kebab-menu-item--danger {
+  color: var(--color-error-strong);
+
+  i {
+    color: var(--color-error);
+  }
+
+  &:hover {
+    background: var(--color-error-soft);
+    color: var(--color-error-strong);
+  }
+}
+
+.kebab-menu-divider {
+  height: 1px;
+  margin: 4px 2px;
+  background: var(--color-border);
+}

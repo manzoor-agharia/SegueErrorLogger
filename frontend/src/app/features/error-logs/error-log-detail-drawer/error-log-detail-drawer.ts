@@ -13,8 +13,9 @@ import {
 } from '@angular/core';
 
 import { ErrorLogsService } from '../../../core/services/error-logs.service';
-import { Attachment, ErrorLogDetail, STATUS_LABELS } from '../../../core/models/error-log.model';
+import { Attachment, Comment, ErrorLogDetail, STATUS_LABELS } from '../../../core/models/error-log.model';
 import { StatusBadge } from '../../../shared/status-badge/status-badge';
+import { ErrorLogCommentsModal } from '../../../shared/error-log-comments-modal/error-log-comments-modal';
 
 interface AttachmentPreview {
   attachment: Attachment;
@@ -22,17 +23,10 @@ interface AttachmentPreview {
   isImage: boolean;
 }
 
-interface HistoryEntry {
-  id: string;
-  summary: string;
-  changedByName: string;
-  changedAt: string;
-}
-
 @Component({
   selector: 'app-error-log-detail-drawer',
   standalone: true,
-  imports: [DatePipe, StatusBadge],
+  imports: [DatePipe, StatusBadge, ErrorLogCommentsModal],
   templateUrl: './error-log-detail-drawer.html',
   styleUrl: './error-log-detail-drawer.scss',
 })
@@ -44,34 +38,12 @@ export class ErrorLogDetailDrawer implements OnChanges, OnDestroy {
 
   previews = signal<AttachmentPreview[]>([]);
   viewerIndex = signal<number | null>(null);
-  historyOpen = signal(false);
+  commentsOpen = signal(false);
 
   images = computed(() => this.previews().filter((p) => p.isImage));
   viewerImage = computed(() => {
     const index = this.viewerIndex();
     return index === null ? null : this.images()[index];
-  });
-
-  combinedHistory = computed<HistoryEntry[]>(() => {
-    const log = this.errorLog;
-    if (!log) return [];
-
-    const statusEntries: HistoryEntry[] = log.status_history.map((entry) => ({
-      id: `status-${entry.id}`,
-      summary: `${entry.old_status ? this.statusLabels[entry.old_status] : 'Created'} → ${this.statusLabels[entry.new_status]}`,
-      changedByName: entry.changed_by.name,
-      changedAt: entry.changed_at,
-    }));
-    const editEntries: HistoryEntry[] = log.edit_history.map((entry) => ({
-      id: `edit-${entry.id}`,
-      summary: entry.summary,
-      changedByName: entry.changed_by.name,
-      changedAt: entry.changed_at,
-    }));
-
-    return [...statusEntries, ...editEntries].sort(
-      (a, b) => new Date(b.changedAt).getTime() - new Date(a.changedAt).getTime(),
-    );
   });
 
   constructor(
@@ -81,7 +53,7 @@ export class ErrorLogDetailDrawer implements OnChanges, OnDestroy {
 
   ngOnChanges(): void {
     this.revokeUrls();
-    this.historyOpen.set(false);
+    this.commentsOpen.set(false);
     if (!this.errorLog) {
       this.previews.set([]);
       return;
@@ -125,14 +97,6 @@ export class ErrorLogDetailDrawer implements OnChanges, OnDestroy {
     this.closed.emit();
   }
 
-  openHistory(): void {
-    this.historyOpen.set(true);
-  }
-
-  closeHistory(): void {
-    this.historyOpen.set(false);
-  }
-
   openViewer(preview: AttachmentPreview): void {
     const index = this.images().indexOf(preview);
     if (index !== -1) {
@@ -162,10 +126,6 @@ export class ErrorLogDetailDrawer implements OnChanges, OnDestroy {
       if (event.key === 'Escape') this.closeViewer();
       if (event.key === 'ArrowLeft') this.showPrevImage();
       if (event.key === 'ArrowRight') this.showNextImage();
-      return;
-    }
-    if (this.historyOpen() && event.key === 'Escape') {
-      this.closeHistory();
     }
   }
 
@@ -175,5 +135,20 @@ export class ErrorLogDetailDrawer implements OnChanges, OnDestroy {
         URL.revokeObjectURL(p.objectUrl);
       }
     });
+  }
+
+  openComments(): void {
+    this.commentsOpen.set(true);
+  }
+
+  closeComments(): void {
+    this.commentsOpen.set(false);
+  }
+
+  /** Keep the drawer's own comment-count badge in sync while the modal is open. */
+  onCommentsChanged(comments: Comment[]): void {
+    if (this.errorLog) {
+      this.errorLog.comments = comments;
+    }
   }
 }

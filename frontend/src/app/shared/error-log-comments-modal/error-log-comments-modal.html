@@ -1,0 +1,72 @@
+<div class="modal-backdrop" (click)="close()">
+  <div class="modal-panel comments-panel" (click)="$event.stopPropagation()">
+    <div class="modal-topbar">
+      <span class="modal-title">Comments</span>
+      <button class="btn-icon" type="button" (click)="close()" aria-label="Close">
+        <i class="material-icons">close</i>
+      </button>
+    </div>
+
+    <div class="chat-body">
+      @if (comments().length === 0) {
+        <p class="empty">No comments yet.</p>
+      }
+      @for (comment of comments(); track comment.id) {
+        <div class="chat-row" [class.chat-row--own]="isOwn(comment)">
+          <div class="chat-bubble" [class.chat-bubble--own]="isOwn(comment)">
+            @if (!isOwn(comment)) {
+              <span class="chat-author">{{ comment.author.name }}</span>
+            }
+
+            @if (editingCommentId() === comment.id) {
+              <div class="chat-edit">
+                <textarea rows="3" [(ngModel)]="editingCommentBody"></textarea>
+                <div class="chat-edit-actions">
+                  <button class="btn btn-sm btn-primary" (click)="saveEditComment(comment)">Save</button>
+                  <button class="btn btn-sm btn-ghost" (click)="cancelEditComment()">Cancel</button>
+                </div>
+              </div>
+            } @else {
+              <p class="chat-text">{{ comment.body }}</p>
+              <div class="chat-footer">
+                <span class="chat-meta">
+                  {{ comment.created_at | date: 'short' }}
+                  @if (comment.edited_at) {
+                    <span class="chat-edited">(edited)</span>
+                  }
+                </span>
+                @if (canEditComment(comment)) {
+                  <span class="chat-actions">
+                    <button class="btn-icon" (click)="startEditComment(comment)" title="Edit comment">
+                      <i class="material-icons">edit</i>
+                    </button>
+                    <button class="btn-icon" (click)="deleteComment(comment)" title="Delete comment">
+                      <i class="material-icons">delete</i>
+                    </button>
+                  </span>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    @if (canComment) {
+      <div class="chat-composer">
+        <textarea rows="2" placeholder="Add a comment..." [(ngModel)]="newCommentBody"></textarea>
+        <button
+          class="btn btn-sm btn-primary"
+          [disabled]="!newCommentBody.trim() || postingComment()"
+          (click)="addComment()"
+        >
+          <i class="material-icons">send</i>
+        </button>
+      </div>
+    } @else {
+      <p class="chat-permission-hint">
+        Only the reporter, a current or past assignee, or a SuperAdmin can comment.
+      </p>
+    }
+  </div>
+</div>
