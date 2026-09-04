@@ -24,11 +24,12 @@ import { User } from '../../../core/models/user.model';
 import { ErrorLogDetailDrawer } from '../error-log-detail-drawer/error-log-detail-drawer';
 import { ErrorLogForm } from '../error-log-form/error-log-form';
 import { ErrorLogHistoryModal } from '../../../shared/error-log-history-modal/error-log-history-modal';
+import { MultiSelectDropdown, MultiSelectOption } from '../../../shared/multi-select-dropdown/multi-select-dropdown';
 
 @Component({
   selector: 'app-error-log-list',
   standalone: true,
-  imports: [DatePipe, FormsModule, ErrorLogDetailDrawer, ErrorLogForm, ErrorLogHistoryModal],
+  imports: [DatePipe, FormsModule, ErrorLogDetailDrawer, ErrorLogForm, ErrorLogHistoryModal, MultiSelectDropdown],
   templateUrl: './error-log-list.html',
   styleUrl: './error-log-list.scss',
 })
@@ -39,6 +40,9 @@ export class ErrorLogList implements OnInit {
   readonly statusLabels = STATUS_LABELS;
   readonly pageSizeOptions = [10, 20, 50, 100];
   readonly unassignedFilterValue = UNASSIGNED_FILTER_VALUE;
+
+  readonly statusOptions: MultiSelectOption[] = ERROR_STATUSES.map((s) => ({ value: s, label: STATUS_LABELS[s] }));
+  readonly priorityOptions: MultiSelectOption[] = ERROR_PRIORITIES.map((p) => ({ value: p, label: p }));
 
   logs = signal<ErrorLogListItem[]>([]);
   screens = signal<Screen[]>([]);
@@ -58,10 +62,10 @@ export class ErrorLogList implements OnInit {
   total = signal(0);
   totalPages = signal(0);
 
-  statusFilter: ErrorStatus | '' = '';
+  statusFilter: ErrorStatus[] = [];
   screenFilter: number | '' = '';
   assigneeFilter: string | '' = '';
-  priorityFilter: ErrorPriority | '' = '';
+  priorityFilter: ErrorPriority[] = [];
   environmentFilter: ErrorEnvironment | '' = '';
   searchTerm = '';
   private searchDebounce?: ReturnType<typeof setTimeout>;
@@ -98,10 +102,10 @@ export class ErrorLogList implements OnInit {
       page: this.page(),
       page_size: this.pageSize(),
     };
-    if (this.statusFilter) filters.status_filter = this.statusFilter;
+    if (this.statusFilter.length > 0) filters.status_filter = this.statusFilter.join(',');
     if (this.screenFilter) filters.screen_id = this.screenFilter;
     if (this.assigneeFilter) filters.assigned_to_id = this.assigneeFilter;
-    if (this.priorityFilter) filters.priority = this.priorityFilter;
+    if (this.priorityFilter.length > 0) filters.priority = this.priorityFilter.join(',');
     if (this.environmentFilter) filters.environment = this.environmentFilter;
     if (this.searchTerm.trim()) filters.search = this.searchTerm.trim();
 
@@ -125,6 +129,16 @@ export class ErrorLogList implements OnInit {
   onSearchChange(): void {
     clearTimeout(this.searchDebounce);
     this.searchDebounce = setTimeout(() => this.refreshFromFirstPage(), 300);
+  }
+
+  onStatusFilterChange(values: string[]): void {
+    this.statusFilter = values as ErrorStatus[];
+    this.refreshFromFirstPage();
+  }
+
+  onPriorityFilterChange(values: string[]): void {
+    this.priorityFilter = values as ErrorPriority[];
+    this.refreshFromFirstPage();
   }
 
   goToPage(page: number): void {

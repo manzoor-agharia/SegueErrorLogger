@@ -23,26 +23,22 @@
 
   <div class="form-field">
     <label class="form-label" for="filter-status">Status</label>
-    <div class="select-wrap">
-      <select id="filter-status" [(ngModel)]="statusFilter" (change)="refreshFromFirstPage()">
-        <option value="">All</option>
-        @for (status of statuses; track status) {
-          <option [value]="status">{{ statusLabels[status] }}</option>
-        }
-      </select>
-    </div>
+    <app-multi-select-dropdown
+      id="filter-status"
+      [options]="statusOptions"
+      [selected]="statusFilter"
+      (selectedChange)="onStatusFilterChange($event)"
+    />
   </div>
 
   <div class="form-field">
     <label class="form-label" for="filter-priority">Priority</label>
-    <div class="select-wrap">
-      <select id="filter-priority" [(ngModel)]="priorityFilter" (change)="refreshFromFirstPage()">
-        <option [ngValue]="''">All</option>
-        @for (p of priorities; track p) {
-          <option [value]="p">{{ p }}</option>
-        }
-      </select>
-    </div>
+    <app-multi-select-dropdown
+      id="filter-priority"
+      [options]="priorityOptions"
+      [selected]="priorityFilter"
+      (selectedChange)="onPriorityFilterChange($event)"
+    />
   </div>
 
   <div class="form-field">

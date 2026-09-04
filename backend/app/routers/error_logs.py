@@ -19,6 +19,7 @@ from app.models import (
     ErrorLogComment,
     ErrorLogEditHistory,
     ErrorLogStatusHistory,
+    ErrorPriority,
     ErrorStatus,
     Notification,
     NotificationType,
@@ -188,25 +189,35 @@ async def _notify_comment(db: AsyncSession, error_log: ErrorLog, author: User) -
         )
 
 
+def _split_values(raw: str | None, valid: set[str]) -> list[str]:
+    """Parse a comma-separated filter value, silently dropping anything that isn't a
+    recognized enum value (defends against garbage query params reaching `.in_()`)."""
+    if not raw:
+        return []
+    return [v for v in raw.split(",") if v in valid]
+
+
 def _filtered_query(
     query: Select,
-    status_filter: ErrorStatus | None,
+    status_filter: str | None,
     screen_id: int | None,
     assigned_to_id: str | None,
     priority: str | None,
     environment: str | None,
     search: str | None,
 ) -> Select:
-    if status_filter is not None:
-        query = query.where(ErrorLog.status == status_filter)
+    statuses = _split_values(status_filter, {s.value for s in ErrorStatus})
+    if statuses:
+        query = query.where(ErrorLog.status.in_(statuses))
     if screen_id is not None:
         query = query.where(ErrorLog.screen_id == screen_id)
     if assigned_to_id == UNASSIGNED_SENTINEL:
         query = query.where(ErrorLog.assigned_to_id.is_(None))
     elif assigned_to_id is not None:
         query = query.where(ErrorLog.assigned_to_id == uuid.UUID(assigned_to_id))
-    if priority is not None:
-        query = query.where(ErrorLog.priority == priority)
+    priorities = _split_values(priority, {p.value for p in ErrorPriority})
+    if priorities:
+        query = query.where(ErrorLog.priority.in_(priorities))
     if environment is not None:
         query = query.where(ErrorLog.environment == environment)
     if search:
@@ -238,7 +249,7 @@ def _filtered_query(
 
 @router.get("", response_model=ErrorLogPage)
 async def list_error_logs(
-    status_filter: ErrorStatus | None = None,
+    status_filter: str | None = None,
     screen_id: int | None = None,
     assigned_to_id: str | None = None,
     priority: str | None = None,

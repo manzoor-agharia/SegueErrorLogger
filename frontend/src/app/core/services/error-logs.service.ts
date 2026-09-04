@@ -17,9 +17,11 @@ import {
 export const UNASSIGNED_FILTER_VALUE = 'unassigned';
 
 export interface ErrorLogFilters {
-  status_filter?: ErrorStatus;
+  /** Comma-separated list of ErrorStatus values for multi-select filtering. */
+  status_filter?: string;
   screen_id?: number;
   assigned_to_id?: string;
+  /** Comma-separated list of ErrorPriority values for multi-select filtering. */
   priority?: string;
   environment?: string;
   search?: string;
