@@ -1,0 +1,68 @@
+frontend/src/app/features/error-logs/error-log-form/error-log-form.ts
+  s_43aba915d89d29::t_d62e36b85d9c68 14-15
+  s_43aba915d89d29::t_baca00cdd8957e 209
+  s_43aba915d89d29::t_625c6b80d417d5 100
+  s_43aba915d89d29::t_f1a92f1808e1ab 47
+  s_43aba915d89d29::t_6abf97afe92b2d 61
+  s_43aba915d89d29::t_6f28cfac41f477 90
+frontend/src/app/features/error-logs/error-log-detail-drawer/error-log-detail-drawer.scss
+  s_43aba915d89d29::t_6d812c151e1820 64-77
+frontend/src/app/core/models/error-log.model.ts
+  s_43aba915d89d29::t_01ec49038861d5 22-25
+  s_43aba915d89d29::t_6d4f9a44e68181 105
+  s_43aba915d89d29::t_7bcd0156d8c059 79
+backend/app/routers/error_logs.py
+  s_43aba915d89d29::t_3a13e5d215c3c9 24
+  s_43aba915d89d29::t_4138abc19f55dc 126-128
+  s_43aba915d89d29::t_24c29ed1e62ccf 211,228-230,252,266,274-281,296
+  s_43aba915d89d29::t_5a9e9e3f5835c5 323
+frontend/src/app/features/error-logs/error-log-list/error-log-list.ts
+  s_43aba915d89d29::t_1fae30a6d55894 73
+  s_43aba915d89d29::t_b1f4782e174469 149-153
+  s_43aba915d89d29::t_b58c8cd90959d1 114
+  s_43aba915d89d29::t_205fc771e5d104 48
+  s_43aba915d89d29::t_2bd0c09537b83e 20-21
+backend/app/models.py
+  s_43aba915d89d29::t_66ccbde0451340 107-112
+  s_43aba915d89d29::t_8d3750d73f5305 53-57
+frontend/src/app/core/services/error-logs.service.ts
+  s_43aba915d89d29::t_302f26bc176153 27-28
+frontend/src/app/features/error-logs/error-log-list/error-log-list.scss
+  s_43aba915d89d29::t_064c1fe941258e 69-83
+backend/alembic/versions/d8f1a3c5e7b9_add_log_type.py
+  s_43aba915d89d29::t_c0783cdf8ddde0 1-34
+frontend/src/app/features/error-logs/error-log-detail-drawer/error-log-detail-drawer.html
+  s_43aba915d89d29::t_4d953287fdfc23 11
+frontend/src/app/features/error-logs/error-log-form/error-log-form.html
+  s_43aba915d89d29::t_1d0c1ff33a75d0 2
+  s_43aba915d89d29::t_6f79feee69b22b 51-60
+  s_43aba915d89d29::t_d47ab5dc72c593 50
+frontend/src/app/shared/shell/shell.html
+  s_43aba915d89d29::t_12ad6e7c40c244 4
+backend/app/schemas.py
+  s_43aba915d89d29::t_d30e7d3ea1cb8e 152
+  s_43aba915d89d29::t_6137b7fa8bdf5a 6
+  s_43aba915d89d29::t_b7a95eb678f9d7 76,87
+frontend/src/app/features/error-logs/error-log-list/error-log-list.html
+  s_43aba915d89d29::t_600e6ec21eefdb 108
+  s_43aba915d89d29::t_6ac2e0f90091c8 2,5
+  s_43aba915d89d29::t_dd85820cf55c50 144-146
+  s_43aba915d89d29::t_d269aa050e2641 45-53
+  s_43aba915d89d29::t_56cff61dfb5866 44
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "d5c084f1b68e6c2c88399e8652c621ec066e0790",
+  "prompts": {},
+  "sessions": {
+    "s_43aba915d89d29": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7b76c753-aaee-4747-a7ab-af9b2b96a1ab",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Manzoor Ahmed Agharia <manzoor.ahmed.agharia@growthzone.com>"
+    }
+  }
+}
