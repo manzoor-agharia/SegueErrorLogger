@@ -16,7 +16,7 @@ import { ErrorStatus, STATUS_LABELS } from '../../core/models/error-log.model';
         background: var(--color-warning-soft);
         color: var(--color-warning-strong);
       }
-      .badge-Fixed {
+      .badge-ReadyForQA {
         background: var(--color-info-soft);
         color: var(--color-info-strong);
       }

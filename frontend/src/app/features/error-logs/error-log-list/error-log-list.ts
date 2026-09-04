@@ -51,6 +51,7 @@ export class ErrorLogList implements OnInit {
 
   historyLog = signal<ErrorLogDetail | null>(null);
   openMenuLogId = signal<string | null>(null);
+  menuPosition = signal<{ top: number; left: number } | null>(null);
 
   page = signal(1);
   pageSize = signal(20);
@@ -200,11 +201,23 @@ export class ErrorLogList implements OnInit {
 
   toggleMenu(log: ErrorLogListItem, event: Event): void {
     event.stopPropagation();
-    this.openMenuLogId.set(this.openMenuLogId() === log.id ? null : log.id);
+    if (this.openMenuLogId() === log.id) {
+      this.closeMenu();
+      return;
+    }
+    const button = event.currentTarget as HTMLElement;
+    const rect = button.getBoundingClientRect();
+    // Fixed positioning (computed from the button's actual screen position) so the menu
+    // can never be clipped by an ancestor's `overflow: hidden` -- which happens with
+    // `position: absolute` when the table is short (few filtered rows) and the menu would
+    // otherwise need to extend past the table's own bottom edge.
+    this.menuPosition.set({ top: rect.bottom + 4, left: rect.left });
+    this.openMenuLogId.set(log.id);
   }
 
   closeMenu(): void {
     this.openMenuLogId.set(null);
+    this.menuPosition.set(null);
   }
 
   viewHistory(log: ErrorLogListItem, event: Event): void {

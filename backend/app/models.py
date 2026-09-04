@@ -23,6 +23,7 @@ class ErrorStatus(str, enum.Enum):
     YET_TO_START = "YetToStart"
     IN_PROGRESS = "InProgress"
     FIXED = "Fixed"
+    READY_FOR_QA = "ReadyForQA"
     TESTED_BY_QA = "TestedByQA"
     REOPENED = "Reopened"
     CLOSED = "Closed"
@@ -38,6 +39,7 @@ class ErrorPriority(str, enum.Enum):
 class NotificationType(str, enum.Enum):
     ASSIGNED = "Assigned"
     CREATED = "Created"
+    COMMENT = "Comment"
 
 
 class ErrorEnvironment(str, enum.Enum):

@@ -115,8 +115,8 @@
               <i class="material-icons">more_vert</i>
             </button>
 
-            @if (openMenuLogId() === log.id) {
-              <div class="kebab-menu" (click)="$event.stopPropagation()">
+            @if (openMenuLogId() === log.id && menuPosition(); as pos) {
+              <div class="kebab-menu" [style.top.px]="pos.top" [style.left.px]="pos.left" (click)="$event.stopPropagation()">
                 <button class="kebab-menu-item" type="button" (click)="openEdit(log, $event)">
                   <i class="material-icons">edit</i> Edit
                 </button>

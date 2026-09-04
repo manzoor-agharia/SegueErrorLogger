@@ -168,6 +168,26 @@ async def _notify_new_error_log(db: AsyncSession, error_log: ErrorLog, actor: Us
         )
 
 
+async def _notify_comment(db: AsyncSession, error_log: ErrorLog, author: User) -> None:
+    """Notify the "opposite party" on a comment thread: the reporter and the current assignee,
+    excluding whichever of them just posted. A past assignee who still has comment access via
+    assignment_history is not notified here -- only the two people currently tied to the ticket."""
+    recipient_ids = {error_log.reported_by_id}
+    if error_log.assigned_to_id is not None:
+        recipient_ids.add(error_log.assigned_to_id)
+    recipient_ids.discard(author.id)
+
+    for user_id in recipient_ids:
+        db.add(
+            Notification(
+                user_id=user_id,
+                error_log_id=error_log.id,
+                type=NotificationType.COMMENT,
+                message=f'{author.name} commented on "{error_log.title}"',
+            )
+        )
+
+
 def _filtered_query(
     query: Select,
     status_filter: ErrorStatus | None,
@@ -455,6 +475,7 @@ async def create_comment(
 
     comment = ErrorLogComment(error_log_id=error_log.id, body=payload.body, author_id=current_user.id)
     db.add(comment)
+    await _notify_comment(db, error_log, current_user)
     await db.commit()
     await db.refresh(comment, attribute_names=["author"])
     return comment
