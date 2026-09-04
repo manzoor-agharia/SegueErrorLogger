@@ -1,11 +1,12 @@
 import { User } from './user.model';
 
-export type ErrorStatus = 'YetToStart' | 'InProgress' | 'ReadyForQA' | 'TestedByQA' | 'Reopened' | 'Closed';
+export type ErrorStatus = 'YetToStart' | 'InProgress' | 'Fixed' | 'ReadyForQA' | 'TestedByQA' | 'Reopened' | 'Closed';
 export type ErrorPriority = 'Low' | 'Medium' | 'High' | 'Critical';
 
 export const ERROR_STATUSES: ErrorStatus[] = [
   'YetToStart',
   'InProgress',
+  'Fixed',
   'ReadyForQA',
   'TestedByQA',
   'Reopened',
@@ -21,6 +22,7 @@ export const ERROR_ENVIRONMENTS: ErrorEnvironment[] = ['Dev', 'Staging', 'Master
 export const STATUS_LABELS: Record<ErrorStatus, string> = {
   YetToStart: 'Yet to Start',
   InProgress: 'In Progress',
+  Fixed: 'Fixed',
   ReadyForQA: 'Ready for QA',
   TestedByQA: 'Tested by QA',
   Reopened: 'Reopened',
