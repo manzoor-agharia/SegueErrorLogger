@@ -1,0 +1,55 @@
+frontend/src/app/features/users/user-management/user-management.html
+  s_aec7a37d7de302::t_1fe9e3a2d8f02e 12,23-41
+backend/app/routers/error_logs.py
+  s_aec7a37d7de302::t_5e307a62c2c679 8,28
+  s_aec7a37d7de302::t_eecadbb58b3913 52-76
+  s_aec7a37d7de302::t_d0ecf4dfe75d61 268
+  s_aec7a37d7de302::t_c4f980695776dd 344,346
+frontend/src/app/features/users/user-management/user-management.scss
+  s_aec7a37d7de302::t_c4adb430d3de42 34-107
+frontend/src/app/core/models/error-log.model.ts
+  s_aec7a37d7de302::t_ca456408c40b45 75-76
+  s_aec7a37d7de302::t_21df4f3788fc12 22,24
+frontend/src/app/features/error-logs/error-log-detail-drawer/error-log-detail-drawer.html
+  s_aec7a37d7de302::t_a9f3d2462c1933 3-6,14-18
+frontend/src/app/features/users/user-management/user-management.ts
+  s_aec7a37d7de302::t_b6e65e813de195 2,23-25,44-46,62-64,76-102
+backend/app/schemas.py
+  s_aec7a37d7de302::t_eb8c3bf398fb5f 148
+backend/app/models.py
+  s_aec7a37d7de302::t_1c4370d79b9eab 3,5
+  s_aec7a37d7de302::t_a100f032f3c796 101-104
+  s_aec7a37d7de302::t_a50776c3f6c3a1 86-96
+  s_aec7a37d7de302::t_620509f59ab7dd 56
+backend/alembic/versions/f4c8b1a3d6e9_add_suggestion_log_type.py
+  s_aec7a37d7de302::t_c3f30a75cbe02e 1-28
+frontend/src/app/features/error-logs/error-log-detail-drawer/error-log-detail-drawer.scss
+  s_aec7a37d7de302::t_0737af34b212d3 19-32
+  s_aec7a37d7de302::t_5b8bc95af33d17 90-94
+frontend/src/app/features/error-logs/error-log-list/error-log-list.scss
+  s_aec7a37d7de302::t_52d5bf3daf6de8 82-84,86
+  s_aec7a37d7de302::t_925f1b69216a9f 85,87-93
+frontend/src/app/features/error-logs/error-log-list/error-log-list.html
+  s_aec7a37d7de302::t_c767ab79283efb 144,147-151
+  s_aec7a37d7de302::t_717b9d81afa5de 19
+  s_aec7a37d7de302::t_e3eb080e540278 107
+backend/alembic/versions/a1e5c9d3b7f2_add_reference_id.py
+  s_aec7a37d7de302::t_c0c4ed2cf81c97 66
+  s_aec7a37d7de302::t_2b41ffc3d09044 1-65,67-72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "de6e7c57eb9f58e55dc9f2693bd23b63d03e63f6",
+  "prompts": {},
+  "sessions": {
+    "s_aec7a37d7de302": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6f0e71f3-6a59-451e-a478-3269e24e2d88",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Manzoor Ahmed Agharia <manzoor.ahmed.agharia@growthzone.com>"
+    }
+  }
+}
