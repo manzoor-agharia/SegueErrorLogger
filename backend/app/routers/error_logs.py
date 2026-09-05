@@ -5,6 +5,7 @@ from pathlib import Path
 from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, status
 from fastapi.responses import FileResponse
 from sqlalchemy import String, cast, func, or_, select
+from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import aliased, selectinload
 from sqlalchemy.sql import Select
@@ -24,6 +25,7 @@ from app.models import (
     LogType,
     Notification,
     NotificationType,
+    ReferenceCounter,
     Screen,
     User,
     UserRole,
@@ -46,6 +48,31 @@ router = APIRouter(prefix="/error-logs", tags=["error-logs"])
 # Sentinel accepted by the `assigned_to_id` filter to mean "no assignee set", since the
 # query param otherwise only ever carries a real user UUID.
 UNASSIGNED_SENTINEL = "unassigned"
+
+_REFERENCE_PREFIX = {
+    LogType.ERROR: "ERR",
+    LogType.FEATURE: "FEA",
+    LogType.SUGGESTION: "SUG",
+}
+
+
+async def _next_reference_id(db: AsyncSession, log_type: LogType) -> str:
+    """Atomically bump the per-(type, day) counter and format "PREFIX-DDMMYYYY-NN".
+    The upsert is done in the database (not read-then-write in Python) so two logs of
+    the same type created in the same second never collide on the same counter value."""
+    today = datetime.now(timezone.utc).date()
+    stmt = (
+        pg_insert(ReferenceCounter)
+        .values(log_type=log_type, ref_date=today, counter=1)
+        .on_conflict_do_update(
+            index_elements=[ReferenceCounter.log_type, ReferenceCounter.ref_date],
+            set_={"counter": ReferenceCounter.counter + 1},
+        )
+        .returning(ReferenceCounter.counter)
+    )
+    result = await db.execute(stmt)
+    counter = result.scalar_one()
+    return f"{_REFERENCE_PREFIX[log_type]}-{today:%d%m%Y}-{counter:02d}"
 
 _DETAIL_OPTIONS = (
     selectinload(ErrorLog.screen),
@@ -238,6 +265,7 @@ def _filtered_query(
             .outerjoin(Screen, ErrorLog.screen)
             .where(
                 or_(
+                    ErrorLog.reference_id.ilike(term),
                     ErrorLog.title.ilike(term),
                     ErrorLog.description.ilike(term),
                     ErrorLog.screen_name_freetext.ilike(term),
@@ -313,7 +341,9 @@ async def create_error_log(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> ErrorLogDetail:
+    reference_id = await _next_reference_id(db, payload.log_type)
     error_log = ErrorLog(
+        reference_id=reference_id,
         title=payload.title,
         description=payload.description,
         screen_id=payload.screen_id,

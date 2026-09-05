@@ -9,17 +9,36 @@
 <table class="data-table users-table">
   <thead class="data-table__header">
     <tr>
+      <th></th>
       <th>Name</th>
       <th>Email</th>
       <th>Role</th>
       <th>Status</th>
       <th>Joined</th>
-      <th></th>
     </tr>
   </thead>
   <tbody>
     @for (user of users(); track user.id) {
       <tr class="data-table__row">
+        <td class="col-menu" (click)="$event.stopPropagation()">
+          <div class="kebab-wrap">
+            <button class="btn-icon btn-more" (click)="toggleMenu(user, $event)" title="More actions">
+              <i class="material-icons">more_vert</i>
+            </button>
+
+            @if (openMenuUserId() === user.id && menuPosition(); as pos) {
+              <div class="kebab-menu" [style.top.px]="pos.top" [style.left.px]="pos.left" (click)="$event.stopPropagation()">
+                <button class="kebab-menu-item" type="button" (click)="openEdit(user, $event)">
+                  <i class="material-icons">edit</i> Edit
+                </button>
+                <div class="kebab-menu-divider"></div>
+                <button class="kebab-menu-item kebab-menu-item--danger" type="button" (click)="deleteUser(user, $event)">
+                  <i class="material-icons">delete</i> Delete
+                </button>
+              </div>
+            }
+          </div>
+        </td>
         <td>{{ user.name }}</td>
         <td>{{ user.email }}</td>
         <td>{{ user.role }}</td>
@@ -29,14 +48,6 @@
           </span>
         </td>
         <td>{{ user.created_at | date: 'mediumDate' }}</td>
-        <td>
-          <button class="btn-icon" (click)="openEdit(user)" title="Edit">
-            <i class="material-icons">edit</i>
-          </button>
-          <button class="btn-icon" (click)="deleteUser(user)" title="Delete">
-            <i class="material-icons">delete</i>
-          </button>
-        </td>
       </tr>
     }
   </tbody>

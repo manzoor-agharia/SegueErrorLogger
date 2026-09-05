@@ -1,8 +1,8 @@
 import enum
 import uuid
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 
-from sqlalchemy import Boolean, DateTime, Enum, ForeignKey, Integer, String, Text
+from sqlalchemy import Boolean, Date, DateTime, Enum, ForeignKey, Integer, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -53,6 +53,7 @@ class ErrorEnvironment(str, enum.Enum):
 class LogType(str, enum.Enum):
     ERROR = "Error"
     FEATURE = "Feature"
+    SUGGESTION = "Suggestion"
 
 
 class User(Base):
@@ -82,10 +83,25 @@ class Screen(Base):
     category: Mapped[str] = mapped_column(String(100), nullable=False)
 
 
+class ReferenceCounter(Base):
+    """One row per (log_type, day) holding the last daily counter handed out for that
+    type -- backs the "ERR-04092026-01" style reference_id via an atomic upsert."""
+
+    __tablename__ = "reference_counters"
+
+    log_type: Mapped[LogType] = mapped_column(Enum(LogType, name="log_type"), primary_key=True)
+    ref_date: Mapped[date] = mapped_column(Date, primary_key=True)
+    counter: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
+
+
 class ErrorLog(Base):
     __tablename__ = "error_logs"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    # Human-readable tracking number, e.g. "ERR-04092026-01" (type-date-daily counter).
+    # Assigned once at creation via ReferenceCounter and never recomputed, so it stays a
+    # stable reference even if the item's log_type is edited afterwards.
+    reference_id: Mapped[str] = mapped_column(String(20), nullable=False, unique=True, index=True)
     title: Mapped[str] = mapped_column(String(300), nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=False)
 

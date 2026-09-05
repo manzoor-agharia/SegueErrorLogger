@@ -19,9 +19,9 @@ export type ErrorEnvironment = 'Dev' | 'Staging' | 'Master' | 'QA' | 'Production
 
 export const ERROR_ENVIRONMENTS: ErrorEnvironment[] = ['Dev', 'Staging', 'Master', 'QA', 'Production'];
 
-export type LogType = 'Error' | 'Feature';
+export type LogType = 'Error' | 'Feature' | 'Suggestion';
 
-export const LOG_TYPES: LogType[] = ['Error', 'Feature'];
+export const LOG_TYPES: LogType[] = ['Error', 'Feature', 'Suggestion'];
 
 export const STATUS_LABELS: Record<ErrorStatus, string> = {
   YetToStart: 'Yet to Start',
@@ -72,6 +72,8 @@ export interface Comment {
 
 export interface ErrorLogListItem {
   id: string;
+  /** Human-readable tracking number, e.g. "ERR-04092026-01" (type-date-daily counter). */
+  reference_id: string;
   title: string;
   status: ErrorStatus;
   priority: ErrorPriority;

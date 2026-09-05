@@ -16,7 +16,7 @@
         type="text"
         [(ngModel)]="searchTerm"
         (ngModelChange)="onSearchChange()"
-        placeholder="Search title, description, screen, people, status..."
+        placeholder="Search reference ID, title, description, screen, people, status..."
       />
     </div>
   </div>
@@ -104,6 +104,7 @@
   <thead class="data-table__header">
     <tr>
       <th></th>
+      <th>Ref ID</th>
       <th>Title</th>
       <th>Type</th>
       <th>Screen</th>
@@ -140,9 +141,14 @@
             }
           </div>
         </td>
+        <td class="reference-cell" [title]="log.reference_id">{{ log.reference_id }}</td>
         <td class="title-cell" [title]="log.title">{{ log.title }}</td>
         <td>
-          <span class="type-badge" [class.type-badge--feature]="log.log_type === 'Feature'">{{ log.log_type }}</span>
+          <span
+            class="type-badge"
+            [class.type-badge--feature]="log.log_type === 'Feature'"
+            [class.type-badge--suggestion]="log.log_type === 'Suggestion'"
+          >{{ log.log_type }}</span>
         </td>
         <td>{{ log.screen?.name ?? log.screen_name_freetext ?? '—' }}</td>
         <td (click)="$event.stopPropagation()">

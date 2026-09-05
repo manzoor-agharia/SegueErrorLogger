@@ -145,6 +145,7 @@ class ErrorLogListItem(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: uuid.UUID
+    reference_id: str
     title: str
     status: ErrorStatus
     priority: ErrorPriority

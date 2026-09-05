@@ -79,6 +79,18 @@
     background: var(--color-primary-soft, #e0f2f1);
     color: var(--color-primary);
   }
+
+  &--suggestion {
+    background: var(--color-warning-soft);
+    color: var(--color-warning-strong);
+  }
+}
+
+.reference-cell {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-muted);
+  white-space: nowrap;
 }
 
 .empty {

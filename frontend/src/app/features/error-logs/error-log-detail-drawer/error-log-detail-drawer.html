@@ -1,6 +1,9 @@
 @if (errorLog; as log) {
   <div class="drawer-header">
-    <h2>{{ log.title }}</h2>
+    <div class="drawer-heading">
+      <span class="reference-id">{{ log.reference_id }}</span>
+      <h2>{{ log.title }}</h2>
+    </div>
     <button class="btn-icon" (click)="close()" aria-label="Close">
       <i class="material-icons">close</i>
     </button>
@@ -8,7 +11,11 @@
 
   <div class="drawer-body">
     <div class="meta-row">
-      <span class="type-badge" [class.type-badge--feature]="log.log_type === 'Feature'">{{ log.log_type }}</span>
+      <span
+        class="type-badge"
+        [class.type-badge--feature]="log.log_type === 'Feature'"
+        [class.type-badge--suggestion]="log.log_type === 'Suggestion'"
+      >{{ log.log_type }}</span>
       <app-status-badge [status]="log.status" />
       <span class="priority priority-{{ log.priority }}">{{ log.priority }} priority</span>
       <span class="environment-badge">{{ log.environment }}</span>
