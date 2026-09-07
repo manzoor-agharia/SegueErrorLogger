@@ -1,0 +1,59 @@
+backend/app/models.py
+  s_aec7a37d7de302::t_b8730b31d5ab4d 242-260
+backend/alembic/versions/b6d2f8a4c1e5_add_comment_attachments.py
+  s_aec7a37d7de302::t_0bfae404ed4964 1-46
+frontend/src/app/core/models/error-log.model.ts
+  s_aec7a37d7de302::t_2d5be0a275a98b 71
+frontend/src/app/core/services/error-logs.service.ts
+  s_aec7a37d7de302::t_ca1f853f3f6ba8 91-100
+frontend/src/app/shared/error-log-comments-modal/error-log-comments-modal.ts
+  s_aec7a37d7de302::t_4755283092a461 2-13,19-26,33-37,46,54,59-64,66,76-81,98-163,166-167,169,175-193,202-208,221,223,250-261
+  s_7d88000bee67e4::t_54a4e77f6310d0 262
+frontend/src/app/shared/error-log-comments-modal/error-log-comments-modal.html
+  s_aec7a37d7de302::t_8b44506e9f4764 30-48,75-107
+frontend/src/app/shared/error-log-comments-modal/error-log-comments-modal.scss
+  s_aec7a37d7de302::t_178ae47311cd42 130-175,178,184-189,196-199,203,211-255,257-258
+  s_7d88000bee67e4::t_990c947531fc81 256,259
+backend/app/schemas.py
+  s_aec7a37d7de302::t_e7b8dc8b943286 127-129,133
+  s_aec7a37d7de302::t_97a862f75751df 136-143,154
+  s_c7569e329949f3::t_f3e5f0df819932 134-135
+backend/app/routers/error_logs.py
+  s_aec7a37d7de302::t_e270e0f70c13e3 546,550-618,642
+  s_aec7a37d7de302::t_ebf90008a801e5 655-657,665-666
+  s_aec7a37d7de302::t_947fc84397ae42 21,36
+  s_aec7a37d7de302::t_26195e1f1cffb0 87
+  s_aec7a37d7de302::t_f471803aa0a93a 466-468
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "d5d37708aea9d71c15bcf11ef1c7ac8cc62e8cf6",
+  "prompts": {},
+  "sessions": {
+    "s_7d88000bee67e4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "68632c35-55c2-4108-8af2-bf9f8afba26c",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Manzoor Ahmed Agharia <manzoor.ahmed.agharia@growthzone.com>"
+    },
+    "s_aec7a37d7de302": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6f0e71f3-6a59-451e-a478-3269e24e2d88",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Manzoor Ahmed Agharia <manzoor.ahmed.agharia@growthzone.com>"
+    },
+    "s_c7569e329949f3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "930d3848-c15c-4355-a992-c2ec624764bb",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Manzoor Ahmed Agharia <manzoor.ahmed.agharia@growthzone.com>"
+    }
+  }
+}
