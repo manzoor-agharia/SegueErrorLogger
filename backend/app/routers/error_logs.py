@@ -18,6 +18,7 @@ from app.models import (
     ErrorLogAssignmentHistory,
     ErrorLogAttachment,
     ErrorLogComment,
+    ErrorLogCommentAttachment,
     ErrorLogEditHistory,
     ErrorLogStatusHistory,
     ErrorPriority,
@@ -32,6 +33,7 @@ from app.models import (
 )
 from app.schemas import (
     AttachmentOut,
+    CommentAttachmentOut,
     CommentCreate,
     CommentOut,
     CommentUpdate,
@@ -82,6 +84,7 @@ _DETAIL_OPTIONS = (
     selectinload(ErrorLog.status_history).selectinload(ErrorLogStatusHistory.changed_by),
     selectinload(ErrorLog.edit_history).selectinload(ErrorLogEditHistory.changed_by),
     selectinload(ErrorLog.comments).selectinload(ErrorLogComment.author),
+    selectinload(ErrorLog.comments).selectinload(ErrorLogComment.attachments),
     selectinload(ErrorLog.assignment_history),
 )
 
@@ -460,6 +463,9 @@ async def delete_error_log(
     error_log = await _get_or_404(db, error_log_id)
     for attachment in error_log.attachments:
         Path(attachment.file_path).unlink(missing_ok=True)
+    for comment in error_log.comments:
+        for attachment in comment.attachments:
+            Path(attachment.file_path).unlink(missing_ok=True)
     await db.delete(error_log)
     await db.commit()
 
@@ -537,8 +543,77 @@ async def create_comment(
     db.add(comment)
     await _notify_comment(db, error_log, current_user)
     await db.commit()
-    await db.refresh(comment, attribute_names=["author"])
+    await db.refresh(comment, attribute_names=["author", "attachments"])
     return comment
+
+
+@router.post(
+    "/{error_log_id}/comments/{comment_id}/attachments",
+    response_model=list[CommentAttachmentOut],
+    status_code=status.HTTP_201_CREATED,
+)
+async def upload_comment_attachments(
+    error_log_id: uuid.UUID,
+    comment_id: uuid.UUID,
+    files: list[UploadFile],
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> list[ErrorLogCommentAttachment]:
+    comment = (
+        await db.execute(
+            select(ErrorLogComment).where(
+                ErrorLogComment.id == comment_id, ErrorLogComment.error_log_id == error_log_id
+            )
+        )
+    ).scalar_one_or_none()
+    if comment is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Comment not found")
+    if comment.author_id != current_user.id and current_user.role != UserRole.SUPER_ADMIN:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "You can only attach files to your own comments")
+
+    target_dir = Path(settings.attachments_dir) / "comments" / str(comment.id)
+    target_dir.mkdir(parents=True, exist_ok=True)
+
+    created: list[ErrorLogCommentAttachment] = []
+    for upload in files:
+        stored_name = f"{uuid.uuid4()}_{upload.filename}"
+        dest_path = target_dir / stored_name
+        content = await upload.read()
+        dest_path.write_bytes(content)
+
+        attachment = ErrorLogCommentAttachment(
+            comment_id=comment.id,
+            file_path=str(dest_path),
+            original_filename=upload.filename or stored_name,
+            content_type=upload.content_type or "application/octet-stream",
+            size_bytes=len(content),
+        )
+        db.add(attachment)
+        created.append(attachment)
+
+    await db.commit()
+    for attachment in created:
+        await db.refresh(attachment)
+    return created
+
+
+@router.get("/comments/attachments/{attachment_id}/download")
+async def download_comment_attachment(
+    attachment_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    _: User = Depends(get_current_user),
+) -> FileResponse:
+    attachment = (
+        await db.execute(select(ErrorLogCommentAttachment).where(ErrorLogCommentAttachment.id == attachment_id))
+    ).scalar_one_or_none()
+    if attachment is None or not Path(attachment.file_path).exists():
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Attachment not found")
+
+    return FileResponse(
+        path=attachment.file_path,
+        filename=attachment.original_filename,
+        media_type=attachment.content_type,
+    )
 
 
 @router.put("/{error_log_id}/comments/{comment_id}", response_model=CommentOut)
@@ -564,7 +639,7 @@ async def update_comment(
     comment.body = payload.body
     comment.edited_at = datetime.now(timezone.utc)
     await db.commit()
-    await db.refresh(comment, attribute_names=["author"])
+    await db.refresh(comment, attribute_names=["author", "attachments"])
     return comment
 
 
@@ -577,9 +652,9 @@ async def delete_comment(
 ) -> None:
     comment = (
         await db.execute(
-            select(ErrorLogComment).where(
-                ErrorLogComment.id == comment_id, ErrorLogComment.error_log_id == error_log_id
-            )
+            select(ErrorLogComment)
+            .where(ErrorLogComment.id == comment_id, ErrorLogComment.error_log_id == error_log_id)
+            .options(selectinload(ErrorLogComment.attachments))
         )
     ).scalar_one_or_none()
     if comment is None:
@@ -587,5 +662,7 @@ async def delete_comment(
     if comment.author_id != current_user.id and current_user.role != UserRole.SUPER_ADMIN:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "You can only delete your own comments")
 
+    for attachment in comment.attachments:
+        Path(attachment.file_path).unlink(missing_ok=True)
     await db.delete(comment)
     await db.commit()

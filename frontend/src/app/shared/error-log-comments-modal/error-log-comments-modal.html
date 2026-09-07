@@ -27,7 +27,25 @@
                 </div>
               </div>
             } @else {
-              <p class="chat-text">{{ comment.body }}</p>
+              @if (comment.body) {
+                <p class="chat-text">{{ comment.body }}</p>
+              }
+
+              @if (comment.attachments.length > 0) {
+                <div class="chat-attachments">
+                  @for (attachment of comment.attachments; track attachment.id) {
+                    @if (attachment.content_type.startsWith('image/') && imageUrlFor(attachment); as src) {
+                      <img class="chat-attachment-image" [src]="src" [alt]="attachment.original_filename" (click)="download(attachment)" />
+                    } @else {
+                      <button class="chat-attachment-file" type="button" (click)="download(attachment)" [title]="attachment.original_filename">
+                        <i class="material-icons">description</i>
+                        <span>{{ attachment.original_filename }}</span>
+                      </button>
+                    }
+                  }
+                </div>
+              }
+
               <div class="chat-footer">
                 <span class="chat-meta">
                   {{ comment.created_at | date: 'short' }}
@@ -54,14 +72,39 @@
 
     @if (canComment) {
       <div class="chat-composer">
-        <textarea rows="2" placeholder="Add a comment..." [(ngModel)]="newCommentBody"></textarea>
-        <button
-          class="btn btn-sm btn-primary"
-          [disabled]="!newCommentBody.trim() || postingComment()"
-          (click)="addComment()"
-        >
-          <i class="material-icons">send</i>
-        </button>
+        @if (pendingFiles().length > 0) {
+          <div class="pending-files">
+            @for (pending of pendingFiles(); track pending.file) {
+              <div class="pending-file">
+                @if (pending.isImage && pending.previewUrl) {
+                  <img [src]="pending.previewUrl" [alt]="pending.file.name" />
+                } @else {
+                  <i class="material-icons">description</i>
+                }
+                <span class="pending-file-name" [title]="pending.file.name">{{ pending.file.name }}</span>
+                <button class="btn-icon" type="button" (click)="removePendingFile(pending)" title="Remove">
+                  <i class="material-icons">close</i>
+                </button>
+              </div>
+            }
+          </div>
+        }
+
+        <div class="chat-composer-row">
+          <input #fileInput type="file" multiple hidden (change)="onFilesSelected($event)" />
+          <button class="btn-icon attach-btn" type="button" (click)="fileInput.click()" title="Attach files">
+            <i class="material-icons">attach_file</i>
+          </button>
+          <textarea
+            rows="2"
+            placeholder="Add a comment, or paste an image/file directly..."
+            [(ngModel)]="newCommentBody"
+            (paste)="onComposerPaste($event)"
+          ></textarea>
+          <button class="btn btn-sm btn-primary" [disabled]="!canSend() || postingComment()" (click)="addComment()">
+            <i class="material-icons">send</i>
+          </button>
+        </div>
       </div>
     } @else {
       <p class="chat-permission-hint">

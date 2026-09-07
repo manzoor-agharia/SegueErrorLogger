@@ -124,11 +124,23 @@ class EditHistoryOut(BaseModel):
 # ---- Comments ----
 
 class CommentCreate(BaseModel):
-    body: str = Field(min_length=1, max_length=4000)
+    # No min_length -- a comment may carry only attachments (e.g. a pasted screenshot with
+    # no caption), and attachments are uploaded in a second request once the comment exists.
+    body: str = Field(default="", max_length=4000)
 
 
 class CommentUpdate(BaseModel):
-    body: str = Field(min_length=1, max_length=4000)
+    body: str = Field(default="", max_length=4000)
+
+
+class CommentAttachmentOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: uuid.UUID
+    original_filename: str
+    content_type: str
+    size_bytes: int
+    uploaded_at: datetime
 
 
 class CommentOut(BaseModel):
@@ -139,6 +151,7 @@ class CommentOut(BaseModel):
     author: UserOut
     created_at: datetime
     edited_at: datetime | None
+    attachments: list[CommentAttachmentOut] = []
 
 
 class ErrorLogListItem(BaseModel):

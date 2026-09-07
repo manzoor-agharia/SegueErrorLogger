@@ -68,6 +68,7 @@ export interface Comment {
   author: User;
   created_at: string;
   edited_at: string | null;
+  attachments: Attachment[];
 }
 
 export interface ErrorLogListItem {

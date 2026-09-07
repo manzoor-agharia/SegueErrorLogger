@@ -88,4 +88,14 @@ export class ErrorLogsService {
   deleteComment(id: string, commentId: string): Observable<void> {
     return this.http.delete<void>(`${this.base}/${id}/comments/${commentId}`);
   }
+
+  uploadCommentAttachments(id: string, commentId: string, files: File[]): Observable<Attachment[]> {
+    const formData = new FormData();
+    files.forEach((file) => formData.append('files', file, file.name));
+    return this.http.post<Attachment[]>(`${this.base}/${id}/comments/${commentId}/attachments`, formData);
+  }
+
+  commentAttachmentDownloadUrl(attachmentId: string): string {
+    return `${this.base}/comments/attachments/${attachmentId}/download`;
+  }
 }
