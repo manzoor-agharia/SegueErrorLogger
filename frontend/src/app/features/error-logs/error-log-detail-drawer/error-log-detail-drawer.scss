@@ -1,14 +1,19 @@
 :host {
-  display: block;
-  width: 420px;
-  max-width: 90vw;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 0;
 }
 
 .drawer-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  padding: 16px 16px 0;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-side);
+  flex-shrink: 0;
 
   h2 {
     margin: 0;
@@ -31,8 +36,10 @@
 }
 
 .drawer-body {
-  padding: 0 20px 24px;
+  padding: 16px 20px 24px;
   overflow-y: auto;
+  flex: 1;
+  min-height: 0;
 }
 
 .meta-row {

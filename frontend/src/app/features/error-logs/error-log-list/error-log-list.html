@@ -191,9 +191,10 @@
 }
 
 @if (selectedLog(); as log) {
-  <div class="drawer-backdrop" (click)="closeDetail()"></div>
-  <div class="drawer-panel">
-    <app-error-log-detail-drawer [errorLog]="log" (closed)="closeDetail()" />
+  <div class="modal-backdrop" (click)="closeDetail()">
+    <div class="modal-panel detail-panel" (click)="$event.stopPropagation()">
+      <app-error-log-detail-drawer [errorLog]="log" (closed)="closeDetail()" />
+    </div>
   </div>
 }
 

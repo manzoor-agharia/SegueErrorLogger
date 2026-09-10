@@ -126,7 +126,9 @@ export class ErrorLogDetailDrawer implements OnChanges, OnDestroy {
       if (event.key === 'Escape') this.closeViewer();
       if (event.key === 'ArrowLeft') this.showPrevImage();
       if (event.key === 'ArrowRight') this.showNextImage();
+      return;
     }
+    if (event.key === 'Escape') this.close();
   }
 
   private revokeUrls(): void {

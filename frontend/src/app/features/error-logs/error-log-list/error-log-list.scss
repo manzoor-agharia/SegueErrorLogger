@@ -117,32 +117,9 @@
   }
 }
 
-.drawer-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: var(--z-modal);
-  background: rgba(15, 20, 30, 0.35);
-}
-
-.drawer-panel {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  z-index: calc(var(--z-modal) + 1);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-lg);
-  overflow-y: auto;
-  animation: slide-in var(--transition-modal);
-}
-
-@keyframes slide-in {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
-  }
+.detail-panel {
+  width: min(680px, 92vw);
+  max-height: 88vh;
 }
 
 // ── Row "more actions" kebab menu ───────────────────────────────────────────
