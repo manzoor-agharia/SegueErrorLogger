@@ -44,5 +44,20 @@
     </form>
 
     <p class="switch text-body-sm">Don't have an account? <a routerLink="/register">Create one</a></p>
+
+    @if (showUiSwitcher) {
+      <div class="ui-switcher">
+        <span class="ui-switcher-label">Open with</span>
+        <div class="ui-switcher-options">
+          @for (flavor of uiFlavors; track flavor) {
+            <label class="ui-switcher-option" [class.ui-switcher-option--active]="selectedUi === flavor">
+              <input type="radio" name="ui-flavor" [value]="flavor" [(ngModel)]="selectedUi" />
+              <span>{{ uiLabels[flavor] }}</span>
+            </label>
+          }
+        </div>
+        <p class="ui-switcher-hint">Dev only — requires all three served from one origin via dev-proxy.</p>
+      </div>
+    }
   </div>
 </div>

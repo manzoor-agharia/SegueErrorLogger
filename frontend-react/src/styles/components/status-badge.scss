@@ -1,0 +1,29 @@
+/* Ported from the Angular StatusBadge component's inline `styles` block. */
+.badge-YetToStart {
+  background: var(--color-side);
+  color: var(--color-muted);
+}
+.badge-InProgress {
+  background: var(--color-warning-soft);
+  color: var(--color-warning-strong);
+}
+.badge-Fixed {
+  background: var(--color-primary-soft, #e0f2f1);
+  color: var(--color-primary);
+}
+.badge-ReadyForQA {
+  background: var(--color-info-soft);
+  color: var(--color-info-strong);
+}
+.badge-TestedByQA {
+  background: var(--color-success-soft);
+  color: var(--color-success-strong);
+}
+.badge-Reopened {
+  background: var(--color-error-soft);
+  color: var(--color-error-strong);
+}
+.badge-Closed {
+  background: #e2e8f0;
+  color: var(--color-ink-2);
+}

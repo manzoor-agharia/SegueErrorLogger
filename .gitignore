@@ -11,3 +11,9 @@ backend/.venv/
 frontend/node_modules/
 frontend/dist/
 frontend/.angular/
+
+frontend-vue/node_modules/
+frontend-vue/dist/
+frontend-react/node_modules/
+frontend-react/dist/
+dev-proxy/node_modules/

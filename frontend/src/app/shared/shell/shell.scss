@@ -66,3 +66,40 @@
   margin: 0 auto;
   padding: 24px;
 }
+
+// ── Dev-only UI picker in the toolbar ───────────────────────────────────────
+// Lets you jump between the Angular / Vue / React builds mid-session; the JWT lives in
+// localStorage on a shared origin, so the target app boots already signed in.
+.ui-switch {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 10px;
+  padding: 2px;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius-base);
+}
+
+.ui-switch-btn {
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-on-primary);
+  background: transparent;
+  border: 0;
+  border-radius: calc(var(--radius-base) - 2px);
+  cursor: pointer;
+  opacity: 0.75;
+
+  &:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.16);
+  }
+}
+
+.ui-switch-btn--active {
+  opacity: 1;
+  color: var(--color-primary);
+  background: var(--color-on-primary);
+  cursor: default;
+}

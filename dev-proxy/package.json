@@ -1,0 +1,16 @@
+{
+  "name": "errorlogger-dev-proxy",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Dev-only single-origin proxy fronting the Angular, Vue and React UIs plus the API.",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "all": "concurrently -n angular,vue,react,proxy -c blue,green,cyan,magenta \"npm --prefix ../frontend start -- --port 4200\" \"npm --prefix ../frontend-vue run dev\" \"npm --prefix ../frontend-react run dev\" \"node server.js\""
+  },
+  "dependencies": {
+    "concurrently": "^9.1.2",
+    "http-proxy": "^1.18.1"
+  }
+}

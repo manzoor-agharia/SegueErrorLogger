@@ -1,0 +1,193 @@
+.c-error-log-form {
+  & {
+    display: flex;
+    flex-direction: column;
+    max-height: 88vh;
+  }
+  
+  .modal-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-side);
+    flex-shrink: 0;
+  }
+  
+  .modal-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+  
+  .modal-body {
+    padding: 18px 20px 22px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  
+  .modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 12px 20px;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-side);
+    flex-shrink: 0;
+  }
+  
+  .paste-zone {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px;
+    border: 1.5px dashed var(--color-border-input);
+    border-radius: var(--radius-base);
+    color: var(--color-muted);
+    font-size: 12.5px;
+    cursor: text;
+    margin-bottom: 8px;
+  
+    i {
+      color: var(--color-primary);
+    }
+  
+    &:focus,
+    &:focus-visible {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 168, 157, 0.12);
+      color: var(--color-ink-2);
+    }
+  }
+  
+  .autocomplete-field {
+    position: relative;
+  
+    input {
+      width: 100%;
+    }
+  }
+  
+  .autocomplete-list {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    max-height: 220px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 4px 0;
+    list-style: none;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-base);
+    box-shadow: var(--shadow-lg);
+    z-index: 5;
+  
+    li {
+      padding: 7px 12px;
+      font-size: 13px;
+      cursor: pointer;
+  
+      &:hover {
+        background: var(--color-side);
+      }
+    }
+  
+    .option-meta {
+      color: var(--color-muted);
+      font-size: 11.5px;
+    }
+  
+    .option-other {
+      border-top: 1px solid var(--color-border);
+      font-weight: 600;
+      color: var(--color-primary);
+    }
+  
+    .option-empty {
+      color: var(--color-muted);
+      cursor: default;
+  
+      &:hover {
+        background: none;
+      }
+    }
+  }
+  
+  & {
+    /* ngx-quill's host is `display: inline-block` with no explicit height, so Quill's own
+       `.ql-container { height: 100% }` doesn't resolve against it correctly and the container
+       overflows past its own host's box -- bleeding into whatever sits below it in the form.
+       Forcing auto height makes .ql-container size itself from its content (.ql-editor's
+       min-height) like a normal block, matching what actually gets rendered on screen. */
+    .ql-container.ql-snow {
+      height: auto;
+    }
+  
+    .ql-editor {
+      min-height: 120px;
+      font-size: 14px;
+      outline: none;
+    }
+  
+    /* The app's global `::focus-visible` rule paints a spreading box-shadow ring on any
+       focused element, including this contenteditable div -- which bleeds into the fields
+       below it since .ql-editor has no margin of its own to contain the ring. Suppress it
+       here and apply an equivalent, properly-contained focus style to the outer .ql-container
+       instead. */
+    .ql-editor:focus,
+    .ql-editor:focus-visible {
+      box-shadow: none !important;
+      border-color: transparent !important;
+      outline: none;
+    }
+  
+    .ql-toolbar.ql-snow,
+    .ql-container.ql-snow {
+      border-color: var(--color-border-input);
+    }
+  
+    .ql-container.ql-snow:focus-within {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 168, 157, 0.12);
+    }
+  
+    .ql-container.ql-snow {
+      border-bottom-left-radius: var(--radius-base);
+      border-bottom-right-radius: var(--radius-base);
+    }
+  
+    .ql-toolbar.ql-snow {
+      border-top-left-radius: var(--radius-base);
+      border-top-right-radius: var(--radius-base);
+    }
+  }
+  
+  .file-list {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  
+    li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      padding: 4px 8px;
+      background: var(--color-side);
+      border-radius: var(--radius-sm);
+    }
+  
+    .file-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+}

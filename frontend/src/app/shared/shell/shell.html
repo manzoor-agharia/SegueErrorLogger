@@ -10,6 +10,21 @@
   @if (auth.currentUser(); as user) {
     <span class="user-info">{{ user.name }} · {{ user.role }}</span>
   }
+  @if (showUiSwitcher) {
+    <div class="ui-switch" title="Dev only — switch UI framework">
+      @for (flavor of uiFlavors; track flavor) {
+        <button
+          type="button"
+          class="ui-switch-btn"
+          [class.ui-switch-btn--active]="flavor === currentUi"
+          [disabled]="flavor === currentUi"
+          (click)="switchTo(flavor)"
+        >
+          {{ uiLabels[flavor] }}
+        </button>
+      }
+    </div>
+  }
   <app-notification-bell />
   <button class="btn-icon" (click)="logout()" aria-label="Logout" title="Logout">
     <i class="material-icons">logout</i>

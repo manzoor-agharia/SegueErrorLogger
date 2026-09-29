@@ -32,3 +32,66 @@
   text-align: center;
   margin-top: 16px;
 }
+
+// ── Dev-only UI picker (Angular / Vue / React) ──────────────────────────────
+// Rendered only when environment.uiSwitcher is true, so it never reaches a prod build.
+.ui-switcher {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--color-border);
+}
+
+.ui-switcher-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.ui-switcher-options {
+  display: flex;
+  gap: 8px;
+}
+
+.ui-switcher-option {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--radius-base);
+  cursor: pointer;
+  user-select: none;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+
+  &:hover {
+    border-color: var(--color-primary);
+  }
+
+  input {
+    margin: 0;
+    accent-color: var(--color-primary);
+  }
+}
+
+.ui-switcher-option--active {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft, #e0f2f1);
+  color: var(--color-primary);
+}
+
+.ui-switcher-hint {
+  margin: 10px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--color-muted);
+}
