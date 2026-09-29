@@ -10,7 +10,8 @@
   </div>
 
   <div class="drawer-body">
-    <div class="meta-row">
+    <div class="drawer-content">
+      <div class="meta-row">
       <span
         class="type-badge"
         [class.type-badge--feature]="log.log_type === 'Feature'"
@@ -22,6 +23,9 @@
     </div>
 
     <dl class="meta-grid">
+      <dt>Status</dt>
+      <dd>{{ statusLabels[log.status] }}</dd>
+
       <dt>Screen</dt>
       <dd>{{ log.screen?.name ?? log.screen_name_freetext ?? '—' }}</dd>
 
@@ -76,6 +80,7 @@
         <span class="comments-count">{{ log.comments.length }}</span>
       }
     </button>
+    </div>
   </div>
 }
 

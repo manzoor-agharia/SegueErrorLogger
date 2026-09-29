@@ -42,6 +42,13 @@
   min-height: 0;
 }
 
+// The panel itself is full-screen, but a 900px reading column keeps the description,
+// meta grid and attachments from stretching illegibly wide on large monitors.
+.drawer-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
 .meta-row {
   display: flex;
   align-items: center;

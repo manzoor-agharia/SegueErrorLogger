@@ -118,8 +118,13 @@
 }
 
 .detail-panel {
-  width: min(680px, 92vw);
-  max-height: 88vh;
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  max-height: none;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 // ── Row "more actions" kebab menu ───────────────────────────────────────────
