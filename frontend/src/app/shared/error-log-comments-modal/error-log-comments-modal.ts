@@ -8,7 +8,6 @@ import {
   OnChanges,
   OnDestroy,
   Output,
-  computed,
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -60,7 +59,17 @@ export class ErrorLogCommentsModal implements OnChanges, OnDestroy {
    * needs an auth header, so a plain <img src> can't hit it directly). Keyed by attachment id. */
   private imageUrls = signal<Record<string, string>>({});
 
-  canSend = computed(() => this.newCommentBody.trim().length > 0 || this.pendingFiles().length > 0);
+  /**
+   * A comment needs either text or at least one attachment -- neither is required on its own.
+   *
+   * Deliberately a getter, not a `computed()`: `newCommentBody` is a plain field bound with
+   * `[(ngModel)]`, not a signal, so a computed would only re-evaluate when `pendingFiles`
+   * changed -- leaving the Send button disabled no matter how much text you typed, and making
+   * an attachment look mandatory. A getter is re-read on every change detection pass.
+   */
+  get canSend(): boolean {
+    return this.newCommentBody.trim().length > 0 || this.pendingFiles().length > 0;
+  }
 
   constructor(
     private readonly http: HttpClient,
@@ -163,7 +172,7 @@ export class ErrorLogCommentsModal implements OnChanges, OnDestroy {
 
   addComment(): void {
     const log = this.errorLog;
-    if (!log || !this.canSend()) return;
+    if (!log || !this.canSend) return;
 
     const body = this.newCommentBody.trim();
     const filesToUpload = this.pendingFiles().map((p) => p.file);

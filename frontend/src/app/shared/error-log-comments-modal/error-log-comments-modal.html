@@ -101,7 +101,7 @@
             [(ngModel)]="newCommentBody"
             (paste)="onComposerPaste($event)"
           ></textarea>
-          <button class="btn btn-sm btn-primary" [disabled]="!canSend() || postingComment()" (click)="addComment()">
+          <button class="btn btn-sm btn-primary" [disabled]="!canSend || postingComment()" (click)="addComment()">
             <i class="material-icons">send</i>
           </button>
         </div>
