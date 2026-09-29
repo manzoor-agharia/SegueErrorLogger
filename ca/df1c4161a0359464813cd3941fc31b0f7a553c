@@ -1,0 +1,271 @@
+frontend-react/vite.config.ts
+  s_a61fa88717378b::t_77253773249afe 1-21
+frontend-react/src/styles/components/multi-select.scss
+  s_a61fa88717378b::t_6bc32268d95894 1-104
+frontend-react/src/services/notifications.ts
+  s_a61fa88717378b::t_3df03fb0a1e980 1-25
+frontend-react/.gitignore
+  s_a61fa88717378b::t_b6b68871a8535b 1-4
+frontend-react/src/views/ErrorLogListView.tsx
+  s_a61fa88717378b::t_64f33690db5e94 1-493
+frontend-react/src/components/MultiSelectDropdown.tsx
+  s_a61fa88717378b::t_ecc47de5279c87 1-79
+frontend-react/src/styles/components/comments-modal.scss
+  s_a61fa88717378b::t_6bc32268d95894 1-270
+frontend-vue/src/styles/base.scss
+  s_a61fa88717378b::t_6bc32268d95894 1-575
+frontend-react/src/stores/toast.ts
+  s_a61fa88717378b::t_ae684f9152848d 1-34
+frontend/angular.json
+  s_a61fa88717378b::t_7e70e12b8ddc0d 55-61
+frontend-react/src/styles/components/shell.scss
+  s_a61fa88717378b::t_6bc32268d95894 1-69,107
+  s_a61fa88717378b::t_c085cf14045cbb 70-106
+frontend-react/src/components/HistoryModal.tsx
+  s_a61fa88717378b::t_ade50aeca0605d 1-80
+frontend-react/src/api/client.ts
+  s_a61fa88717378b::t_3df03fb0a1e980 1-55
+frontend-react/src/styles/components/detail-drawer.scss
+  s_a61fa88717378b::t_6bc32268d95894 1-291
+frontend-react/src/components/ErrorLogForm.tsx
+  s_a61fa88717378b::t_e54630c480b393 1-402
+frontend-react/src/main.tsx
+  s_a61fa88717378b::t_77253773249afe 1-23
+frontend-vue/src/components/ToastHost.vue
+  s_a61fa88717378b::t_942df65c574ff2 1-18
+frontend-vue/src/types/notification.ts
+  s_a61fa88717378b::t_cb3d725b660169 1-10
+frontend-react/src/styles/base.scss
+  s_a61fa88717378b::t_6bc32268d95894 1-575
+frontend-vue/src/components/StatusBadge.vue
+  s_a61fa88717378b::t_85a647ad9f3bb1 1-13
+frontend-vue/src/main.ts
+  s_a61fa88717378b::t_01bea968c2891a 1-22
+frontend-react/src/views/RegisterView.tsx
+  s_a61fa88717378b::t_9629b91d1dd28e 1-106
+.gitignore
+  s_a61fa88717378b::t_223dab56b976a0 14-19
+frontend-vue/src/views/RegisterView.vue
+  s_a61fa88717378b::t_dd2c962e50fdf0 1-94
+frontend-vue/src/App.vue
+  s_a61fa88717378b::t_942df65c574ff2 1-8
+frontend-react/src/services/users.ts
+  s_a61fa88717378b::t_3df03fb0a1e980 1-23
+frontend-vue/src/styles/components/status-badge.scss
+  s_a61fa88717378b::t_85a647ad9f3bb1 1-29
+frontend-vue/src/styles/components/multi-select.scss
+  s_a61fa88717378b::t_6bc32268d95894 1-104
+frontend-vue/src/composables/useClickOutside.ts
+  s_a61fa88717378b::t_942df65c574ff2 1-18
+frontend-vue/tsconfig.json
+  s_a61fa88717378b::t_32fcddbbad95d7 11
+  s_a61fa88717378b::t_6e265015c5400f 1-10,12
+frontend/src/environments/environment.prod.ts
+  s_a61fa88717378b::t_29f932faa3b8e9 1-7
+frontend-react/README.md
+  s_a61fa88717378b::t_e6f4f2dc9d99bc 1-58
+frontend/src/app/shared/shell/shell.ts
+  s_a61fa88717378b::t_d0a4ddfb7e70f9 4,6,17-22,25-28
+  s_a61fa88717378b::t_b6d98d8500e4f3 29
+frontend-vue/src/styles/components/notification-bell.scss
+  s_a61fa88717378b::t_6bc32268d95894 1-137
+frontend-react/src/styles/components/error-log-list.scss
+  s_a61fa88717378b::t_6bc32268d95894 1-204
+frontend-vue/src/styles/components/comments-modal.scss
+  s_a61fa88717378b::t_6bc32268d95894 1-270
+frontend-react/src/components/AppShell.tsx
+  s_a61fa88717378b::t_28afa517d3176d 1-63
+frontend-react/src/types/user.ts
+  s_a61fa88717378b::t_3df03fb0a1e980 1-32
+frontend-react/src/components/UserForm.tsx
+  s_a61fa88717378b::t_70d1c0f27261a4 1-156
+frontend-vue/.gitignore
+  s_a61fa88717378b::t_6e265015c5400f 1-4
+frontend-react/src/hooks/useClickOutside.ts
+  s_a61fa88717378b::t_ae684f9152848d 1-22
+frontend-vue/src/styles/main.scss
+  s_a61fa88717378b::t_85a647ad9f3bb1 5
+  s_a61fa88717378b::t_01bea968c2891a 1-4,6-16
+frontend-vue/src/styles/components/user-management.scss
+  s_a61fa88717378b::t_6bc32268d95894 1-109
+frontend/src/app/features/auth/login/login.html
+  s_a61fa88717378b::t_d828a9084be6a5 47-61
+frontend-vue/src/styles/components/detail-drawer.scss
+  s_a61fa88717378b::t_6bc32268d95894 1-291
+frontend-vue/src/components/HistoryModal.vue
+  s_a61fa88717378b::t_a634141a65ac21 1-76
+frontend-vue/public/favicon.svg
+  s_a61fa88717378b::t_bf01038ed768fb 1-15
+frontend-vue/src/types/user.ts
+  s_a61fa88717378b::t_cb3d725b660169 1-32
+frontend-react/src/stores/auth.ts
+  s_a61fa88717378b::t_ae684f9152848d 1-60
+frontend-react/src/utils/uiSwitcher.ts
+  s_a61fa88717378b::t_e3c84d66108214 1-47
+frontend-vue/src/styles/components/error-log-form.scss
+  s_a61fa88717378b::t_6bc32268d95894 1-193
+frontend-react/src/styles/components/auth.scss
+  s_a61fa88717378b::t_6bc32268d95894 1-35,99
+  s_a61fa88717378b::t_2eff1a8b582dfc 36-98
+frontend-react/src/views/LoginView.tsx
+  s_a61fa88717378b::t_28afa517d3176d 1-117
+frontend/src/environments/environment.ts
+  s_a61fa88717378b::t_29f932faa3b8e9 4-12
+frontend-react/src/App.tsx
+  s_a61fa88717378b::t_bba25db6318d50 1-57
+frontend-vue/src/components/MultiSelectDropdown.vue
+  s_a61fa88717378b::t_2ecd2a8083e595 1-71
+frontend-vue/src/styles/components/shell.scss
+  s_a61fa88717378b::t_6bc32268d95894 1-69,107
+  s_a61fa88717378b::t_c085cf14045cbb 70-106
+frontend-react/src/styles/components/history-modal.scss
+  s_a61fa88717378b::t_6bc32268d95894 1-62
+frontend-vue/src/services/screens.ts
+  s_a61fa88717378b::t_be6dddcbe9ecf8 1-9
+dev-proxy/README.md
+  s_a61fa88717378b::t_1e0581fe0f626d 1-80
+frontend-vue/src/stores/toast.ts
+  s_a61fa88717378b::t_01bea968c2891a 1-25
+frontend-react/src/styles/components/status-badge.scss
+  s_a61fa88717378b::t_85a647ad9f3bb1 1-29
+frontend-react/src/styles/components/user-management.scss
+  s_a61fa88717378b::t_6bc32268d95894 1-109
+frontend-vue/src/components/ErrorLogForm.vue
+  s_a61fa88717378b::t_ff4cc7f8852e43 1-340
+dev-proxy/server.js
+  s_a61fa88717378b::t_200fd02b36a05f 1-73
+frontend/src/app/features/auth/login/login.ts
+  s_a61fa88717378b::t_740890aee057f3 5,7,22-28,41-47
+dev-proxy/package.json
+  s_a61fa88717378b::t_714053f24278e7 1-16
+frontend/src/app/core/ui-switcher.ts
+  s_a61fa88717378b::t_e3c84d66108214 1-47
+frontend-vue/README.md
+  s_a61fa88717378b::t_65ca713c3a2339 1-54
+frontend-vue/src/services/errorLogs.ts
+  s_a61fa88717378b::t_be6dddcbe9ecf8 1-111
+frontend-vue/src/router/index.ts
+  s_a61fa88717378b::t_c780ef57d3812c 1-41
+frontend-vue/src/styles/components/history-modal.scss
+  s_a61fa88717378b::t_6bc32268d95894 1-62
+frontend-react/index.html
+  s_a61fa88717378b::t_b6b68871a8535b 1-18
+frontend-react/src/styles/components/notification-bell.scss
+  s_a61fa88717378b::t_6bc32268d95894 1-137
+frontend-react/src/views/UserManagementView.tsx
+  s_a61fa88717378b::t_42b77b1ba94134 1-157
+frontend-vue/src/utils/date.ts
+  s_a61fa88717378b::t_e0412d82b54c3e 1-37
+frontend/src/app/features/auth/login/login.scss
+  s_a61fa88717378b::t_2eff1a8b582dfc 35-97
+frontend-vue/src/components/QuillEditor.vue
+  s_a61fa88717378b::t_2ecd2a8083e595 1-77
+frontend-react/package.json
+  s_a61fa88717378b::t_b6b68871a8535b 1-29
+frontend-vue/index.html
+  s_a61fa88717378b::t_6e265015c5400f 1-18
+frontend-vue/src/components/CommentsModal.vue
+  s_a61fa88717378b::t_07eaa531d004ed 1-361
+frontend-react/src/services/errorLogs.ts
+  s_a61fa88717378b::t_3df03fb0a1e980 1-111
+frontend-vue/src/styles/components/auth.scss
+  s_a61fa88717378b::t_2eff1a8b582dfc 36-98
+  s_a61fa88717378b::t_6bc32268d95894 1-35,99
+frontend-react/tsconfig.json
+  s_a61fa88717378b::t_b6b68871a8535b 1-23
+frontend-react/public/favicon.svg
+  s_a61fa88717378b::t_3df03fb0a1e980 1-15
+frontend-vue/src/components/NotificationBell.vue
+  s_a61fa88717378b::t_a23c392921f6db 1-92
+frontend-react/src/types/errorLog.ts
+  s_a61fa88717378b::t_3df03fb0a1e980 1-118
+frontend-vue/src/types/errorLog.ts
+  s_a61fa88717378b::t_cb3d725b660169 1-118
+frontend-vue/src/components/ErrorLogDetailDrawer.vue
+  s_a61fa88717378b::t_200cb67b06e19c 1-259
+frontend-vue/src/stores/auth.ts
+  s_a61fa88717378b::t_01bea968c2891a 1-49
+frontend-react/src/components/QuillEditor.tsx
+  s_a61fa88717378b::t_9ea22f5994f314 1-82
+frontend-vue/vite.config.ts
+  s_a61fa88717378b::t_c780ef57d3812c 1-21
+frontend-vue/src/components/UserForm.vue
+  s_a61fa88717378b::t_7ae2e5836db13a 1-138
+frontend-react/src/components/ToastHost.tsx
+  s_a61fa88717378b::t_ecc47de5279c87 1-23
+frontend-react/src/styles/components/error-log-form.scss
+  s_a61fa88717378b::t_6bc32268d95894 1-193
+frontend-react/src/styles/main.scss
+  s_a61fa88717378b::t_85a647ad9f3bb1 5
+  s_a61fa88717378b::t_b6b68871a8535b 1-4,6-16
+frontend-vue/src/services/notifications.ts
+  s_a61fa88717378b::t_be6dddcbe9ecf8 1-25
+frontend-vue/src/api/client.ts
+  s_a61fa88717378b::t_e0412d82b54c3e 1-55
+frontend/src/app/shared/shell/shell.scss
+  s_a61fa88717378b::t_c085cf14045cbb 69-105
+frontend-react/src/components/NotificationBell.tsx
+  s_a61fa88717378b::t_e8a120e8ba6225 1-105
+frontend-vue/src/utils/uiSwitcher.ts
+  s_a61fa88717378b::t_e3c84d66108214 1-47
+frontend-vue/src/components/AppShell.vue
+  s_a61fa88717378b::t_e940c0f81e07e9 1-52
+frontend-react/src/hooks/useEventListener.ts
+  s_a61fa88717378b::t_ae684f9152848d 1-21
+frontend-vue/src/styles/components/user-form.scss
+  s_a61fa88717378b::t_6bc32268d95894 1-91
+frontend/src/app/shared/shell/shell.html
+  s_a61fa88717378b::t_d0a4ddfb7e70f9 13-27
+dev-proxy/.gitignore
+  s_a61fa88717378b::t_0134879ffa35f7 1
+frontend-react/src/utils/date.ts
+  s_a61fa88717378b::t_3df03fb0a1e980 1-37
+frontend-vue/package.json
+  s_a61fa88717378b::t_32fcddbbad95d7 8
+  s_a61fa88717378b::t_6e265015c5400f 1-7,9-19,21-28
+  s_a61fa88717378b::t_ef3fcb7e7a2338 20
+frontend-react/src/types/notification.ts
+  s_a61fa88717378b::t_3df03fb0a1e980 1-10
+frontend-vue/src/views/LoginView.vue
+  s_a61fa88717378b::t_e940c0f81e07e9 1-103
+frontend-react/src/components/StatusBadge.tsx
+  s_a61fa88717378b::t_ecc47de5279c87 1-7
+frontend-vue/src/styles/components/error-log-list.scss
+  s_a61fa88717378b::t_6bc32268d95894 1-204
+frontend-react/src/services/screens.ts
+  s_a61fa88717378b::t_3df03fb0a1e980 1-9
+frontend-react/src/components/CommentsModal.tsx
+  s_a61fa88717378b::t_5b205bbd3bbcaa 1-415
+frontend-vue/src/services/users.ts
+  s_a61fa88717378b::t_be6dddcbe9ecf8 1-23
+frontend-vue/src/views/UserManagementView.vue
+  s_a61fa88717378b::t_944c775a54e1d2 1-162
+frontend-vue/src/views/ErrorLogListView.vue
+  s_a61fa88717378b::t_2573e7205ac8cd 1-448
+frontend-react/src/styles/components/user-form.scss
+  s_a61fa88717378b::t_6bc32268d95894 1-91
+frontend-react/src/components/ErrorLogDetailDrawer.tsx
+  s_a61fa88717378b::t_200cb67b06e19c 1-281
+dev-proxy/package-lock.json
+  s_a61fa88717378b::t_0c9ce04ca8b46f 1-351
+frontend-react/package-lock.json
+  s_a61fa88717378b::t_81b2339070b732 1-2722
+frontend-vue/package-lock.json
+  s_a61fa88717378b::t_1d1da633a98273 1-2415
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "cadf1c4161a0359464813cd3941fc31b0f7a553c",
+  "prompts": {},
+  "sessions": {
+    "s_a61fa88717378b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9654d289-dd98-4625-8531-d1b2021c76b3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Manzoor Ahmed Agharia <manzoor.ahmed.agharia@growthzone.com>"
+    }
+  }
+}
