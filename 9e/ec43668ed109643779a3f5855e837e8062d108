@@ -1,0 +1,21 @@
+frontend/src/app/shared/error-log-comments-modal/error-log-comments-modal.html
+  s_a61fa88717378b::t_679429b33b0b5b 104
+frontend/src/app/shared/error-log-comments-modal/error-log-comments-modal.ts
+  s_a61fa88717378b::t_96519b4f776463 62-72,175
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "9eec43668ed109643779a3f5855e837e8062d108",
+  "prompts": {},
+  "sessions": {
+    "s_a61fa88717378b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9654d289-dd98-4625-8531-d1b2021c76b3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Manzoor Ahmed Agharia <manzoor.ahmed.agharia@growthzone.com>"
+    }
+  }
+}
