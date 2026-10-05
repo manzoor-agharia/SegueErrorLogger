@@ -1,0 +1,54 @@
+frontend/src/app/features/error-logs/error-log-list/error-log-list.html
+  s_933c70b7a576de::t_3c2a4a837b2922 107-111
+  s_933c70b7a576de::t_cf69631ae6335c 128-130
+frontend-react/src/views/ErrorLogListView.tsx
+  s_933c70b7a576de::t_33fb44541e22aa 161-162
+  s_933c70b7a576de::t_996fe7c5ead9d7 138-141
+  s_933c70b7a576de::t_05525ddcc9499a 82-125
+  s_933c70b7a576de::t_fc8c25d1c19030 34-44
+  s_933c70b7a576de::t_bfd3c7dc45ef3b 431-438
+  s_933c70b7a576de::t_c17d978e3efd37 459-461
+frontend-vue/src/views/ErrorLogListView.vue
+  s_933c70b7a576de::t_69f1940d610088 403-407
+  s_933c70b7a576de::t_1770453ab05f8f 68-123
+  s_933c70b7a576de::t_c8943c668bf23e 137-140
+  s_933c70b7a576de::t_b3e180085c872d 427-429
+frontend-react/src/styles/components/error-log-list.scss
+  s_933c70b7a576de::t_fe60039ed0153c 2-19
+frontend-vue/src/styles/components/error-log-list.scss
+  s_933c70b7a576de::t_f05467035fb5aa 2-19
+frontend-react/src/services/errorLogs.ts
+  s_933c70b7a576de::t_e2decc333a12f1 28-29
+frontend/src/app/core/services/error-logs.service.ts
+  s_933c70b7a576de::t_27e05a967e4dc8 30-31
+frontend-vue/src/services/errorLogs.ts
+  s_933c70b7a576de::t_cd3ab94f0cb8e0 28-29
+frontend/src/app/features/error-logs/error-log-list/error-log-list.scss
+  s_933c70b7a576de::t_64e37629cfc1a9 63-80
+frontend/src/app/features/error-logs/error-log-list/error-log-list.ts
+  s_933c70b7a576de::t_cd898fb39314e0 282-305
+  s_933c70b7a576de::t_ae1fb637a728d5 43-52
+  s_933c70b7a576de::t_c51c72e50f7355 73-75
+  s_933c70b7a576de::t_e374046cad4c0d 129-132
+  s_933c70b7a576de::t_3cd02776edc120 145-162
+backend/app/routers/error_logs.py
+  s_933c70b7a576de::t_1bf32672e586cb 345-351
+  s_933c70b7a576de::t_80b902367e8751 312-313
+  s_933c70b7a576de::t_799610f84c9f70 290-302
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fc42c4aa2f8111978e5dfff1dbc8339f48c53b9f",
+  "prompts": {},
+  "sessions": {
+    "s_933c70b7a576de": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8ef9727c-20b1-4fc8-a94d-f9a0cdbf14af",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Manzoor Ahmed Agharia <manzoor.ahmed.agharia@growthzone.com>"
+    }
+  }
+}
