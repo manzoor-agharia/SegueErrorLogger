@@ -27,6 +27,8 @@ export interface ErrorLogFilters {
   /** Comma-separated list of LogType values for multi-select filtering. */
   log_type?: string;
   search?: string;
+  sort_by?: string;
+  sort_dir?: 'asc' | 'desc';
   page?: number;
   page_size?: number;
 }

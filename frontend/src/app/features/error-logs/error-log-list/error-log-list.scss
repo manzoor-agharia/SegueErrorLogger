@@ -60,6 +60,24 @@
   }
 }
 
+th.sortable {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+
+  .sort-icon {
+    font-size: 16px;
+    vertical-align: middle;
+    margin-left: 2px;
+    opacity: 0.35;
+  }
+
+  .sort-icon--active,
+  &:hover .sort-icon {
+    opacity: 1;
+  }
+}
+
 .status-select select {
   padding: 5px 26px 5px 8px;
   font-size: 12.5px;

@@ -65,6 +65,62 @@ const priorityFilter = ref<ErrorPriority[]>([]);
 const environmentFilter = ref<ErrorEnvironment | ''>('');
 const logTypeFilter = ref<LogType[]>([]);
 const searchTerm = ref('');
+const sortBy = ref<string | null>(null);
+const sortDir = ref<'asc' | 'desc'>('asc');
+
+const SORT_COLUMNS = [
+  { key: 'reference_id', label: 'Ref ID' },
+  { key: 'title', label: 'Title' },
+  { key: 'log_type', label: 'Type' },
+  { key: 'screen', label: 'Screen' },
+  { key: 'status', label: 'Status' },
+  { key: 'priority', label: 'Priority' },
+  { key: 'assigned_to', label: 'Assigned To' },
+  { key: 'updated_at', label: 'Updated' },
+];
+
+/** Click cycles a column: ascending -> descending -> back to the default order. */
+function toggleSort(column: string): void {
+  if (sortBy.value !== column) {
+    sortBy.value = column;
+    sortDir.value = 'asc';
+  } else if (sortDir.value === 'asc') {
+    sortDir.value = 'desc';
+  } else {
+    sortBy.value = null;
+  }
+  refreshFromFirstPage();
+}
+
+function sortIcon(column: string): string {
+  if (sortBy.value !== column) return 'unfold_more';
+  return sortDir.value === 'asc' ? 'arrow_upward' : 'arrow_downward';
+}
+
+async function copyDetails(log: ErrorLogListItem, event: Event): Promise<void> {
+  event.stopPropagation();
+  closeMenu();
+  const text = `RefID-${log.reference_id}\nTitle-${log.title}`;
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    // Clipboard API is unavailable on non-secure origins; fall back to a hidden textarea.
+    const area = document.createElement('textarea');
+    area.value = text;
+    area.style.position = 'fixed';
+    area.style.opacity = '0';
+    document.body.appendChild(area);
+    area.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(area);
+    if (!ok) {
+      toast.show('Failed to copy details', 'error');
+      return;
+    }
+  }
+  toast.show('Details copied', 'success');
+}
+
 let searchDebounce: ReturnType<typeof setTimeout> | undefined;
 
 async function refresh(): Promise<void> {
@@ -78,6 +134,10 @@ async function refresh(): Promise<void> {
   if (environmentFilter.value) filters.environment = environmentFilter.value;
   if (logTypeFilter.value.length > 0) filters.log_type = logTypeFilter.value.join(',');
   if (searchTerm.value.trim()) filters.search = searchTerm.value.trim();
+  if (sortBy.value) {
+    filters.sort_by = sortBy.value;
+    filters.sort_dir = sortDir.value;
+  }
 
   try {
     const res = await errorLogsService.list(filters);
@@ -340,14 +400,11 @@ watch(
       <thead class="data-table__header">
         <tr>
           <th></th>
-          <th>Ref ID</th>
-          <th>Title</th>
-          <th>Type</th>
-          <th>Screen</th>
-          <th>Status</th>
-          <th>Priority</th>
-          <th>Assigned To</th>
-          <th>Updated</th>
+          <th v-for="col in SORT_COLUMNS" :key="col.key" class="sortable" @click="toggleSort(col.key)">
+            {{ col.label }}<i class="material-icons sort-icon" :class="{ 'sort-icon--active': sortBy === col.key }">{{
+              sortIcon(col.key)
+            }}</i>
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -366,6 +423,9 @@ watch(
               >
                 <button class="kebab-menu-item" type="button" @click="openEdit(log, $event)">
                   <i class="material-icons">edit</i> Edit
+                </button>
+                <button class="kebab-menu-item" type="button" @click="copyDetails(log, $event)">
+                  <i class="material-icons">content_copy</i> Copy Details
                 </button>
                 <button class="kebab-menu-item" type="button" @click="viewHistory(log, $event)">
                   <i class="material-icons">history</i> View History

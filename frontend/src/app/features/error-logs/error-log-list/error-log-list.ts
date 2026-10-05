@@ -40,6 +40,16 @@ export class ErrorLogList implements OnInit {
   readonly priorities = ERROR_PRIORITIES;
   readonly environments = ERROR_ENVIRONMENTS;
   readonly statusLabels = STATUS_LABELS;
+  readonly sortColumns = [
+    { key: 'reference_id', label: 'Ref ID' },
+    { key: 'title', label: 'Title' },
+    { key: 'log_type', label: 'Type' },
+    { key: 'screen', label: 'Screen' },
+    { key: 'status', label: 'Status' },
+    { key: 'priority', label: 'Priority' },
+    { key: 'assigned_to', label: 'Assigned To' },
+    { key: 'updated_at', label: 'Updated' },
+  ];
   readonly pageSizeOptions = [10, 20, 50, 100];
   readonly unassignedFilterValue = UNASSIGNED_FILTER_VALUE;
 
@@ -59,6 +69,9 @@ export class ErrorLogList implements OnInit {
   historyLog = signal<ErrorLogDetail | null>(null);
   openMenuLogId = signal<string | null>(null);
   menuPosition = signal<{ top: number; left: number } | null>(null);
+
+  sortBy = signal<string | null>(null);
+  sortDir = signal<'asc' | 'desc'>('asc');
 
   page = signal(1);
   pageSize = signal(20);
@@ -113,6 +126,10 @@ export class ErrorLogList implements OnInit {
     if (this.environmentFilter) filters.environment = this.environmentFilter;
     if (this.logTypeFilter.length > 0) filters.log_type = this.logTypeFilter.join(',');
     if (this.searchTerm.trim()) filters.search = this.searchTerm.trim();
+    if (this.sortBy()) {
+      filters.sort_by = this.sortBy()!;
+      filters.sort_dir = this.sortDir();
+    }
 
     this.errorLogsService.list(filters).subscribe({
       next: (res) => {
@@ -123,6 +140,24 @@ export class ErrorLogList implements OnInit {
       },
       error: () => this.loading.set(false),
     });
+  }
+
+  /** Click cycles a column: ascending -> descending -> back to the default order. */
+  toggleSort(column: string): void {
+    if (this.sortBy() !== column) {
+      this.sortBy.set(column);
+      this.sortDir.set('asc');
+    } else if (this.sortDir() === 'asc') {
+      this.sortDir.set('desc');
+    } else {
+      this.sortBy.set(null);
+    }
+    this.refreshFromFirstPage();
+  }
+
+  sortIcon(column: string): string {
+    if (this.sortBy() !== column) return 'unfold_more';
+    return this.sortDir() === 'asc' ? 'arrow_upward' : 'arrow_downward';
   }
 
   /** Any filter change invalidates the current page, so jump back to page 1. */
@@ -242,6 +277,30 @@ export class ErrorLogList implements OnInit {
   closeMenu(): void {
     this.openMenuLogId.set(null);
     this.menuPosition.set(null);
+  }
+
+  async copyDetails(log: ErrorLogListItem, event: Event): Promise<void> {
+    event.stopPropagation();
+    this.closeMenu();
+    const text = `RefID-${log.reference_id}\nTitle-${log.title}`;
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      // Clipboard API is unavailable on non-secure origins; fall back to a hidden textarea.
+      const area = document.createElement('textarea');
+      area.value = text;
+      area.style.position = 'fixed';
+      area.style.opacity = '0';
+      document.body.appendChild(area);
+      area.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(area);
+      if (!ok) {
+        this.toast.show('Failed to copy details', 'error');
+        return;
+      }
+    }
+    this.toast.show('Details copied', 'success');
   }
 
   viewHistory(log: ErrorLogListItem, event: Event): void {

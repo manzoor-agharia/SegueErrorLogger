@@ -287,6 +287,19 @@ def _filtered_query(
     return query
 
 
+def _sort_column(sort_by: str):
+    """Map a list-column key to a sortable expression. Screen and assignee use correlated
+    subqueries so sorting never interferes with the joins `_filtered_query` adds for search."""
+    if sort_by == "screen":
+        screen_name = select(Screen.name).where(Screen.id == ErrorLog.screen_id).scalar_subquery()
+        return func.lower(func.coalesce(screen_name, ErrorLog.screen_name_freetext))
+    if sort_by == "assigned_to":
+        return func.lower(select(User.name).where(User.id == ErrorLog.assigned_to_id).scalar_subquery())
+    if sort_by == "title":
+        return func.lower(ErrorLog.title)
+    return getattr(ErrorLog, sort_by)
+
+
 @router.get("", response_model=ErrorLogPage)
 async def list_error_logs(
     status_filter: str | None = None,
@@ -296,6 +309,8 @@ async def list_error_logs(
     environment: str | None = None,
     log_type: str | None = None,
     search: str | None = None,
+    sort_by: str | None = Query(None, pattern="^(reference_id|title|log_type|screen|status|priority|assigned_to|updated_at)$"),
+    sort_dir: str = Query("asc", pattern="^(asc|desc)$"),
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     db: AsyncSession = Depends(get_db),
@@ -327,8 +342,13 @@ async def list_error_logs(
         log_type,
         search,
     )
-    # Priority is declared LOW < MEDIUM < HIGH < CRITICAL, so descending puts the highest-severity items on top.
-    query = query.order_by(ErrorLog.priority.desc(), ErrorLog.created_at.desc())
+    if sort_by:
+        column = _sort_column(sort_by)
+        direction = column.desc() if sort_dir == "desc" else column.asc()
+        query = query.order_by(direction.nulls_last(), ErrorLog.created_at.desc())
+    else:
+        # Priority is declared LOW < MEDIUM < HIGH < CRITICAL, so descending puts the highest-severity items on top.
+        query = query.order_by(ErrorLog.priority.desc(), ErrorLog.created_at.desc())
     query = query.offset((page - 1) * page_size).limit(page_size)
 
     result = await db.execute(query)

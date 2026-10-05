@@ -1,4 +1,22 @@
 .c-error-log-list {
+  th.sortable {
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+
+    .sort-icon {
+      font-size: 16px;
+      vertical-align: middle;
+      margin-left: 2px;
+      opacity: 0.35;
+    }
+
+    .sort-icon--active,
+    &:hover .sort-icon {
+      opacity: 1;
+    }
+  }
+
   .page-header {
     display: flex;
     align-items: center;

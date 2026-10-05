@@ -104,14 +104,11 @@
   <thead class="data-table__header">
     <tr>
       <th></th>
-      <th>Ref ID</th>
-      <th>Title</th>
-      <th>Type</th>
-      <th>Screen</th>
-      <th>Status</th>
-      <th>Priority</th>
-      <th>Assigned To</th>
-      <th>Updated</th>
+      @for (col of sortColumns; track col.key) {
+        <th class="sortable" (click)="toggleSort(col.key)">
+          {{ col.label }}<i class="material-icons sort-icon" [class.sort-icon--active]="sortBy() === col.key">{{ sortIcon(col.key) }}</i>
+        </th>
+      }
     </tr>
   </thead>
   <tbody>
@@ -127,6 +124,9 @@
               <div class="kebab-menu" [style.top.px]="pos.top" [style.left.px]="pos.left" (click)="$event.stopPropagation()">
                 <button class="kebab-menu-item" type="button" (click)="openEdit(log, $event)">
                   <i class="material-icons">edit</i> Edit
+                </button>
+                <button class="kebab-menu-item" type="button" (click)="copyDetails(log, $event)">
+                  <i class="material-icons">content_copy</i> Copy Details
                 </button>
                 <button class="kebab-menu-item" type="button" (click)="viewHistory(log, $event)">
                   <i class="material-icons">history</i> View History

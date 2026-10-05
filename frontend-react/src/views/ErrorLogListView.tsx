@@ -31,6 +31,17 @@ import { formatDate } from '@/utils/date';
 
 const PAGE_SIZE_OPTIONS = [10, 20, 50, 100];
 
+const SORT_COLUMNS = [
+  { key: 'reference_id', label: 'Ref ID' },
+  { key: 'title', label: 'Title' },
+  { key: 'log_type', label: 'Type' },
+  { key: 'screen', label: 'Screen' },
+  { key: 'status', label: 'Status' },
+  { key: 'priority', label: 'Priority' },
+  { key: 'assigned_to', label: 'Assigned To' },
+  { key: 'updated_at', label: 'Updated' },
+];
+
 const statusOptions: MultiSelectOption[] = ERROR_STATUSES.map((s) => ({ value: s, label: STATUS_LABELS[s] }));
 const priorityOptions: MultiSelectOption[] = ERROR_PRIORITIES.map((p) => ({ value: p, label: p }));
 const logTypeOptions: MultiSelectOption[] = LOG_TYPES.map((t) => ({ value: t, label: t }));
@@ -68,6 +79,50 @@ export default function ErrorLogListView(): JSX.Element {
   /** Debounced separately so typing doesn't fire a request per keystroke. */
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const searchDebounce = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const [sortBy, setSortBy] = useState<string | null>(null);
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
+
+  /** Click cycles a column: ascending -> descending -> back to the default order. */
+  function toggleSort(column: string): void {
+    setPage(1);
+    if (sortBy !== column) {
+      setSortBy(column);
+      setSortDir('asc');
+    } else if (sortDir === 'asc') {
+      setSortDir('desc');
+    } else {
+      setSortBy(null);
+    }
+  }
+
+  function sortIcon(column: string): string {
+    if (sortBy !== column) return 'unfold_more';
+    return sortDir === 'asc' ? 'arrow_upward' : 'arrow_downward';
+  }
+
+  async function copyDetails(log: ErrorLogListItem, event: MouseEvent): Promise<void> {
+    event.stopPropagation();
+    closeMenu();
+    const text = `RefID-${log.reference_id}\nTitle-${log.title}`;
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      // Clipboard API is unavailable on non-secure origins; fall back to a hidden textarea.
+      const area = document.createElement('textarea');
+      area.value = text;
+      area.style.position = 'fixed';
+      area.style.opacity = '0';
+      document.body.appendChild(area);
+      area.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(area);
+      if (!ok) {
+        toast.show('Failed to copy details', 'error');
+        return;
+      }
+    }
+    toast.show('Details copied', 'success');
+  }
 
   const refresh = useCallback(async (): Promise<void> => {
     setLoading(true);
@@ -80,6 +135,10 @@ export default function ErrorLogListView(): JSX.Element {
     if (environmentFilter) filters.environment = environmentFilter;
     if (logTypeFilter.length > 0) filters.log_type = logTypeFilter.join(',');
     if (debouncedSearch.trim()) filters.search = debouncedSearch.trim();
+    if (sortBy) {
+      filters.sort_by = sortBy;
+      filters.sort_dir = sortDir;
+    }
 
     try {
       const res = await errorLogsService.list(filters);
@@ -99,6 +158,8 @@ export default function ErrorLogListView(): JSX.Element {
     environmentFilter,
     logTypeFilter,
     debouncedSearch,
+    sortBy,
+    sortDir,
   ]);
 
   // Any change to a filter or to the page re-runs the query. Filters reset the page to 1
@@ -367,14 +428,14 @@ export default function ErrorLogListView(): JSX.Element {
         <thead className="data-table__header">
           <tr>
             <th />
-            <th>Ref ID</th>
-            <th>Title</th>
-            <th>Type</th>
-            <th>Screen</th>
-            <th>Status</th>
-            <th>Priority</th>
-            <th>Assigned To</th>
-            <th>Updated</th>
+            {SORT_COLUMNS.map((col) => (
+              <th key={col.key} className="sortable" onClick={() => toggleSort(col.key)}>
+                {col.label}
+                <i className={'material-icons sort-icon' + (sortBy === col.key ? ' sort-icon--active' : '')}>
+                  {sortIcon(col.key)}
+                </i>
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
@@ -394,6 +455,9 @@ export default function ErrorLogListView(): JSX.Element {
                     >
                       <button className="kebab-menu-item" type="button" onClick={(e) => openEdit(log, e)}>
                         <i className="material-icons">edit</i> Edit
+                      </button>
+                      <button className="kebab-menu-item" type="button" onClick={(e) => copyDetails(log, e)}>
+                        <i className="material-icons">content_copy</i> Copy Details
                       </button>
                       <button className="kebab-menu-item" type="button" onClick={(e) => viewHistory(log, e)}>
                         <i className="material-icons">history</i> View History
