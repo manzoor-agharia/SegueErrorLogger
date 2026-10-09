@@ -1,0 +1,23 @@
+frontend-vue/src/styles/components/error-log-list.scss
+  s_301c5a48ca856e::t_9af912d3fe8f1e 139-144,147,149
+frontend/src/app/features/error-logs/error-log-list/error-log-list.scss
+  s_301c5a48ca856e::t_4d1d42ec03566d 138-143,146,148
+frontend-react/src/styles/components/error-log-list.scss
+  s_301c5a48ca856e::t_6c54227b59e0e1 139-144,147,149
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6546bd74cdfa37f413c2e11da6e6a2e157787b8a",
+  "prompts": {},
+  "sessions": {
+    "s_301c5a48ca856e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4151010d-5ff3-476f-b279-913a6b03402f",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Manzoor Ahmed Agharia <manzoor.ahmed.agharia@growthzone.com>"
+    }
+  }
+}
