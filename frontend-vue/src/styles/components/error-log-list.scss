@@ -136,11 +136,17 @@
     }
   }
   
+  // Full-screen detail sits below the green toolbar so it stays visible.
+  .modal-backdrop:has(> .detail-panel) {
+    top: 64px;
+    background: none;
+    backdrop-filter: none;
+  }
   .detail-panel {
     position: fixed;
-    inset: 0;
+    inset: 64px 0 0 0;
     width: 100vw;
-    height: 100vh;
+    height: calc(100vh - 64px);
     max-height: none;
     border-radius: 0;
     box-shadow: none;
