@@ -403,126 +403,127 @@ export default function ErrorLogListView(): JSX.Element {
             </select>
           </div>
         </div>
-
-        <div className="form-field form-field--page-size">
-          <label className="form-label" htmlFor="filter-page-size">
-            Per page
-          </label>
-          <div className="select-wrap">
-            <select
-              id="filter-page-size"
-              value={pageSize}
-              onChange={(e) => withFirstPage(setPageSize)(Number(e.target.value))}
-            >
-              {PAGE_SIZE_OPTIONS.map((size) => (
-                <option key={size} value={size}>
-                  {size}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
       </div>
 
-      <table className="data-table">
-        <thead className="data-table__header">
-          <tr>
-            <th />
-            {SORT_COLUMNS.map((col) => (
-              <th key={col.key} className="sortable" onClick={() => toggleSort(col.key)}>
-                {col.label}
-                <i className={'material-icons sort-icon' + (sortBy === col.key ? ' sort-icon--active' : '')}>
-                  {sortIcon(col.key)}
-                </i>
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {logs.map((log) => (
-            <tr key={log.id} className="data-table__row" onClick={() => viewDetail(log)}>
-              <td className="col-menu" onClick={(e) => e.stopPropagation()}>
-                <div className="kebab-wrap">
-                  <button className="btn-icon btn-more" title="More actions" onClick={(e) => toggleMenu(log, e)}>
-                    <i className="material-icons">more_vert</i>
-                  </button>
-
-                  {openMenuLogId === log.id && menuPosition && (
-                    <div
-                      className="kebab-menu"
-                      style={{ top: `${menuPosition.top}px`, left: `${menuPosition.left}px` }}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <button className="kebab-menu-item" type="button" onClick={(e) => openEdit(log, e)}>
-                        <i className="material-icons">edit</i> Edit
-                      </button>
-                      <button className="kebab-menu-item" type="button" onClick={(e) => copyDetails(log, e)}>
-                        <i className="material-icons">content_copy</i> Copy Details
-                      </button>
-                      <button className="kebab-menu-item" type="button" onClick={(e) => viewHistory(log, e)}>
-                        <i className="material-icons">history</i> View History
-                      </button>
-                      {isSuperAdmin && (
-                        <>
-                          <div className="kebab-menu-divider" />
-                          <button
-                            className="kebab-menu-item kebab-menu-item--danger"
-                            type="button"
-                            onClick={(e) => deleteLog(log, e)}
-                          >
-                            <i className="material-icons">delete</i> Delete
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </td>
-              <td className="reference-cell" title={log.reference_id}>
-                {log.reference_id}
-              </td>
-              <td className="title-cell" title={log.title}>
-                {log.title}
-              </td>
-              <td>
-                <span
-                  className={
-                    'type-badge' +
-                    (log.log_type === 'Feature' ? ' type-badge--feature' : '') +
-                    (log.log_type === 'Suggestion' ? ' type-badge--suggestion' : '')
-                  }
-                >
-                  {log.log_type}
-                </span>
-              </td>
-              <td>{log.screen?.name ?? log.screen_name_freetext ?? '—'}</td>
-              <td onClick={(e) => e.stopPropagation()}>
-                <div className="select-wrap status-select">
-                  <select value={log.status} onChange={(e) => changeStatus(log, e.target.value as ErrorStatus)}>
-                    {ERROR_STATUSES.map((status) => (
-                      <option key={status} value={status}>
-                        {STATUS_LABELS[status]}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </td>
-              <td>{log.priority}</td>
-              <td>{log.assigned_to?.name ?? 'Unassigned'}</td>
-              <td>{formatDate(log.updated_at, 'short')}</td>
+      <div className="table-scroll" onScroll={closeMenu}>
+        <table className="data-table">
+          <thead className="data-table__header">
+            <tr>
+              <th />
+              {SORT_COLUMNS.map((col) => (
+                <th key={col.key} className="sortable" onClick={() => toggleSort(col.key)}>
+                  {col.label}
+                  <i className={'material-icons sort-icon' + (sortBy === col.key ? ' sort-icon--active' : '')}>
+                    {sortIcon(col.key)}
+                  </i>
+                </th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {logs.map((log) => (
+              <tr key={log.id} className="data-table__row" onClick={() => viewDetail(log)}>
+                <td className="col-menu" onClick={(e) => e.stopPropagation()}>
+                  <div className="kebab-wrap">
+                    <button className="btn-icon btn-more" title="More actions" onClick={(e) => toggleMenu(log, e)}>
+                      <i className="material-icons">more_vert</i>
+                    </button>
+
+                    {openMenuLogId === log.id && menuPosition && (
+                      <div
+                        className="kebab-menu"
+                        style={{ top: `${menuPosition.top}px`, left: `${menuPosition.left}px` }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <button className="kebab-menu-item" type="button" onClick={(e) => openEdit(log, e)}>
+                          <i className="material-icons">edit</i> Edit
+                        </button>
+                        <button className="kebab-menu-item" type="button" onClick={(e) => copyDetails(log, e)}>
+                          <i className="material-icons">content_copy</i> Copy Details
+                        </button>
+                        <button className="kebab-menu-item" type="button" onClick={(e) => viewHistory(log, e)}>
+                          <i className="material-icons">history</i> View History
+                        </button>
+                        {isSuperAdmin && (
+                          <>
+                            <div className="kebab-menu-divider" />
+                            <button
+                              className="kebab-menu-item kebab-menu-item--danger"
+                              type="button"
+                              onClick={(e) => deleteLog(log, e)}
+                            >
+                              <i className="material-icons">delete</i> Delete
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </td>
+                <td className="reference-cell" title={log.reference_id}>
+                  {log.reference_id}
+                </td>
+                <td className="title-cell" title={log.title}>
+                  {log.title}
+                </td>
+                <td>
+                  <span
+                    className={
+                      'type-badge' +
+                      (log.log_type === 'Feature' ? ' type-badge--feature' : '') +
+                      (log.log_type === 'Suggestion' ? ' type-badge--suggestion' : '')
+                    }
+                  >
+                    {log.log_type}
+                  </span>
+                </td>
+                <td>{log.screen?.name ?? log.screen_name_freetext ?? '—'}</td>
+                <td onClick={(e) => e.stopPropagation()}>
+                  <div className="select-wrap status-select">
+                    <select value={log.status} onChange={(e) => changeStatus(log, e.target.value as ErrorStatus)}>
+                      {ERROR_STATUSES.map((status) => (
+                        <option key={status} value={status}>
+                          {STATUS_LABELS[status]}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </td>
+                <td>{log.priority}</td>
+                <td>{log.assigned_to?.name ?? 'Unassigned'}</td>
+                <td>{formatDate(log.updated_at, 'short')}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {!loading && logs.length === 0 && <p className="empty">No error logs found.</p>}
 
-      {totalPages > 1 && (
+      {total > 0 && (
         <div className="pagination">
           <span className="pagination-summary">
             Page {page} of {totalPages} ({total} total)
           </span>
           <div className="pagination-controls">
+            <div className="page-size">
+              <label className="page-size-label" htmlFor="footer-page-size">
+                Per page
+              </label>
+              <div className="select-wrap">
+                <select
+                  id="footer-page-size"
+                  value={pageSize}
+                  onChange={(e) => withFirstPage(setPageSize)(Number(e.target.value))}
+                >
+                  {PAGE_SIZE_OPTIONS.map((size) => (
+                    <option key={size} value={size}>
+                      {size}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
             <button className="btn btn-sm btn-ghost" disabled={page === 1} onClick={() => goToPage(page - 1)}>
               <i className="material-icons">chevron_left</i>
               Prev

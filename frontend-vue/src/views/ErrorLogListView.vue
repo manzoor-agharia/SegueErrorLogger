@@ -381,105 +381,106 @@ watch(
           </select>
         </div>
       </div>
-
-      <div class="form-field form-field--page-size">
-        <label class="form-label" for="filter-page-size">Per page</label>
-        <div class="select-wrap">
-          <select
-            id="filter-page-size"
-            :value="pageSize"
-            @change="onPageSizeChange(Number(($event.target as HTMLSelectElement).value))"
-          >
-            <option v-for="size in PAGE_SIZE_OPTIONS" :key="size" :value="size">{{ size }}</option>
-          </select>
-        </div>
-      </div>
     </div>
 
-    <table class="data-table">
-      <thead class="data-table__header">
-        <tr>
-          <th></th>
-          <th v-for="col in SORT_COLUMNS" :key="col.key" class="sortable" @click="toggleSort(col.key)">
-            {{ col.label }}<i class="material-icons sort-icon" :class="{ 'sort-icon--active': sortBy === col.key }">{{
-              sortIcon(col.key)
-            }}</i>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="log in logs" :key="log.id" class="data-table__row" @click="viewDetail(log)">
-          <td class="col-menu" @click.stop>
-            <div class="kebab-wrap">
-              <button class="btn-icon btn-more" title="More actions" @click="toggleMenu(log, $event)">
-                <i class="material-icons">more_vert</i>
-              </button>
+    <div class="table-scroll" @scroll="closeMenu">
+      <table class="data-table">
+        <thead class="data-table__header">
+          <tr>
+            <th></th>
+            <th v-for="col in SORT_COLUMNS" :key="col.key" class="sortable" @click="toggleSort(col.key)">
+              {{ col.label }}<i class="material-icons sort-icon" :class="{ 'sort-icon--active': sortBy === col.key }">{{
+                sortIcon(col.key)
+              }}</i>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="log in logs" :key="log.id" class="data-table__row" @click="viewDetail(log)">
+            <td class="col-menu" @click.stop>
+              <div class="kebab-wrap">
+                <button class="btn-icon btn-more" title="More actions" @click="toggleMenu(log, $event)">
+                  <i class="material-icons">more_vert</i>
+                </button>
 
-              <div
-                v-if="openMenuLogId === log.id && menuPosition"
-                class="kebab-menu"
-                :style="{ top: `${menuPosition.top}px`, left: `${menuPosition.left}px` }"
-                @click.stop
-              >
-                <button class="kebab-menu-item" type="button" @click="openEdit(log, $event)">
-                  <i class="material-icons">edit</i> Edit
-                </button>
-                <button class="kebab-menu-item" type="button" @click="copyDetails(log, $event)">
-                  <i class="material-icons">content_copy</i> Copy Details
-                </button>
-                <button class="kebab-menu-item" type="button" @click="viewHistory(log, $event)">
-                  <i class="material-icons">history</i> View History
-                </button>
-                <template v-if="auth.isSuperAdmin">
-                  <div class="kebab-menu-divider"></div>
-                  <button
-                    class="kebab-menu-item kebab-menu-item--danger"
-                    type="button"
-                    @click="deleteLog(log, $event)"
-                  >
-                    <i class="material-icons">delete</i> Delete
+                <div
+                  v-if="openMenuLogId === log.id && menuPosition"
+                  class="kebab-menu"
+                  :style="{ top: `${menuPosition.top}px`, left: `${menuPosition.left}px` }"
+                  @click.stop
+                >
+                  <button class="kebab-menu-item" type="button" @click="openEdit(log, $event)">
+                    <i class="material-icons">edit</i> Edit
                   </button>
-                </template>
+                  <button class="kebab-menu-item" type="button" @click="copyDetails(log, $event)">
+                    <i class="material-icons">content_copy</i> Copy Details
+                  </button>
+                  <button class="kebab-menu-item" type="button" @click="viewHistory(log, $event)">
+                    <i class="material-icons">history</i> View History
+                  </button>
+                  <template v-if="auth.isSuperAdmin">
+                    <div class="kebab-menu-divider"></div>
+                    <button
+                      class="kebab-menu-item kebab-menu-item--danger"
+                      type="button"
+                      @click="deleteLog(log, $event)"
+                    >
+                      <i class="material-icons">delete</i> Delete
+                    </button>
+                  </template>
+                </div>
               </div>
-            </div>
-          </td>
-          <td class="reference-cell" :title="log.reference_id">{{ log.reference_id }}</td>
-          <td class="title-cell" :title="log.title">{{ log.title }}</td>
-          <td>
-            <span
-              class="type-badge"
-              :class="{
-                'type-badge--feature': log.log_type === 'Feature',
-                'type-badge--suggestion': log.log_type === 'Suggestion',
-              }"
-              >{{ log.log_type }}</span
-            >
-          </td>
-          <td>{{ log.screen?.name ?? log.screen_name_freetext ?? '—' }}</td>
-          <td @click.stop>
-            <div class="select-wrap status-select">
-              <select
-                :value="log.status"
-                @change="changeStatus(log, ($event.target as HTMLSelectElement).value as ErrorStatus)"
+            </td>
+            <td class="reference-cell" :title="log.reference_id">{{ log.reference_id }}</td>
+            <td class="title-cell" :title="log.title">{{ log.title }}</td>
+            <td>
+              <span
+                class="type-badge"
+                :class="{
+                  'type-badge--feature': log.log_type === 'Feature',
+                  'type-badge--suggestion': log.log_type === 'Suggestion',
+                }"
+                >{{ log.log_type }}</span
               >
-                <option v-for="status in ERROR_STATUSES" :key="status" :value="status">
-                  {{ STATUS_LABELS[status] }}
-                </option>
-              </select>
-            </div>
-          </td>
-          <td>{{ log.priority }}</td>
-          <td>{{ log.assigned_to?.name ?? 'Unassigned' }}</td>
-          <td>{{ formatDate(log.updated_at, 'short') }}</td>
-        </tr>
-      </tbody>
-    </table>
+            </td>
+            <td>{{ log.screen?.name ?? log.screen_name_freetext ?? '—' }}</td>
+            <td @click.stop>
+              <div class="select-wrap status-select">
+                <select
+                  :value="log.status"
+                  @change="changeStatus(log, ($event.target as HTMLSelectElement).value as ErrorStatus)"
+                >
+                  <option v-for="status in ERROR_STATUSES" :key="status" :value="status">
+                    {{ STATUS_LABELS[status] }}
+                  </option>
+                </select>
+              </div>
+            </td>
+            <td>{{ log.priority }}</td>
+            <td>{{ log.assigned_to?.name ?? 'Unassigned' }}</td>
+            <td>{{ formatDate(log.updated_at, 'short') }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <p v-if="!loading && logs.length === 0" class="empty">No error logs found.</p>
 
-    <div v-if="totalPages > 1" class="pagination">
+    <div v-if="total > 0" class="pagination">
       <span class="pagination-summary">Page {{ page }} of {{ totalPages }} ({{ total }} total)</span>
       <div class="pagination-controls">
+        <div class="page-size">
+          <label class="page-size-label" for="footer-page-size">Per page</label>
+          <div class="select-wrap">
+            <select
+              id="footer-page-size"
+              :value="pageSize"
+              @change="onPageSizeChange(Number(($event.target as HTMLSelectElement).value))"
+            >
+              <option v-for="size in PAGE_SIZE_OPTIONS" :key="size" :value="size">{{ size }}</option>
+            </select>
+          </div>
+        </div>
         <button class="btn btn-sm btn-ghost" :disabled="page === 1" @click="goToPage(page - 1)">
           <i class="material-icons">chevron_left</i>
           Prev

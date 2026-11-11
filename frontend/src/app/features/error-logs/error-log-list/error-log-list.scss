@@ -1,4 +1,14 @@
+:host {
+  // Page fills the viewport below the toolbar (64px) minus the shell's 24px top/bottom
+  // padding, so the title, filters and pagination stay put and only the table scrolls.
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 64px - 48px);
+  min-height: 420px;
+}
+
 .page-header {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -6,6 +16,7 @@
 }
 
 .filters {
+  flex-shrink: 0;
   display: flex;
   gap: 16px;
   margin-bottom: 16px;
@@ -16,10 +27,6 @@
 
   .form-field--search {
     width: 320px;
-  }
-
-  .form-field--page-size {
-    width: 90px;
   }
 }
 
@@ -45,12 +52,26 @@
   }
 }
 
-.data-table {
+// Scrollable card around the table; shrinks to its content when there are few rows.
+.table-scroll {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow: auto;
   background: var(--color-surface);
   border-radius: var(--radius-card);
-  overflow: hidden;
   box-shadow: var(--shadow-xs);
   border: 1px solid var(--color-border);
+}
+
+.data-table {
+  .data-table__header th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--color-side);
+    // Collapsed borders don't travel with sticky cells, so draw the divider as a shadow.
+    box-shadow: inset 0 -2px 0 var(--color-border);
+  }
 
   .title-cell {
     max-width: 260px;
@@ -118,6 +139,7 @@ th.sortable {
 }
 
 .pagination {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -128,11 +150,29 @@ th.sortable {
 
 .pagination-controls {
   display: flex;
+  align-items: center;
   gap: 8px;
 
   .btn i {
     font-size: 18px;
   }
+}
+
+.page-size {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 8px;
+
+  select {
+    width: 80px;
+  }
+}
+
+.page-size-label {
+  font-size: 13px;
+  color: var(--color-muted);
+  white-space: nowrap;
 }
 
 // Full-screen detail sits below the green toolbar so it stays visible.

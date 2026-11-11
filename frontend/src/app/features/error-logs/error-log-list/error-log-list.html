@@ -87,97 +87,98 @@
       </select>
     </div>
   </div>
-
-  <div class="form-field form-field--page-size">
-    <label class="form-label" for="filter-page-size">Per page</label>
-    <div class="select-wrap">
-      <select id="filter-page-size" [ngModel]="pageSize()" (ngModelChange)="onPageSizeChange($event)">
-        @for (size of pageSizeOptions; track size) {
-          <option [ngValue]="size">{{ size }}</option>
-        }
-      </select>
-    </div>
-  </div>
 </div>
 
-<table class="data-table">
-  <thead class="data-table__header">
-    <tr>
-      <th></th>
-      @for (col of sortColumns; track col.key) {
-        <th class="sortable" (click)="toggleSort(col.key)">
-          {{ col.label }}<i class="material-icons sort-icon" [class.sort-icon--active]="sortBy() === col.key">{{ sortIcon(col.key) }}</i>
-        </th>
-      }
-    </tr>
-  </thead>
-  <tbody>
-    @for (log of logs(); track log.id) {
-      <tr class="data-table__row" (click)="viewDetail(log)">
-        <td class="col-menu" (click)="$event.stopPropagation()">
-          <div class="kebab-wrap">
-            <button class="btn-icon btn-more" (click)="toggleMenu(log, $event)" title="More actions">
-              <i class="material-icons">more_vert</i>
-            </button>
-
-            @if (openMenuLogId() === log.id && menuPosition(); as pos) {
-              <div class="kebab-menu" [style.top.px]="pos.top" [style.left.px]="pos.left" (click)="$event.stopPropagation()">
-                <button class="kebab-menu-item" type="button" (click)="openEdit(log, $event)">
-                  <i class="material-icons">edit</i> Edit
-                </button>
-                <button class="kebab-menu-item" type="button" (click)="copyDetails(log, $event)">
-                  <i class="material-icons">content_copy</i> Copy Details
-                </button>
-                <button class="kebab-menu-item" type="button" (click)="viewHistory(log, $event)">
-                  <i class="material-icons">history</i> View History
-                </button>
-                @if (auth.isSuperAdmin()) {
-                  <div class="kebab-menu-divider"></div>
-                  <button class="kebab-menu-item kebab-menu-item--danger" type="button" (click)="deleteLog(log, $event)">
-                    <i class="material-icons">delete</i> Delete
-                  </button>
-                }
-              </div>
-            }
-          </div>
-        </td>
-        <td class="reference-cell" [title]="log.reference_id">{{ log.reference_id }}</td>
-        <td class="title-cell" [title]="log.title">{{ log.title }}</td>
-        <td>
-          <span
-            class="type-badge"
-            [class.type-badge--feature]="log.log_type === 'Feature'"
-            [class.type-badge--suggestion]="log.log_type === 'Suggestion'"
-          >{{ log.log_type }}</span>
-        </td>
-        <td>{{ log.screen?.name ?? log.screen_name_freetext ?? '—' }}</td>
-        <td (click)="$event.stopPropagation()">
-          <div class="select-wrap status-select">
-            <select [ngModel]="log.status" (change)="changeStatus(log, $any($event.target).value)">
-              @for (status of statuses; track status) {
-                <option [value]="status">{{ statusLabels[status] }}</option>
-              }
-            </select>
-          </div>
-        </td>
-        <td>{{ log.priority }}</td>
-        <td>{{ log.assigned_to?.name ?? 'Unassigned' }}</td>
-        <td>{{ log.updated_at | date: 'short' }}</td>
+<div class="table-scroll" (scroll)="closeMenu()">
+  <table class="data-table">
+    <thead class="data-table__header">
+      <tr>
+        <th></th>
+        @for (col of sortColumns; track col.key) {
+          <th class="sortable" (click)="toggleSort(col.key)">
+            {{ col.label }}<i class="material-icons sort-icon" [class.sort-icon--active]="sortBy() === col.key">{{ sortIcon(col.key) }}</i>
+          </th>
+        }
       </tr>
-    }
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      @for (log of logs(); track log.id) {
+        <tr class="data-table__row" (click)="viewDetail(log)">
+          <td class="col-menu" (click)="$event.stopPropagation()">
+            <div class="kebab-wrap">
+              <button class="btn-icon btn-more" (click)="toggleMenu(log, $event)" title="More actions">
+                <i class="material-icons">more_vert</i>
+              </button>
+
+              @if (openMenuLogId() === log.id && menuPosition(); as pos) {
+                <div class="kebab-menu" [style.top.px]="pos.top" [style.left.px]="pos.left" (click)="$event.stopPropagation()">
+                  <button class="kebab-menu-item" type="button" (click)="openEdit(log, $event)">
+                    <i class="material-icons">edit</i> Edit
+                  </button>
+                  <button class="kebab-menu-item" type="button" (click)="copyDetails(log, $event)">
+                    <i class="material-icons">content_copy</i> Copy Details
+                  </button>
+                  <button class="kebab-menu-item" type="button" (click)="viewHistory(log, $event)">
+                    <i class="material-icons">history</i> View History
+                  </button>
+                  @if (auth.isSuperAdmin()) {
+                    <div class="kebab-menu-divider"></div>
+                    <button class="kebab-menu-item kebab-menu-item--danger" type="button" (click)="deleteLog(log, $event)">
+                      <i class="material-icons">delete</i> Delete
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+          </td>
+          <td class="reference-cell" [title]="log.reference_id">{{ log.reference_id }}</td>
+          <td class="title-cell" [title]="log.title">{{ log.title }}</td>
+          <td>
+            <span
+              class="type-badge"
+              [class.type-badge--feature]="log.log_type === 'Feature'"
+              [class.type-badge--suggestion]="log.log_type === 'Suggestion'"
+            >{{ log.log_type }}</span>
+          </td>
+          <td>{{ log.screen?.name ?? log.screen_name_freetext ?? '—' }}</td>
+          <td (click)="$event.stopPropagation()">
+            <div class="select-wrap status-select">
+              <select [ngModel]="log.status" (change)="changeStatus(log, $any($event.target).value)">
+                @for (status of statuses; track status) {
+                  <option [value]="status">{{ statusLabels[status] }}</option>
+                }
+              </select>
+            </div>
+          </td>
+          <td>{{ log.priority }}</td>
+          <td>{{ log.assigned_to?.name ?? 'Unassigned' }}</td>
+          <td>{{ log.updated_at | date: 'short' }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
 
 @if (!loading() && logs().length === 0) {
   <p class="empty">No error logs found.</p>
 }
 
-@if (totalPages() > 1) {
+@if (total() > 0) {
   <div class="pagination">
     <span class="pagination-summary">
       Page {{ page() }} of {{ totalPages() }} ({{ total() }} total)
     </span>
     <div class="pagination-controls">
+      <div class="page-size">
+        <label class="page-size-label" for="footer-page-size">Per page</label>
+        <div class="select-wrap">
+          <select id="footer-page-size" [ngModel]="pageSize()" (ngModelChange)="onPageSizeChange($event)">
+            @for (size of pageSizeOptions; track size) {
+              <option [ngValue]="size">{{ size }}</option>
+            }
+          </select>
+        </div>
+      </div>
       <button class="btn btn-sm btn-ghost" [disabled]="page() === 1" (click)="goToPage(page() - 1)">
         <i class="material-icons">chevron_left</i>
         Prev
