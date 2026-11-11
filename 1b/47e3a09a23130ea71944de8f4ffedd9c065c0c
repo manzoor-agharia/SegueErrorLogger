@@ -1,0 +1,36 @@
+frontend/src/app/features/error-logs/error-log-list/error-log-list.html
+  s_d2eecfdb47a685::t_05b8e1876e63f2 166,172-181
+  s_d2eecfdb47a685::t_8eaea30884f0a2 92-111,113-116,118-130,132-160
+frontend-react/src/views/ErrorLogListView.tsx
+  s_d2eecfdb47a685::t_05b8e1876e63f2 503,509-526
+  s_d2eecfdb47a685::t_8eaea30884f0a2 408-420,422-499
+frontend-react/src/styles/components/error-log-list.scss
+  s_d2eecfdb47a685::t_dd457b091cec84 2-8,28,36,72-76,81-92,141
+  s_d2eecfdb47a685::t_6b364dc9df9c7e 152,160-176
+frontend-vue/src/views/ErrorLogListView.vue
+  s_d2eecfdb47a685::t_05b8e1876e63f2 469,472-483
+  s_d2eecfdb47a685::t_8eaea30884f0a2 386-403,405-416,418-431,433-443,445-465
+frontend-vue/src/styles/components/error-log-list.scss
+  s_d2eecfdb47a685::t_6b364dc9df9c7e 152,160-176
+  s_d2eecfdb47a685::t_dd457b091cec84 2-8,28,36,72-76,81-92,141
+frontend/src/app/features/error-logs/error-log-list/error-log-list.scss
+  s_d2eecfdb47a685::t_6b364dc9df9c7e 153,161-176
+  s_d2eecfdb47a685::t_dd457b091cec84 1-9,11,19,55-59,64-74,142
+  s_d2eecfdb47a685::t_b77628b093f9a0 177
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1b47e3a09a23130ea71944de8f4ffedd9c065c0c",
+  "prompts": {},
+  "sessions": {
+    "s_d2eecfdb47a685": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f38e5dca-92c1-42e5-bec1-5e58f481f936",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Manzoor Ahmed Agharia <manzoor.ahmed.agharia@growthzone.com>"
+    }
+  }
+}
